@@ -1,0 +1,24 @@
+ship:GR-75 Medium Transports
+upgrade:Leia Organa
+upgrade:Comms Net
+ship:GR-75 Medium Transports
+upgrade:Hondo Ohnaka
+ship:MC75 Armored Cruiser 
+upgrade:Lando Calrissian 
+upgrade:Gunnery Team 
+upgrade:Early Warning System 
+upgrade:External Racks 
+ship:MC75 Armored Cruiser 
+upgrade:Leading Shots 
+upgrade:XI7 Turbolasers 
+ship:MC80 Assault Cruiser 
+upgrade:Admiral Ackbar 
+upgrade:Strategic Adviser 
+upgrade:Engine Techs 
+upgrade:Early Warning System 
+upgrade:Electronic Countermeasures 
+upgrade:Leading Shots 
+upgrade:XI7 Turbolasers 
+upgrade:Defiance 
+squadron:VCX-100 Freighter 
+squadron:HWK-290
