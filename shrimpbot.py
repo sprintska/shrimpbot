@@ -20,9 +20,9 @@ from discord.ext import commands
 
 logging.basicConfig(filename='/var/log/shrimp.log',level=logging.DEBUG)
 
-TOKEN_PATH = '/home/ardaedhel/bin/privatekey.dsc'
-CARD_IMG_PATH = '/home/ardaedhel/bin/img/'
-CARD_LOOKUP = '/home/ardaedhel/bin/cards.txt'
+TOKEN_PATH = '/home/ardaedhel/bin/shrimpbot/privatekey.dsc'
+CARD_IMG_PATH = '/home/ardaedhel/bin/shrimpbot/img/'
+CARD_LOOKUP = '/home/ardaedhel/bin/shrimpbot/cards.txt'
 
 
 with open(TOKEN_PATH) as t:
@@ -476,7 +476,7 @@ async def on_message(message):
                 h.update(str(time.time()).encode())
                 guid = h.hexdigest()[0:16]
                 logging.info("2")
-                listbuilderpath = os.path.abspath("/home/ardaedhel/bin/")
+                listbuilderpath = os.path.abspath("/home/ardaedhel/bin/shrimpbot/")
                 workingpath = os.path.join(listbuilderpath,"working/")
                 outpath = os.path.join(listbuilderpath,"out/")
                 vlbdirpath = os.path.join(listbuilderpath,"vlb/")
