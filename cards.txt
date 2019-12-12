@@ -886,6 +886,12 @@ wssd_ttl_ravager.png;RAVAGER
 w8_ttl_rakehell.png;RAKEHELL
 w8_com_generalromodi.png;GENERALROMODI
 w8_com_generalromodi.png;ROMODI
+w8_wpn_gunnery-chief-varnillian.png;SABRINA
+w8_wpn_gunnery-chief-varnillian.png;GUNNERYCHIEF
+w8_wpn_gunnery-chief-varnillian.png;GUNNERYCHIEFVARNILLIAN
+w8_wpn_gunnery-chief-varnillian.png;VARNILLIAN
+w8_wpn_gunnery-chief-varnillian.png;VARN
+w8_wpn_gunnery-chief-varnillian.png;GCV
 shipcard_onager-class-testbed.png;ONAGERCLASSTESTBED
 shipcard_onager-class-testbed.png;TESTBED
 shipcard_onager-class-testbed.png;TESTBEDONAGER
