@@ -523,6 +523,7 @@ def import_from_kingston(import_list,vlb_path,working_path,conn):
             elif shipnext:
             
                 if card_name.lower().strip() == "squadrons:":
+                    logging.info("Squadrons next")
                     shipnext = False
                     
                 elif u"\u2022" in card_name:
