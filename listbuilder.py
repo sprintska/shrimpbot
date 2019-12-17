@@ -109,6 +109,8 @@ listbuilder_nomenclature_errors = {\
     "ssdexecutorii":"executoriistardn",\
     "starhawkclassmki":"starhawkmarki",\
     "starhawkclassmkii":"starhawkmarkii",\
+    "starhawkbattleshipmarki":"starhawkmarki",\
+    "starhawkbattleshipmarkii":"starhawkmarkii",\
     "x17turbolasers":"xi7turbolasers"\
     }
 
