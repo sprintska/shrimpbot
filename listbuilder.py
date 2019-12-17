@@ -603,6 +603,7 @@ def scrub_piecename(piecename):
                          .replace(",","")\
                          .replace('"',"")\
                          .replace("+","")\
+                         .replace(".","")\
                          .lower()
     return piecename
 
