@@ -420,7 +420,7 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
 
             if card_name[0] == "+":
                 upgrade,cost = card_name.split("(")
-                upgrade = upgrade.strip(" +\t")
+                upgrade = scrub_piecename(upgrade)
                 cost = cost.split(")")[0]
 
                 if upgrade in nomenclature_translation:
@@ -444,8 +444,9 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                 issquadron = False
                 isship = False
                 
+                card_name = scrub_piecename(card_name)
+                    
                 try: 
-                    card_name = scrub_piecename(card_name)
                     if card_name in nomenclature_translation:
                         t = nomenclature_translation[card_name]
                         logging.info("[-] Translated {} to {} - AFD.".format(
@@ -463,16 +464,16 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                 except: pass
                 
                 try:
-                    logging.info("Searching for {} in {}".format(scrub_piecename(card_name),str(conn)))
+                    logging.info("Searching for {} in {}".format(card_name,str(conn)))
                     isship = conn.execute('''SELECT * FROM pieces
                             WHERE piecetype='shipcard' 
-                            AND piecename LIKE ?;''',("%"+scrub_piecename(card_name),)).fetchall()
+                            AND piecename LIKE ?;''',("%"+card_name,)).fetchall()
                 except: pass
                         
                 if bool(issquadron):
-                    sq = f.add_squadron(card_name.strip())
+                    sq = f.add_squadron(card_name)
                 elif bool(isship):
-                    s = f.add_ship(card_name.strip())
+                    s = f.add_ship(card_name)
                 else:
                     logging.info("{}{} IS FUCKED UP, YO{}".format("="*40,card_name,"="*40))
 
@@ -622,22 +623,17 @@ def export_to_vlog(export_to,vlb_path,working_path=args.wd):
 
 
 def scrub_piecename(piecename):
+    
+    scrub_these = " :!-'(),\"+.\t\r\n"
+    
     piecename = piecename.replace("\/","")\
                          .split("/")[0]\
-                         .split(";")[-1]\
-                         .replace(" ","")\
-                         .replace(":","")\
-                         .replace("!","")\
-                         .replace("-","")\
-                         .replace("'","")\
-                         .replace("(","")\
-                         .replace(")","")\
-                         .replace(",","")\
-                         .replace('"',"")\
-                         .replace("+","")\
-                         .replace(".","")\
-                         .lower()
-    return piecename
+                         .split(";")[-1]
+                         
+    for char in scrub_these:
+        piecename = piecename.replace(char,"")
+
+    return piecename.lower()
 
 
 def calc_guid():
