@@ -432,7 +432,7 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                 
                 if (upgrade,cost) in ambiguous_names:
                     upgrade_new = ambiguous_names[(upgrade,cost)][0]
-                    logging.info("Ambiguous name {} ({}) translated to {}.".format(upgrade,cost,upgrade_new)
+                    logging.info("Ambiguous name {} ({}) translated to {}.".format(upgrade,cost,upgrade_new))
                     upgrade = upgrade_new
 
                 u = s.add_upgrade(upgrade)
@@ -454,7 +454,7 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                         card_name = t
                     if (card_name,cost) in ambiguous_names:
                         card_name_new = ambiguous_names[(card_name,cost)][0]
-                        logging.info("Ambiguous name {} ({}) translated to {}.".format(card_name,cost,card_name_new)
+                        logging.info("Ambiguous name {} ({}) translated to {}.".format(card_name,cost,card_name_new))
                         card_name = card_name_new
                     logging.info("Searching for {} in {}".format(scrub_piecename(card_name),str(conn)))
                     issquadron = conn.execute('''SELECT * FROM pieces
