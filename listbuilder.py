@@ -367,48 +367,61 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
         # for line in war_in.readlines()[7::]:
     for line in import_list.split("\n"):
 
-        l = line.strip()
+        card_name = line.strip()
         
-        logging.info(l)
+        logging.info(card_name)
         
-        if len(l.split()) <= 1:
+        if len(card_name.split()) <= 1:
             shipnext = True
             
-        elif l.split()[0].strip() in ["Faction:",\
+        elif card_name.split()[0].strip() in ["Faction:",\
                                       "Points:",\
                                       "Commander:",\
                                       "Author:"]:
             pass
         
-        elif l.split()[1] == "Objective:":
-            objective = [l.split()[0],l.split(':')[1]]
-            #~ print(objective)
+        elif card_name.split()[1] == "Objective:":
+            objective = [card_name.split()[0],card_name.split(':')[1]]
             f.add_objective(objective[0],objective[1])
             shipnext = False
         
-        elif l[0].isdigit():
-            squadron = ("".join(l.split("(")[0].split()[1::]))
-            #~ print(squadron)
-            if squadron.lower()[-1] == "s" and not (squadron.lower()[-5:] == "jonus"):
+        elif card_name[0].isdigit():
+            squadron, cost = card_name.split("(", 1)
+            squadron = scrub_piecename("".join(card_name.split("(")[0].split()[1::]))
+            cost = scrub_piecename(cost)
+            if int(card_name.split()[0]) > 1:
                 squadron = squadron[:-1]
+            if (squadron,cost) in ambiguous_names:
+                squadron_new = ambiguous_names[(squadron,cost)][0]
+                logging.info("Ambiguous name {} ({}) translated to {}.".format(squadron,cost,squadron_new))
+                squadron = squadron_new
             sq = f.add_squadron(squadron)
             shipnext = False
         
-        elif l[0] == "=":
+        elif card_name[0] == "=":
             shipnext = True
             
         elif shipnext:
-            ship = l.split("]")[-1].split("(")[0].strip(" -\t")
-            #~ print(ship)
+            ship, cost = card_name.split("]")[-1].split("(")
+            ship = scrub_piecename(ship.strip(" -\t"))
+            cost = scrub_piecename(cost)
+            if (ship,cost) in ambiguous_names:
+                ship_new = ambiguous_names[(ship,cost)][0]
+                logging.info("Ambiguous name {} ({}) translated to {}.".format(ship,cost,ship_new))
+                ship = ship_new
             s = f.add_ship(ship)
             shipnext = False
             
-        elif l[0] == "-":
-            upgrade = l.split("(")[0].strip(" -\t")
-            #~ print(upgrade)
+        elif card_name[0] == "-":
+            upgrade, cost = card_name.split("(")
+            upgrade = scrub_piecename(upgrade)
+            cost = scrub_piecename(cost)
+            if (upgrade,cost) in ambiguous_names:
+                upgrade_new = ambiguous_names[(upgrade,cost)][0]
+                logging.info("Ambiguous name {} ({}) translated to {}.".format(upgrade,cost,upgrade_new))
+                upgrade = upgrade_new
             u = s.add_upgrade(upgrade)
             shipnext = False
-                    
 
     return f
     
