@@ -506,10 +506,10 @@ def import_from_kingston(import_list,vlb_path,working_path,conn):
             
         l = line.replace("â€¢",u"\u2022").strip()
         logging.info(l)
-        if l:
+        if l and l.strip()[-1] != ":":
             if l.split(":")[0].strip() in ["Name","Faction","Commander"]:
                 pass
-            elif l.split(":")[0] in ["Assault","Defense","Navigation"] and l.strip()[-1] != ":":
+            elif l.split(":")[0] in ["Assault","Defense","Navigation"]:
                 logging.info("{}".format(l))
                 o = f.add_objective(l.split(":")[0].lower().strip(),\
                                 l.split(":")[1].lower().strip())
