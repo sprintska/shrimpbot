@@ -119,7 +119,7 @@ nomenclature_translation = {**vassal_nomenclature_errors, **listbuilder_nomencla
 '''
 
 ambiguous_names = {
-    ("admiralozzel","20"):("admiralozzelcom","upgrade"),
+    ("admiralozzel","20"):("admiralozzel","upgrade"),
     ("admiralozzel","1"):("admiralozzeloff","upgrade"),
     ("darthvader","36"):("darthvadercom","upgrade"),
     ("darthvader","3"):("darthvaderwpn","upgrade"),
