@@ -54,6 +54,7 @@ vassal_nomenclature_errors = {\
     "arquitensclasscommandcruiser":"arquitenscommandcruiser",\
     "arquitensclasslightcruiser":"arquitenslightcruiser",\
     "coloneljendonlambdaclassshuttle":"coloneljendonlambdaclass",\
+    "executorclass":"exectuorclass",\
     "executoriclassstardreadnought":"executoristardn",\
     "executoriiclassstardreadnought":"executoriistardn",\
     "gladiatoriclassstardestroyer":"gladiatori",\
@@ -962,6 +963,7 @@ class ShipCard:
     
         self.shipname = scrub_piecename(str(shipname))
         self.conn = conn
+        
         logging.info("Searching for ship {} in {}".format(scrub_piecename(shipname),str(conn)))
         [(self.content,self.shiptype)] = conn.execute('''select content,catchall from pieces where piecetype='shipcard' and piecename=?;''',(self.shipname,)).fetchall()
 
@@ -1000,6 +1002,13 @@ class ShipToken:
     
         self.shiptype = scrub_piecename(str(shiptype))
         self.conn = conn
+        
+        if self.shiptype in nomenclature_translation:
+            translated_shiptype = nomenclature_translation[shiptype]
+            logging.info("[-] Translated {} to {} - in listbuilder.ShipToken.".format(
+                self.shiptype, translated_shiptype
+                ))
+            self.shiptype = translated_shiptype
 
         logging.info("Searching for ship token {} in {}".format(scrub_piecename(shiptype),str(conn)))
         self.content = conn.execute('''select content from pieces where piecetype='ship' and piecename=?;''',(self.shiptype,)).fetchall()[0][0]
