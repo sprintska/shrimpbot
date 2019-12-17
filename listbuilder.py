@@ -72,7 +72,7 @@ vassal_nomenclature_errors = {\
     "isdkuatrefit":"kuatrefit",\
     "lieutenantblountz95headhuntersquadron":"lieutenantblountz95",\
     "magnitecrystaltractorbeamarray":"magnitecystaltractorbeamarray",\
-    # "mandaloriangauntletfighter":"mandaloriangauntletfightersquadron",\
+    "mandaloriangauntletfighter":"mandogauntletfighter",\
     "modifiedpeltaclassassaultship":"peltaclassassaultship",\
     "modifiedpeltaclasscommandship":"peltaclasscommandship",\
     "nebulonbsupportrefit":"negulonbsupportrefit",\
