@@ -87,6 +87,7 @@ vassal_nomenclature_errors = {\
     "victoryiiclassstardestroyer":"victoryii",\
     "yt1300":"yt1300lightfreighter",\
     "yt2400":"yt2400lightfreighter",\
+    "yv666":"yv666lightfreighter",\
     "zertikstrom":"zetrikstrom",\
     "zertikstromtieadvancedsquadron":"zetrikstrom"\
     }
