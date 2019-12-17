@@ -282,8 +282,6 @@ def import_from_fabs(import_list,vlb_path,working_path,conn):
 
     f = Fleet("Food",conn=conn)
 
-    # with open(import_list) as fab_in:
-        # for line in fab_in.readlines():
     for line in import_list.split("\n"):
 
         logging.info(line)
@@ -496,17 +494,14 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
     
 def import_from_kingston(import_list,vlb_path,working_path,conn):
 
-    '''Imports an Armada Fleets Designer list into a Fleet object'''
+    '''Imports an Ryan Kingston list into a Fleet object'''
 
     f = Fleet("Food",conn=conn)
     
     logging.info("Fleet created with database {}.".format(str(conn)))
 
-    # with open(import_list) as king_in:
-        
     shipnext = True
         
-        # for line in king_in.readlines()[4::]:
     for line in import_list.split("\n"):
             
         l = line.replace("â€¢",u"\u2022").strip()
@@ -514,27 +509,21 @@ def import_from_kingston(import_list,vlb_path,working_path,conn):
         if l:
             if l.split(":")[0].strip() in ["Name","Faction","Commander"]:
                 pass
-            elif l.split(":")[0] in ["Assault","Defense","Navigation"]:
+            elif l.split(":")[0] in ["Assault","Defense","Navigation"] and l[-1] != ":":
                 o = f.add_objective(l.split(":")[0].lower().strip(),\
                                 l.split(":")[1].lower().strip())
             elif shipnext:
                 if l.lower().strip() == "squadrons:":
-                    #~ print("[!]SQUADRONS!")
                     shipnext = False
                 elif u"\u2022" in l:
-                    #~ print(l)
                     u = s.add_upgrade(l.split(" (",1)[0].strip(u"\u2022"+" "))
                 elif l[0] == "=":
                     pass
                 else:
-                    # print(l)
                     s = f.add_ship(l.split(" (",1)[0].strip())
-            else:
-                if l[0] == "=" or not l:
-                    pass
-                elif u"\u2022" in l:
-                    l = l.split(" x ")[-1].split(" (",1)[0].strip(u"\u2022"+" ")
-                    sq = f.add_squadron(l)
+            elif u"\u2022" in l and l[0] != "=":
+                l = l.split(" x ")[-1].split(" (",1)[0].strip(u"\u2022"+" ")
+                sq = f.add_squadron(l)
 
     return f
 
