@@ -419,11 +419,9 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
         elif start: 
 
             if card_name[0] == "+":
-                upgrade,cost = card_name.split("(")[0]
+                upgrade,cost = card_name.split("(")
                 upgrade = upgrade.strip(" +\t")
                 cost = cost.split(")")[0]
-                
-                logging.info("{},{}".format(upgrade,cost))
 
                 if upgrade in nomenclature_translation:
                     translated = nomenclature_translation[upgrade]
