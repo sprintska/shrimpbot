@@ -388,7 +388,7 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
         elif card_name[0].isdigit():
             squadron, cost = card_name.split("(", 1)
             squadron = scrub_piecename("".join(card_name.split("(")[0].split()[1::]))
-            cost = scrub_piecename(cost)
+            cost = scrub_piecename(cost.split()[0])
             if int(card_name.split()[0]) > 1:
                 squadron = squadron[:-1]
             if (squadron,cost) in ambiguous_names:
@@ -404,7 +404,7 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
         elif shipnext:
             ship, cost = card_name.split("]")[-1].split("(")
             ship = scrub_piecename(ship.strip(" -\t"))
-            cost = scrub_piecename(cost)
+            cost = scrub_piecename(cost.split()[0])
             if (ship,cost) in ambiguous_names:
                 ship_new = ambiguous_names[(ship,cost)][0]
                 logging.info("Ambiguous name {} ({}) translated to {}.".format(ship,cost,ship_new))
@@ -415,7 +415,7 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
         elif card_name[0] == "-":
             upgrade, cost = card_name.split("(")
             upgrade = scrub_piecename(upgrade)
-            cost = scrub_piecename(cost)
+            cost = scrub_piecename(cost.split()[0])
             if (upgrade,cost) in ambiguous_names:
                 upgrade_new = ambiguous_names[(upgrade,cost)][0]
                 logging.info("Ambiguous name {} ({}) translated to {}.".format(upgrade,cost,upgrade_new))
