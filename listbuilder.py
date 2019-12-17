@@ -119,10 +119,22 @@ nomenclature_translation = {**vassal_nomenclature_errors, **listbuilder_nomencla
 '''
 
 ambiguous_names = {
+    ("admiralozzel","20"):("admiralozzelcom","upgrade"),
+    ("admiralozzel","1"):("admiralozzeloff","upgrade"),
     ("darthvader","36"):("darthvadercom","upgrade"),
     ("darthvader","3"):("darthvaderwpn","upgrade"),
     ("darthvader","1"):("darthvaderoff","upgrade"),
     ("darthvader","21"):("darthvadertieadvanced","squadron"),
+    ("emperorpalpatine","35"):("emperorpalpatinecom","upgrade"),
+    ("emperorpalpatine","3"):("emperorpalpatineoff","upgrade"),
+    ("hondoohnaka","24"):("hondoohnakaslave1","squadron"),
+    ("hondoohnaka","2"):("hondoohnaka","upgrade"),
+    ("kyrstaagate","20"):("kyrstaagatecom","upgrade"),
+    ("kyrstaagate","5"):("kyrstaagateoff","upgrade"),
+    ("leiaorgana","38"):("leiaorganacom","upgrade"),
+    ("leiaorgana","3"):("leiaorganaoff","upgrade"),
+    ("wedgeantilles","19"):("wedgeantillesxwing","squadron"),
+    ("kyrstaagate","4"):("wedgeantillesoff","upgrade"),
     }
     
   
