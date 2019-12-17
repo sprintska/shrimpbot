@@ -129,7 +129,7 @@ ambiguous_names = {
     ("emperorpalpatine","3"):("emperorpalpatineoff","upgrade"),
     ("hondoohnaka","24"):("hondoohnakaslave1","squadron"),
     ("hondoohnaka","2"):("hondoohnaka","upgrade"),
-    ("kyrstaagate","20"):("kyrstaagatecom","upgrade"),
+    ("kyrstaagate","20"):("kyrstaagate","upgrade"),
     ("kyrstaagate","5"):("kyrstaagateoff","upgrade"),
     ("landocalrissian","23"):("landocalrissianmillenniumfalcon","squadron"),
     ("landocalrissian","4"):("landocalrissian","upgrade"),
