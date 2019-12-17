@@ -107,6 +107,8 @@ listbuilder_nomenclature_errors = {\
     "peltacommandship":"peltaclasscommandship",\
     "ssdexecutori":"executoristardn",\
     "ssdexecutorii":"executoriistardn",\
+    "starhawkclassmki":"starhawkmki",\
+    "starhawkclassmkii":"starhawkmkii",\
     "x17turbolasers":"xi7turbolasers"\
     }
 
