@@ -93,6 +93,7 @@ vassal_nomenclature_errors = {\
     }
     
 listbuilder_nomenclature_errors = {\
+    "7thfleetstardestroyer":"seventhfleetstardestroyer",\
     "assaultfrigatemk2a":"assaultfrigatemarkiia",\
     "assaultfrigatemk2b":"assaultfrigatemarkiib",\
     "cr90corelliancorvettea":"cr90corvettea",\
