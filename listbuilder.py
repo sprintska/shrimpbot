@@ -439,7 +439,7 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
             
             else:
                 card_name,cost = card_name.split(" (",1)
-                cost = cost.split(" x ").rstrip(")")
+                cost = cost.split(" x ")[-1].split(")")[0]
                 
                 issquadron = False
                 isship = False
