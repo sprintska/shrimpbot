@@ -319,7 +319,7 @@ def import_from_fabs(import_list,vlb_path,working_path,conn):
                         l = t
                         
                                         
-                    logging.info("Searching for {} in {}".format(scrub_piecename(l),str(conn)))
+                    logging.info("Searching for Fab's piece {} in {}".format(scrub_piecename(l),str(conn)))
                     try: 
                         issquadron = conn.execute('''SELECT * FROM pieces
                                 WHERE piecetype='squadroncard' 
@@ -469,14 +469,14 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                         card_name_new = ambiguous_names[(card_name,cost)][0]
                         logging.info("Ambiguous name {} ({}) translated to {}.".format(card_name,cost,card_name_new))
                         card_name = card_name_new
-                    logging.info("Searching for {} in {}".format(scrub_piecename(card_name),str(conn)))
+                    logging.info("Searching for AFD piece {} in {}".format(scrub_piecename(card_name),str(conn)))
                     issquadron = conn.execute('''SELECT * FROM pieces
                             WHERE piecetype='squadroncard' 
                             AND piecename LIKE ?;''',("%"+scrub_piecename(card_name)+"%",)).fetchall()
                 except: pass
                 
                 try:
-                    logging.info("Searching for {} in {}".format(card_name,str(conn)))
+                    logging.info("Searching for AFD piece {} in {}".format(card_name,str(conn)))
                     isship = conn.execute('''SELECT * FROM pieces
                             WHERE piecetype='shipcard' 
                             AND piecename LIKE ?;''',("%"+card_name,)).fetchall()
@@ -918,7 +918,7 @@ class ShipCard:
     
         self.shipname = scrub_piecename(str(shipname))
         self.conn = conn
-        logging.info("Searching for {} in {}".format(scrub_piecename(shipname),str(conn)))
+        logging.info("Searching for ship {} in {}".format(scrub_piecename(shipname),str(conn)))
         [(self.content,self.shiptype)] = conn.execute('''select content,catchall from pieces where piecetype='shipcard' and piecename=?;''',(self.shipname,)).fetchall()
 
         self.shiptoken = ShipToken(self.shiptype,self.conn)
@@ -957,7 +957,7 @@ class ShipToken:
         self.shiptype = scrub_piecename(str(shiptype))
         self.conn = conn
 
-        logging.info("Searching for {} in {}".format(scrub_piecename(shiptype),str(conn)))
+        logging.info("Searching for ship token {} in {}".format(scrub_piecename(shiptype),str(conn)))
         self.content = conn.execute('''select content from pieces where piecetype='ship' and piecename=?;''',(self.shiptype,)).fetchall()[0][0]
 
         self.guid = calc_guid()
@@ -982,7 +982,7 @@ class ShipCmdStack:
         self.cmdstack = scrub_piecename(str(cmdstack))
         self.conn = conn
         
-        logging.info("Searching for {} in {}".format(scrub_piecename(cmdstack),str(conn)))
+        logging.info("Searching for command stack {} in {}".format(scrub_piecename(cmdstack),str(conn)))
         self.content = conn.execute('''select content from pieces where piecetype='other' and piecename=?;''',(self.cmdstack,)).fetchall()[0][0]
 
         self.guid = calc_guid()
@@ -1009,7 +1009,7 @@ class Upgrade:
         self.upgradename = scrub_piecename(str(upgradename))
         self.conn = conn
         
-        logging.info("Searching for {} in {}".format(scrub_piecename(upgradename),str(conn)))
+        logging.info("Searching for upgrade {} in {}".format(scrub_piecename(upgradename),str(conn)))
         self.content = conn.execute('''select content from pieces where piecetype='upgradecard' and piecename=?;''',(self.upgradename,)).fetchall()[0][0]
 
         self.guid = calc_guid()
@@ -1069,7 +1069,7 @@ class SquadronCard:
         self.conn = conn
         # print("[*] Retrieving {}".format(self.squadronname))
         
-        logging.info("Searching for {} in {}".format(scrub_piecename(squadronname),str(conn)))
+        logging.info("Searching for squadron card {} in {}".format(scrub_piecename(squadronname),str(conn)))
         try:
             [(self.content,self.squadrontype)] = conn.execute('''select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;''',(self.squadronname,)).fetchall()
         except:
@@ -1106,7 +1106,7 @@ class SquadronToken:
         self.squadrontype = scrub_piecename(str(squadrontype))
         self.conn = conn
         # print(squadrontype)
-        logging.info("Searching for {} in {}".format(scrub_piecename(squadrontype),str(conn)))
+        logging.info("Searching for squadron token {} in {}".format(scrub_piecename(squadrontype),str(conn)))
         self.content = conn.execute('''select content from pieces where piecetype='squadron' and piecename=?;''',(self.squadrontype,)).fetchall()[0][0]
 
         self.guid = calc_guid()
@@ -1128,7 +1128,7 @@ class Objective:
     
         self.objectivename = scrub_piecename(str(objectivename))
         self.conn = conn
-        logging.info("Searching for {} in {}".format(scrub_piecename(objectivename),str(conn)))
+        logging.info("Searching for objective {} in {}".format(scrub_piecename(objectivename),str(conn)))
         self.content = conn.execute('''select content from pieces where piecetype='objective' and piecename=?;''',(self.objectivename,)).fetchall()[0][0]
 
         self.guid = calc_guid()
