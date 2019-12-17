@@ -515,10 +515,11 @@ def import_from_kingston(import_list,vlb_path,working_path,conn):
             if card_name.split(":")[0].strip() in ["Name","Faction","Commander"]:
                 pass
                 
-            elif card_name.split(":")[0] in ["Assault","Defense","Navigation"] and card_name.strip()[-1] != ":":
-                logging.info("{}".format(card_name))
-                o = f.add_objective(card_name.split(":")[0].lower().strip(),\
-                                card_name.split(":")[1].lower().strip())
+            elif card_name.split(":")[0] in ["Assault","Defense","Navigation"]:
+                if card_name.strip()[-1] != ":":
+                    logging.info("{}".format(card_name))
+                    o = f.add_objective(card_name.split(":")[0].lower().strip(),\
+                                    card_name.split(":")[1].lower().strip())
                                 
             elif shipnext:
             
