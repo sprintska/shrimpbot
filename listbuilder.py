@@ -506,27 +506,53 @@ def import_from_kingston(import_list,vlb_path,working_path,conn):
         
     for line in import_list.split("\n"):
             
-        l = line.replace("â€¢",u"\u2022").strip()
-        logging.info(l)
-        if l and l.strip()[-1] != ":":
-            if l.split(":")[0].strip() in ["Name","Faction","Commander"]:
+        card_name = line.replace("â€¢",u"\u2022").strip()
+        logging.info(card_name)
+        
+        if card_name and card_name.strip()[-1] != ":":
+        
+            if card_name.split(":")[0].strip() in ["Name","Faction","Commander"]:
                 pass
-            elif l.split(":")[0] in ["Assault","Defense","Navigation"]:
-                logging.info("{}".format(l))
-                o = f.add_objective(l.split(":")[0].lower().strip(),\
-                                l.split(":")[1].lower().strip())
+                
+            elif card_name.split(":")[0] in ["Assault","Defense","Navigation"]:
+                logging.info("{}".format(card_name))
+                o = f.add_objective(card_name.split(":")[0].lower().strip(),\
+                                card_name.split(":")[1].lower().strip())
+                                
             elif shipnext:
-                if l.lower().strip() == "squadrons:":
+            
+                if card_name.lower().strip() == "squadrons:":
                     shipnext = False
-                elif u"\u2022" in l:
-                    u = s.add_upgrade(l.split(" (",1)[0].strip(u"\u2022"+" "))
-                elif l[0] == "=":
+                    
+                elif u"\u2022" in card_name:
+                    card_name,cost = card_name.split(" (",1)
+                    card_name = scrub_piecename(card_name)
+                    cost = cost.split(")")[0]
+                    
+                    if (card_name,cost) in ambiguous_names:
+                        card_name_new = ambiguous_names[(card_name,cost)][0]
+                        logging.info("Ambiguous name {} ({}) translated to {}.".format(card_name,cost,card_name_new))
+                        card_name = card_name_new
+                    
+                    u = s.add_upgrade(card_name)
+                    
+                elif card_name[0] == "=":
                     pass
+                    
                 else:
-                    s = f.add_ship(l.split(" (",1)[0].strip())
-            elif u"\u2022" in l and l[0] != "=":
-                l = l.split(" x ")[-1].split(" (",1)[0].strip(u"\u2022"+" ")
-                sq = f.add_squadron(l)
+                    s = f.add_ship(card_name.split(" (",1)[0].strip())
+                    
+            elif u"\u2022" in card_name and card_name[0] != "=":
+                card_name,cost = card_name.split(" x ")[-1].split(" (",1)
+                card_name = scrub_piecename(card_name)
+                cost = cost.split(")")[0]
+                    
+                if (card_name,cost) in ambiguous_names:
+                    card_name_new = ambiguous_names[(card_name,cost)][0]
+                    logging.info("Ambiguous name {} ({}) translated to {}.".format(card_name,cost,card_name_new))
+                    card_name = card_name_new
+                
+                sq = f.add_squadron(card_name)
 
     return f
 
@@ -630,7 +656,7 @@ def export_to_vlog(export_to,vlb_path,working_path=args.wd):
 
 def scrub_piecename(piecename):
     
-    scrub_these = " :!-'(),\"+.\t\r\n"
+    scrub_these = " :!-'(),\"+.\t\r\n" + u"\u2022"
     
     piecename = piecename.replace("\/","")\
                          .split("/")[0]\
