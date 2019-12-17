@@ -510,12 +510,12 @@ def import_from_kingston(import_list,vlb_path,working_path,conn):
         card_name = line.replace("â€¢",u"\u2022").strip()
         logging.info(card_name)
         
-        if card_name and card_name.strip()[-1] != ":":
+        if card_name:
         
             if card_name.split(":")[0].strip() in ["Name","Faction","Commander"]:
                 pass
                 
-            elif card_name.split(":")[0] in ["Assault","Defense","Navigation"]:
+            elif card_name.split(":")[0] in ["Assault","Defense","Navigation"] and card_name.strip()[-1] != ":":
                 logging.info("{}".format(card_name))
                 o = f.add_objective(card_name.split(":")[0].lower().strip(),\
                                 card_name.split(":")[1].lower().strip())
