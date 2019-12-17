@@ -422,6 +422,8 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                 upgrade,cost = card_name.split("(")[0]
                 upgrade = upgrade.strip(" +\t")
                 cost = cost.split(")")[0]
+                
+                logging.info("{},{}".format(upgrade,cost))
 
                 if upgrade in nomenclature_translation:
                     translated = nomenclature_translation[upgrade]
@@ -431,7 +433,6 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                     upgrade = translated
                 
                 if (upgrade,cost) in ambiguous_names:
-                    logging.info("Ambiguous name lookup...")
                     upgrade_new = ambiguous_names[(upgrade,cost)][0]
                     logging.info("Ambiguous name {} ({}) translated to {}.".format(upgrade,cost,upgrade_new))
                     upgrade = upgrade_new
