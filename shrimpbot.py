@@ -499,8 +499,9 @@ async def on_message(message):
                 
                 if not success:
                     logging.info(last_item)
-                    await bot.send_message(message.author, "Sorry, there was an error. Please let Ardaedhel know so I can try to fix it.")
-                    await bot.send_message(message.author, "Details - The error was in this line: ")
+                    await bot.send_message("236683961831653376", "[!] LISTBUILDER ERROR | {}".format(last_item))
+                    await bot.send_message(message.author, "Sorry, there was an error. I have reported it to Ardaedhel to fix it.")
+                    await bot.send_message(message.author, "Details - The error was in parsing this line: ")
                     await bot.send_message(message.author, last_item)
                 
                 else:
@@ -512,9 +513,9 @@ async def on_message(message):
                 
             except Exception as inst:
                 logging.info(inst)
-                await bot.send_message(message.author, "Sorry, there was an error. Please let Ardaedhel know so I can try to fix it.")
-                await bot.send_message(message.author, "Most things from earlier than the SSD should still work--unfortunately, some things (particularly the ambiguously-named cards like Vader and Leia) are broken for the time being.")
-                await bot.send_message(message.author, "Details:")
+                await bot.send_message("236683961831653376", "[!] LISTBUILDER ERROR | {}".format(inst))
+                await bot.send_message(message.author, "Sorry, there was an error. I have reported it to Ardaedhel to fix it.")
+                await bot.send_message(message.author, "Details - Runtime Error:")
                 await bot.send_message(message.author, inst)
 
 
