@@ -279,6 +279,8 @@ def import_from_list(import_from,output_to,working_path,conn,isvlog=False):
             for o in f.objectives:
                 #~ print(f.objectives[o])
                 vlb.write(f.objectives[o].content+chr(27))
+                
+        return (True,None)
     
 
 def import_from_fabs(import_list,vlb_path,working_path,conn):
