@@ -261,6 +261,7 @@ def import_from_list(import_from,output_to,working_path,conn,isvlog=False):
         
         fmt = ident_format(fleet_text)
         success,f = ingest_format[fmt](fleet_text,output_to,working_path,conn)
+        logging.info(success,f)
 
         if not success:
             return (success,f)
