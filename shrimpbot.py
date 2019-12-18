@@ -23,7 +23,8 @@ logging.basicConfig(filename='/var/log/shrimp.log',level=logging.DEBUG)
 TOKEN_PATH = '/home/ardaedhel/bin/shrimpbot/privatekey.dsc'
 CARD_IMG_PATH = '/home/ardaedhel/bin/shrimpbot/img/'
 CARD_LOOKUP = '/home/ardaedhel/bin/shrimpbot/cards.txt'
-BOT_OWNER = discord.user.User("236683961831653376")
+BOT_OWNER = discord.User()
+BOT_OWNER.id = "236683961831653376"
 
 
 with open(TOKEN_PATH) as t:
