@@ -443,10 +443,10 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
 
     start = False
     shipnext = False
-       
-    try:
-        for line in import_list.strip().split("\n"):
-                    
+    
+    for line in import_list.strip().split("\n"):
+        
+        try:
             last_line = line.strip()
             card_name = line.strip().split(" x ",1)[-1]
             logging.info(card_name)
