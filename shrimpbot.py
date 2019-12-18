@@ -439,8 +439,8 @@ async def on_message(message):
             await bot.send_file(destination=message.channel,fp=filepath)
             sent = True
         else:
-            logging.info("Didn't find it.  Here is what I checked:")
-            logging.info(cardlookup)
+            logging.info("Didn't find it.  Failing over to wiki search.")
+            # logging.info(cardlookup)
             
             wikisearchterm = " ".join([x for x in message.content.split() if not x.startswith("!")])
             wiki_img_url = cardpop.autoPopulateImage(wikisearchterm)
