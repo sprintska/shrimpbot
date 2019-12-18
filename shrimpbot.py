@@ -502,9 +502,9 @@ async def on_message(message):
                 if not success:
                     logging.info(last_item)
                     await bot.send_message(BOT_OWNER, "[!] LISTBUILDER ERROR | {}".format(last_item))
-                    await bot.send_message(message.author, "Sorry, there was an error. I have reported it to Ardaedhel to fix it.")
-                    await bot.send_message(message.author, "Details - The error was in parsing this line: ")
-                    await bot.send_message(message.author, last_item)
+                    await bot.send_message(message.channel, "Sorry, there was an error. I have reported it to Ardaedhel to fix it.")
+                    await bot.send_message(message.channel, "Details - The error was in parsing this line: ")
+                    await bot.send_message(message.channel, last_item)
                 
                 else:
                     listbuilder.export_to_vlog(vlogfilepath,vlbfilepath,workingpath)
@@ -516,9 +516,9 @@ async def on_message(message):
             except Exception as inst:
                 logging.info(inst)
                 await bot.send_message(BOT_OWNER, "[!] LISTBUILDER ERROR | {}".format(inst))
-                await bot.send_message(message.author, "Sorry, there was an error. I have reported it to Ardaedhel to fix it.")
-                await bot.send_message(message.author, "Details - Runtime Error:")
-                await bot.send_message(message.author, inst)
+                await bot.send_message(message.channel, "Sorry, there was an error. I have reported it to Ardaedhel to fix it.")
+                await bot.send_message(message.channel, "Details - Runtime Error:")
+                await bot.send_message(message.channel, inst)
 
 
 bot.run(BOT_TOKEN)
