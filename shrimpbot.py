@@ -495,6 +495,7 @@ async def on_message(message):
                 logging.info("4")
                 
                 success, last_item = listbuilder.import_from_list(liststr,vlbfilepath,workingpath,conn)
+                logging.info("5")
                 
                 if not success:
                     logging.info(last_item)
@@ -502,12 +503,13 @@ async def on_message(message):
                     await bot.send_message(message.author, "Details - The error was in this line: ")
                     await bot.send_message(message.author, last_item)
                 
-                logging.info("5")
-                listbuilder.export_to_vlog(vlogfilepath,vlbfilepath,workingpath)
-                logging.info("6")
-                await bot.send_file(destination=message.channel,fp=vlogfilepath)
-                logging.info("7")
+                else:
+                    listbuilder.export_to_vlog(vlogfilepath,vlbfilepath,workingpath)
+                    logging.info("6")
+                    await bot.send_file(destination=message.channel,fp=vlogfilepath)
+                    logging.info("7")
                 del h
+                
             except Exception as inst:
                 logging.info(inst)
                 await bot.send_message(message.author, "Sorry, there was an error. Please let Ardaedhel know so I can try to fix it.")
