@@ -471,11 +471,13 @@ async def on_message(message):
             try:
                 await bot.send_message(message.channel,"Generating a VASSAL list, hang on...")
                 logging.info("1")
+                
                 liststr = message.content.strip()[7::].strip()
                 h = hashlib.new('md5')
                 h.update(str(time.time()).encode())
                 guid = h.hexdigest()[0:16]
                 logging.info("2")
+                
                 listbuilderpath = os.path.abspath("/home/ardaedhel/bin/shrimpbot/")
                 workingpath = os.path.join(listbuilderpath,"working/")
                 outpath = os.path.join(listbuilderpath,"out/")
@@ -484,13 +486,22 @@ async def on_message(message):
                 vlogfilepath = os.path.join(outpath,guid+".vlog")
                 databasepath = os.path.join(listbuilderpath,"vlb_pieces.vlo")
                 logging.info("3")
+                
                 conn = sqlite3.connect(databasepath)
                 if "pieces" not in conn.execute("select name from sqlite_master where type='table'").fetchall()[0]:
                     logging.critical("Database at {}, {}, is corrupted or nonexistent.".format(databasepath,conn))
                 else:
                     logging.info("Database at {}, {}, found...".format(databasepath,conn))
                 logging.info("4")
-                listbuilder.import_from_list(liststr,vlbfilepath,workingpath,conn)
+                
+                success, last_item = listbuilder.import_from_list(liststr,vlbfilepath,workingpath,conn)
+                
+                if not success:
+                    logging.info(inst)
+                    await bot.send_message(message.author, "Sorry, there was an error. Please let Ardaedhel know so I can try to fix it.")
+                    await bot.send_message(message.author, "Details - The error was in this line: ")
+                    await bot.send_message(message.author, last_item)
+                
                 logging.info("5")
                 listbuilder.export_to_vlog(vlogfilepath,vlbfilepath,workingpath)
                 logging.info("6")
