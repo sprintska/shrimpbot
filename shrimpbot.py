@@ -497,7 +497,7 @@ async def on_message(message):
                 success, last_item = listbuilder.import_from_list(liststr,vlbfilepath,workingpath,conn)
                 
                 if not success:
-                    logging.info(inst)
+                    logging.info(last_item)
                     await bot.send_message(message.author, "Sorry, there was an error. Please let Ardaedhel know so I can try to fix it.")
                     await bot.send_message(message.author, "Details - The error was in this line: ")
                     await bot.send_message(message.author, last_item)
