@@ -23,6 +23,7 @@ logging.basicConfig(filename='/var/log/shrimp.log',level=logging.DEBUG)
 TOKEN_PATH = '/home/ardaedhel/bin/shrimpbot/privatekey.dsc'
 CARD_IMG_PATH = '/home/ardaedhel/bin/shrimpbot/img/'
 CARD_LOOKUP = '/home/ardaedhel/bin/shrimpbot/cards.txt'
+BOT_OWNER = discord.user.User("236683961831653376")
 
 
 with open(TOKEN_PATH) as t:
@@ -499,7 +500,7 @@ async def on_message(message):
                 
                 if not success:
                     logging.info(last_item)
-                    await bot.send_message("236683961831653376", "[!] LISTBUILDER ERROR | {}".format(last_item))
+                    await bot.send_message(BOT_OWNER, "[!] LISTBUILDER ERROR | {}".format(last_item))
                     await bot.send_message(message.author, "Sorry, there was an error. I have reported it to Ardaedhel to fix it.")
                     await bot.send_message(message.author, "Details - The error was in parsing this line: ")
                     await bot.send_message(message.author, last_item)
@@ -513,7 +514,7 @@ async def on_message(message):
                 
             except Exception as inst:
                 logging.info(inst)
-                await bot.send_message("236683961831653376", "[!] LISTBUILDER ERROR | {}".format(inst))
+                await bot.send_message(BOT_OWNER, "[!] LISTBUILDER ERROR | {}".format(inst))
                 await bot.send_message(message.author, "Sorry, there was an error. I have reported it to Ardaedhel to fix it.")
                 await bot.send_message(message.author, "Details - Runtime Error:")
                 await bot.send_message(message.author, inst)
