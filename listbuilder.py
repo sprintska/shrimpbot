@@ -54,6 +54,7 @@ vassal_nomenclature_errors = {\
     "arquitensclasscommandcruiser":"arquitenscommandcruiser",\
     "arquitensclasslightcruiser":"arquitenslightcruiser",\
     "coloneljendonlambdaclassshuttle":"coloneljendonlambdaclass",\
+    "exectuorclass":"executorclass",\
     "executoriclassstardreadnought":"executoristardn",\
     "executoriiclassstardreadnought":"executoriistardn",\
     "gladiatoriclassstardestroyer":"gladiatori",\
@@ -70,7 +71,8 @@ vassal_nomenclature_errors = {\
     "isdcymoon1refit":"cymoon1refit",\
     "isdkuatrefit":"kuatrefit",\
     "lieutenantblountz95headhuntersquadron":"lieutenantblountz95",\
-    "mandaloriangauntletfighter":"mandaloriangauntletfightersquadron",\
+    "magnitecrystaltractorbeamarray":"magnitecystaltractorbeamarray",\
+    "mandaloriangauntletfighter":"mandogauntletfighter",\
     "modifiedpeltaclassassaultship":"peltaclassassaultship",\
     "modifiedpeltaclasscommandship":"peltaclasscommandship",\
     "nebulonbsupportrefit":"negulonbsupportrefit",\
@@ -85,11 +87,13 @@ vassal_nomenclature_errors = {\
     "victoryiiclassstardestroyer":"victoryii",\
     "yt1300":"yt1300lightfreighter",\
     "yt2400":"yt2400lightfreighter",\
+    "yv666":"yv666lightfreighter",\
     "zertikstrom":"zetrikstrom",\
     "zertikstromtieadvancedsquadron":"zetrikstrom"\
     }
     
 listbuilder_nomenclature_errors = {\
+    "7thfleetstardestroyer":"seventhfleetstardestroyer",\
     "assaultfrigatemk2a":"assaultfrigatemarkiia",\
     "assaultfrigatemk2b":"assaultfrigatemarkiib",\
     "cr90corelliancorvettea":"cr90corvettea",\
@@ -107,11 +111,40 @@ listbuilder_nomenclature_errors = {\
     "peltacommandship":"peltaclasscommandship",\
     "ssdexecutori":"executoristardn",\
     "ssdexecutorii":"executoriistardn",\
+    "starhawkclassmki":"starhawkmarki",\
+    "starhawkclassmkii":"starhawkmarkii",\
+    "starhawkbattleshipmarki":"starhawkmarki",\
+    "starhawkbattleshipmarkii":"starhawkmarkii",\
     "x17turbolasers":"xi7turbolasers"\
     }
 
 nomenclature_translation = {**vassal_nomenclature_errors, **listbuilder_nomenclature_errors}
 
+''' This dict pairs names of identically-named cards (Darth Vader, Leia Organa,
+    etc) with their costs in a tuple (the key) to reference their Vassal name and card type.
+'''
+
+ambiguous_names = {
+    ("admiralozzel","20"):("admiralozzel","upgrade"),
+    ("admiralozzel","2"):("admiralozzeloff","upgrade"),
+    ("darthvader","36"):("darthvadercom","upgrade"),
+    ("darthvader","3"):("darthvaderwpn","upgrade"),
+    ("darthvader","1"):("darthvaderoff","upgrade"),
+    ("darthvader","21"):("darthvadertieadvanced","squadron"),
+    ("emperorpalpatine","35"):("emperorpalpatinecom","upgrade"),
+    ("emperorpalpatine","3"):("emperorpalpatineoff","upgrade"),
+    ("hondoohnaka","24"):("hondoohnakaslave1","squadron"),
+    ("hondoohnaka","2"):("hondoohnaka","upgrade"),
+    ("kyrstaagate","20"):("kyrstaagate","upgrade"),
+    ("kyrstaagate","5"):("kyrstaagateoff","upgrade"),
+    ("landocalrissian","23"):("landocalrissianmillenniumfalcon","squadron"),
+    ("landocalrissian","4"):("landocalrissian","upgrade"),
+    ("leiaorgana","38"):("leiaorganacom","upgrade"),
+    ("leiaorgana","3"):("leiaorganaoff","upgrade"),
+    ("wedgeantilles","19"):("wedgeantillesxwing","squadron"),
+    ("wedgeantilles","4"):("wedgeantillesoff","upgrade"),
+    }
+    
   
 def unzipall(zip_file_path,tar_path):
 
@@ -227,12 +260,11 @@ def import_from_list(import_from,output_to,working_path,conn,isvlog=False):
             fleet_text = import_from
         
         fmt = ident_format(fleet_text)
-        
-        #~ print(fmt)
-        
-        f = ingest_format[fmt](fleet_text,output_to,working_path,conn)
-        
-        # write out to .vlb
+        success,f = ingest_format[fmt](fleet_text,output_to,working_path,conn)
+        logging.info(success,f)
+
+        if not success:
+            return (success,f)
         
         with open(output_to,"w") as vlb:
             vlb.write("a1\r\nbegin_save{}\r\nend_save{}\r\n".format(chr(27),chr(27)))
@@ -247,6 +279,8 @@ def import_from_list(import_from,output_to,working_path,conn,isvlog=False):
             for o in f.objectives:
                 #~ print(f.objectives[o])
                 vlb.write(f.objectives[o].content+chr(27))
+                
+        return (True,None)
     
 
 def import_from_fabs(import_list,vlb_path,working_path,conn):
@@ -254,77 +288,79 @@ def import_from_fabs(import_list,vlb_path,working_path,conn):
     '''Imports a Fab's Fleet Builder list into a Fleet object'''
 
     f = Fleet("Food",conn=conn)
+    last_line = ""
 
-    # with open(import_list) as fab_in:
-        # for line in fab_in.readlines():
     for line in import_list.split("\n"):
 
         logging.info(line)
+        last_line = line
 
-            # all of the lines with useful data are numbered
-        if line.strip():
-            if line.strip()[0].isdigit():
-                l = line.replace("â€¢",u"\u2022").strip()
-                l = "".join("".join(l.split(" {} ".format(u"\u2022"))[1::]).split(" (")[:-1])
-                
-                # only ships and objs are broken up with " - ", and objs are labelled
-                # otherwise, it's either a squadron or an unupgraded ship--indistinguishable
-                
-                if " - " in l:
-                    if l.startswith("Objective"):
-                        # print("=-"*25)
-                        # print("Objectives: {}".format(l))
-                        pass
+        try:
+            if line.strip():
+                if line.strip()[0].isdigit():
+                    l = line.replace("â€¢",u"\u2022").strip()
+                    l = "".join("".join(l.split(" {} ".format(u"\u2022"))[1::]).split(" (")[:-1])
+                    
+                    # only ships and objs are broken up with " - ", and objs are labelled
+                    # otherwise, it's either a squadron or an unupgraded ship--indistinguishable
+                    
+                    if " - " in l:
+                        if l.startswith("Objective"):
+                            # print("=-"*25)
+                            # print("Objectives: {}".format(l))
+                            pass
+                        else:
+                            ll = l.split(" - ")
+                            s = f.add_ship(ll[0].strip())
+                            for u in ll[1::]:
+                                s.add_upgrade(u.strip())
+                    
                     else:
-                        ll = l.split(" - ")
-                        s = f.add_ship(ll[0].strip())
-                        for u in ll[1::]:
-                            s.add_upgrade(u.strip())
-                
-                else:
-                    issquadron = False
-                    isship = False
-                    issquadronfancy = False
-                    l = scrub_piecename(l)
-                    if l in nomenclature_translation:
-                        t = nomenclature_translation[l]
-                        logging.info("[-] Translated {} to {} - Fab's.".format(
-                            l, t
-                            ))
-                        l = t
-                        
-                                        
-                    logging.info("Searching for {} in {}".format(scrub_piecename(l),str(conn)))
-                    try: 
-                        issquadron = conn.execute('''SELECT * FROM pieces
-                                WHERE piecetype='squadroncard' 
-                                AND piecename LIKE ?;''',("%"+scrub_piecename(l)+"%",)).fetchall()
-                    except: pass
-                    
-                    try:
-                        isship = conn.execute('''SELECT * FROM pieces
-                                WHERE piecetype='shipcard' 
-                                AND piecename LIKE ?;''',("%"+scrub_piecename(l),)).fetchall()
-                    except: pass
-                    
-                    try: 
-                        if l.lower()[-8::] == "squadron":
-                            ltmp = l[0:-8]
-                            issquadronfancy = conn.execute('''SELECT * FROM pieces
+                        issquadron = False
+                        isship = False
+                        issquadronfancy = False
+                        l = scrub_piecename(l)
+                        if l in nomenclature_translation:
+                            t = nomenclature_translation[l]
+                            logging.info("[-] Translated {} to {} - Fab's.".format(
+                                l, t
+                                ))
+                            l = t
+                            
+                                            
+                        logging.info("Searching for Fab's piece {} in {}".format(scrub_piecename(l),str(conn)))
+                        try: 
+                            issquadron = conn.execute('''SELECT * FROM pieces
                                     WHERE piecetype='squadroncard' 
-                                    AND piecename LIKE ?;''',("%"+scrub_piecename(ltmp)+"%",)).fetchall()
-                    except: pass
-                    
-                    if bool(issquadron):
-                        sq = f.add_squadron(l.strip())
-                    elif bool(issquadronfancy):
-                        sq = f.add_squadron(ltmp.strip())
-                    elif bool(isship):
-                        s = f.add_ship(l.strip())
-                    else:
-                        logging.info("{}{} IS FUCKED UP, YO{}".format("="*40,l,"="*40))
+                                    AND piecename LIKE ?;''',("%"+scrub_piecename(l)+"%",)).fetchall()
+                        except: pass
+                        
+                        try:
+                            isship = conn.execute('''SELECT * FROM pieces
+                                    WHERE piecetype='shipcard' 
+                                    AND piecename LIKE ?;''',("%"+scrub_piecename(l),)).fetchall()
+                        except: pass
+                        
+                        try: 
+                            if l.lower()[-8::] == "squadron":
+                                ltmp = l[0:-8]
+                                issquadronfancy = conn.execute('''SELECT * FROM pieces
+                                        WHERE piecetype='squadroncard' 
+                                        AND piecename LIKE ?;''',("%"+scrub_piecename(ltmp)+"%",)).fetchall()
+                        except: pass
+                        
+                        if bool(issquadron):
+                            sq = f.add_squadron(l.strip())
+                        elif bool(issquadronfancy):
+                            sq = f.add_squadron(ltmp.strip())
+                        elif bool(isship):
+                            s = f.add_ship(l.strip())
+                        else:
+                            logging.info("{}{} IS FUCKED UP, YO{}".format("="*40,l,"="*40))
+        except:
+            return (False,last_line)
 
-    return f
+    return (True,f)
 
 
 def import_from_warlords(import_list,vlb_path,working_path,conn):
@@ -339,50 +375,67 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
         # for line in war_in.readlines()[7::]:
     for line in import_list.split("\n"):
 
-        l = line.strip()
+        card_name = line.strip()
+        last_line = card_name
         
-        logging.info(l)
+        logging.info(card_name)
         
-        if len(l.split()) <= 1:
-            shipnext = True
+        try:
+            if len(card_name.split()) <= 1:
+                shipnext = True
+                
+            elif card_name.split()[0].strip() in ["Faction:",\
+                                          "Points:",\
+                                          "Commander:",\
+                                          "Author:"]:
+                pass
             
-        elif l.split()[0].strip() in ["Faction:",\
-                                      "Points:",\
-                                      "Commander:",\
-                                      "Author:"]:
-            pass
-        
-        elif l.split()[1] == "Objective:":
-            objective = [l.split()[0],l.split(':')[1]]
-            #~ print(objective)
-            f.add_objective(objective[0],objective[1])
-            shipnext = False
-        
-        elif l[0].isdigit():
-            squadron = ("".join(l.split("(")[0].split()[1::]))
-            #~ print(squadron)
-            if squadron.lower()[-1] == "s" and not (squadron.lower()[-5:] == "jonus"):
-                squadron = squadron[:-1]
-            sq = f.add_squadron(squadron)
-            shipnext = False
-        
-        elif l[0] == "=":
-            shipnext = True
+            elif card_name.split()[1] == "Objective:":
+                objective = [card_name.split()[0],card_name.split(':')[1]]
+                f.add_objective(objective[0],objective[1])
+                shipnext = False
             
-        elif shipnext:
-            ship = l.split("]")[-1].split("(")[0].strip(" -\t")
-            #~ print(ship)
-            s = f.add_ship(ship)
-            shipnext = False
+            elif card_name[0].isdigit():
+                squadron, cost = card_name.split("(", 1)
+                squadron = scrub_piecename("".join(card_name.split("(")[0].split()[1::]))
+                cost = scrub_piecename(cost.split()[0])
+                if int(card_name.split()[0]) > 1:
+                    squadron = squadron[:-1]
+                if (squadron,cost) in ambiguous_names:
+                    squadron_new = ambiguous_names[(squadron,cost)][0]
+                    logging.info("Ambiguous name {} ({}) translated to {}.".format(squadron,cost,squadron_new))
+                    squadron = squadron_new
+                sq = f.add_squadron(squadron)
+                shipnext = False
             
-        elif l[0] == "-":
-            upgrade = l.split("(")[0].strip(" -\t")
-            #~ print(upgrade)
-            u = s.add_upgrade(upgrade)
-            shipnext = False
-                    
+            elif card_name[0] == "=":
+                shipnext = True
+                
+            elif shipnext:
+                ship, cost = card_name.split("]")[-1].split("(")
+                ship = scrub_piecename(ship.strip(" -\t"))
+                cost = scrub_piecename(cost.split()[0])
+                if (ship,cost) in ambiguous_names:
+                    ship_new = ambiguous_names[(ship,cost)][0]
+                    logging.info("Ambiguous name {} ({}) translated to {}.".format(ship,cost,ship_new))
+                    ship = ship_new
+                s = f.add_ship(ship)
+                shipnext = False
+                
+            elif card_name[0] == "-":
+                upgrade, cost = card_name.split("(")
+                upgrade = scrub_piecename(upgrade)
+                cost = scrub_piecename(cost.split()[0])
+                if (upgrade,cost) in ambiguous_names:
+                    upgrade_new = ambiguous_names[(upgrade,cost)][0]
+                    logging.info("Ambiguous name {} ({}) translated to {}.".format(upgrade,cost,upgrade_new))
+                    upgrade = upgrade_new
+                u = s.add_upgrade(upgrade)
+                shipnext = False
+        except:
+            return (False,last_line)
 
-    return f
+    return (True,f)
     
     
 def import_from_afd(import_list,vlb_path,working_path,conn):
@@ -391,105 +444,152 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
 
     f = Fleet("Food",conn=conn)
 
-    # with open(import_list) as afd_in:
     start = False
     shipnext = False
-        
-        # for line in afd_in.readlines()[2::]:
+    
     for line in import_list.strip().split("\n"):
-                
-        l = line.strip().split(" x ",1)[-1]
-        logging.info(l)
-        if l.startswith("==="):
-            start = True
+        
+        try:
+            last_line = line.strip()
+            card_name = line.strip().split(" x ",1)[-1]
+            logging.info(card_name)
             
-        elif start: 
+            if card_name.startswith("==="):
+                start = True
+                
+            elif start: 
 
-            if l[0] == "+":
-                upgrade = l.split("(")[0].strip(" +\t")
-                #~ print(upgrade)
-                u = s.add_upgrade(upgrade)
-            
-            else:
-                l = l.split(" (")[0]
-                
-                issquadron = False
-                isship = False
-                
-                try: 
-                    l = scrub_piecename(l)
-                    if l in nomenclature_translation:
-                        t = nomenclature_translation[l]
+                if card_name[0] == "+":
+                    upgrade,cost = card_name.split("(")
+                    upgrade = scrub_piecename(upgrade)
+                    cost = cost.split(")")[0]
+
+                    if upgrade in nomenclature_translation:
+                        translated = nomenclature_translation[upgrade]
                         logging.info("[-] Translated {} to {} - AFD.".format(
-                            l, t
+                            upgrade, translated
                             ))
-                        l = t
-                    logging.info("Searching for {} in {}".format(scrub_piecename(l),str(conn)))
-                    issquadron = conn.execute('''SELECT * FROM pieces
-                            WHERE piecetype='squadroncard' 
-                            AND piecename LIKE ?;''',("%"+scrub_piecename(l)+"%",)).fetchall()
-                except: pass
-                
-                try:
-                    logging.info("Searching for {} in {}".format(scrub_piecename(l),str(conn)))
-                    isship = conn.execute('''SELECT * FROM pieces
-                            WHERE piecetype='shipcard' 
-                            AND piecename LIKE ?;''',("%"+scrub_piecename(l),)).fetchall()
-                except: pass
-                        
-                if bool(issquadron):
-                    sq = f.add_squadron(l.strip())
-                elif bool(isship):
-                    s = f.add_ship(l.strip())
-                else:
-                    logging.info("{}{} IS FUCKED UP, YO{}".format("="*40,l,"="*40))
+                        upgrade = translated
+                    
+                    if (upgrade,cost) in ambiguous_names:
+                        upgrade_new = ambiguous_names[(upgrade,cost)][0]
+                        logging.info("Ambiguous name {} ({}) translated to {}.".format(upgrade,cost,upgrade_new))
+                        upgrade = upgrade_new
 
-    return f
+                    u = s.add_upgrade(upgrade)
+                
+                else:
+                    card_name,cost = card_name.split(" (",1)
+                    cost = cost.split(" x ")[-1].split(")")[0]
+                    
+                    issquadron = False
+                    isship = False
+                    
+                    card_name = scrub_piecename(card_name)
+                        
+                    try: 
+                        if card_name in nomenclature_translation:
+                            t = nomenclature_translation[card_name]
+                            logging.info("[-] Translated {} to {} - AFD.".format(
+                                card_name, t
+                                ))
+                            card_name = t
+                        if (card_name,cost) in ambiguous_names:
+                            card_name_new = ambiguous_names[(card_name,cost)][0]
+                            logging.info("Ambiguous name {} ({}) translated to {}.".format(card_name,cost,card_name_new))
+                            card_name = card_name_new
+                        logging.info("Searching for AFD piece {} in {}".format(scrub_piecename(card_name),str(conn)))
+                        issquadron = conn.execute('''SELECT * FROM pieces
+                                WHERE piecetype='squadroncard' 
+                                AND piecename LIKE ?;''',("%"+scrub_piecename(card_name)+"%",)).fetchall()
+                    except: pass
+                    
+                    try:
+                        logging.info("Searching for AFD piece {} in {}".format(card_name,str(conn)))
+                        isship = conn.execute('''SELECT * FROM pieces
+                                WHERE piecetype='shipcard' 
+                                AND piecename LIKE ?;''',("%"+card_name,)).fetchall()
+                    except: pass
+                            
+                    if bool(issquadron):
+                        sq = f.add_squadron(card_name)
+                    elif bool(isship):
+                        s = f.add_ship(card_name)
+                    else:
+                        logging.info("{}{} IS FUCKED UP, YO{}".format("="*40,card_name,"="*40))
+        except:
+            return (False,last_line)
+
+    return (True,f)
     
     
 def import_from_kingston(import_list,vlb_path,working_path,conn):
 
-    '''Imports an Armada Fleets Designer list into a Fleet object'''
+    '''Imports an Ryan Kingston list into a Fleet object'''
 
     f = Fleet("Food",conn=conn)
     
     logging.info("Fleet created with database {}.".format(str(conn)))
 
-    # with open(import_list) as king_in:
-        
     shipnext = True
         
-        # for line in king_in.readlines()[4::]:
     for line in import_list.split("\n"):
+        
+        try:
+            card_name = line.replace("â€¢",u"\u2022").strip()
+            logging.info(card_name)
+            last_line = card_name
             
-        l = line.replace("â€¢",u"\u2022").strip()
-        logging.info(l)
-        if l:
-            if l.split(":")[0].strip() in ["Name","Faction","Commander"]:
-                pass
-            elif l.split(":")[0] in ["Assault","Defense","Navigation"]:
-                o = f.add_objective(l.split(":")[0].lower().strip(),\
-                                l.split(":")[1].lower().strip())
-            elif shipnext:
-                if l.lower().strip() == "squadrons:":
-                    #~ print("[!]SQUADRONS!")
-                    shipnext = False
-                elif u"\u2022" in l:
-                    #~ print(l)
-                    u = s.add_upgrade(l.split(" (",1)[0].strip(u"\u2022"+" "))
-                elif l[0] == "=":
+            if card_name:
+            
+                if card_name.split(":")[0].strip() in ["Name","Faction","Commander"]:
                     pass
-                else:
-                    # print(l)
-                    s = f.add_ship(l.split(" (",1)[0].strip())
-            else:
-                if l[0] == "=" or not l:
-                    pass
-                elif u"\u2022" in l:
-                    l = l.split(" x ")[-1].split(" (",1)[0].strip(u"\u2022"+" ")
-                    sq = f.add_squadron(l)
+                    
+                elif card_name.split(":")[0] in ["Assault","Defense","Navigation"]:
+                    if card_name.strip()[-1] != ":":
+                        logging.info("{}".format(card_name))
+                        o = f.add_objective(card_name.split(":")[0].lower().strip(),\
+                                        card_name.split(":")[1].lower().strip())
+                                    
+                elif shipnext:
+                
+                    if card_name.lower().strip() == "squadrons:":
+                        logging.info("Squadrons next")
+                        shipnext = False
+                        
+                    elif u"\u2022" in card_name:
+                        card_name,cost = card_name.split(" (",1)
+                        card_name = scrub_piecename(card_name)
+                        cost = cost.split(")")[0]
+                        
+                        if (card_name,cost) in ambiguous_names:
+                            card_name_new = ambiguous_names[(card_name,cost)][0]
+                            logging.info("Ambiguous name {} ({}) translated to {}.".format(card_name,cost,card_name_new))
+                            card_name = card_name_new
+                        
+                        u = s.add_upgrade(card_name)
+                        
+                    elif card_name[0] == "=":
+                        pass
+                        
+                    else:
+                        s = f.add_ship(card_name.split(" (",1)[0].strip())
+                        
+                elif u"\u2022" in card_name and card_name[0] != "=":
+                    card_name,cost = card_name.split(" x ")[-1].split(" (",1)
+                    card_name = scrub_piecename(card_name)
+                    cost = cost.split(")")[0]
+                        
+                    if (card_name,cost) in ambiguous_names:
+                        card_name_new = ambiguous_names[(card_name,cost)][0]
+                        logging.info("Ambiguous name {} ({}) translated to {}.".format(card_name,cost,card_name_new))
+                        card_name = card_name_new
+                    
+                    sq = f.add_squadron(card_name)
+        except:
+            return (False,last_line)
 
-    return f
+    return (True,f)
 
 
 def import_from_aff(import_list,vlb_path,working_path,conn):
@@ -590,21 +690,17 @@ def export_to_vlog(export_to,vlb_path,working_path=args.wd):
 
 
 def scrub_piecename(piecename):
+    
+    scrub_these = " :!-'(),\"+.\t\r\n" + u"\u2022"
+    
     piecename = piecename.replace("\/","")\
                          .split("/")[0]\
-                         .split(";")[-1]\
-                         .replace(" ","")\
-                         .replace(":","")\
-                         .replace("!","")\
-                         .replace("-","")\
-                         .replace("'","")\
-                         .replace("(","")\
-                         .replace(")","")\
-                         .replace(",","")\
-                         .replace('"',"")\
-                         .replace("+","")\
-                         .lower()
-    return piecename
+                         .split(";")[-1]
+                         
+    for char in scrub_these:
+        piecename = piecename.replace(char,"")
+
+    return piecename.lower()
 
 
 def calc_guid():
@@ -885,7 +981,8 @@ class ShipCard:
     
         self.shipname = scrub_piecename(str(shipname))
         self.conn = conn
-        logging.info("Searching for {} in {}".format(scrub_piecename(shipname),str(conn)))
+        
+        logging.info("Searching for ship {} in {}".format(scrub_piecename(shipname),str(conn)))
         [(self.content,self.shiptype)] = conn.execute('''select content,catchall from pieces where piecetype='shipcard' and piecename=?;''',(self.shipname,)).fetchall()
 
         self.shiptoken = ShipToken(self.shiptype,self.conn)
@@ -923,8 +1020,15 @@ class ShipToken:
     
         self.shiptype = scrub_piecename(str(shiptype))
         self.conn = conn
+        
+        if self.shiptype in nomenclature_translation:
+            translated_shiptype = nomenclature_translation[shiptype]
+            logging.info("[-] Translated {} to {} - in listbuilder.ShipToken.".format(
+                self.shiptype, translated_shiptype
+                ))
+            self.shiptype = translated_shiptype
 
-        logging.info("Searching for {} in {}".format(scrub_piecename(shiptype),str(conn)))
+        logging.info("Searching for ship token {} in {}".format(scrub_piecename(shiptype),str(conn)))
         self.content = conn.execute('''select content from pieces where piecetype='ship' and piecename=?;''',(self.shiptype,)).fetchall()[0][0]
 
         self.guid = calc_guid()
@@ -949,7 +1053,7 @@ class ShipCmdStack:
         self.cmdstack = scrub_piecename(str(cmdstack))
         self.conn = conn
         
-        logging.info("Searching for {} in {}".format(scrub_piecename(cmdstack),str(conn)))
+        logging.info("Searching for command stack {} in {}".format(scrub_piecename(cmdstack),str(conn)))
         self.content = conn.execute('''select content from pieces where piecetype='other' and piecename=?;''',(self.cmdstack,)).fetchall()[0][0]
 
         self.guid = calc_guid()
@@ -976,7 +1080,7 @@ class Upgrade:
         self.upgradename = scrub_piecename(str(upgradename))
         self.conn = conn
         
-        logging.info("Searching for {} in {}".format(scrub_piecename(upgradename),str(conn)))
+        logging.info("Searching for upgrade {} in {}".format(scrub_piecename(upgradename),str(conn)))
         self.content = conn.execute('''select content from pieces where piecetype='upgradecard' and piecename=?;''',(self.upgradename,)).fetchall()[0][0]
 
         self.guid = calc_guid()
@@ -1036,7 +1140,7 @@ class SquadronCard:
         self.conn = conn
         # print("[*] Retrieving {}".format(self.squadronname))
         
-        logging.info("Searching for {} in {}".format(scrub_piecename(squadronname),str(conn)))
+        logging.info("Searching for squadron card {} in {}".format(scrub_piecename(squadronname),str(conn)))
         try:
             [(self.content,self.squadrontype)] = conn.execute('''select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;''',(self.squadronname,)).fetchall()
         except:
@@ -1073,7 +1177,7 @@ class SquadronToken:
         self.squadrontype = scrub_piecename(str(squadrontype))
         self.conn = conn
         # print(squadrontype)
-        logging.info("Searching for {} in {}".format(scrub_piecename(squadrontype),str(conn)))
+        logging.info("Searching for squadron token {} in {}".format(scrub_piecename(squadrontype),str(conn)))
         self.content = conn.execute('''select content from pieces where piecetype='squadron' and piecename=?;''',(self.squadrontype,)).fetchall()[0][0]
 
         self.guid = calc_guid()
@@ -1095,7 +1199,7 @@ class Objective:
     
         self.objectivename = scrub_piecename(str(objectivename))
         self.conn = conn
-        logging.info("Searching for {} in {}".format(scrub_piecename(objectivename),str(conn)))
+        logging.info("Searching for objective {} in {}".format(scrub_piecename(objectivename),str(conn)))
         self.content = conn.execute('''select content from pieces where piecetype='objective' and piecename=?;''',(self.objectivename,)).fetchall()[0][0]
 
         self.guid = calc_guid()

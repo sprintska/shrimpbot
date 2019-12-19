@@ -24,6 +24,8 @@ TOKEN_PATH = '/home/ardaedhel/bin/shrimpbot/privatekey.dsc'
 CARD_IMG_PATH = '/home/ardaedhel/bin/shrimpbot/img/'
 CARD_LOOKUP = '/home/ardaedhel/bin/shrimpbot/cards.txt'
 ACRO_LOOKUP = '/home/ardaedhel/bin/shrimpbot/acronyms.txt'
+BOT_OWNER = discord.User()
+BOT_OWNER.id = "236683961831653376"
 
 
 with open(TOKEN_PATH) as t:
@@ -442,8 +444,8 @@ async def on_message(message):
             await bot.send_file(destination=message.channel,fp=filepath)
             sent = True
         else:
-            logging.info("Didn't find it.  Here is what I checked:")
-            logging.info(cardlookup)
+            logging.info("Didn't find it.  Failing over to wiki search.")
+            # logging.info(cardlookup)
 
             wikisearchterm = " ".join([x for x in message.content.split() if not x.startswith("!")])
             wiki_img_url = cardpop.autoPopulateImage(wikisearchterm)
@@ -476,11 +478,13 @@ async def on_message(message):
             try:
                 await bot.send_message(message.channel,"Generating a VASSAL list, hang on...")
                 logging.info("1")
+
                 liststr = message.content.strip()[7::].strip()
                 h = hashlib.new('md5')
                 h.update(str(time.time()).encode())
                 guid = h.hexdigest()[0:16]
                 logging.info("2")
+
                 listbuilderpath = os.path.abspath("/home/ardaedhel/bin/shrimpbot/")
                 workingpath = os.path.join(listbuilderpath,"working/")
                 outpath = os.path.join(listbuilderpath,"out/")
@@ -489,25 +493,37 @@ async def on_message(message):
                 vlogfilepath = os.path.join(outpath,guid+".vlog")
                 databasepath = os.path.join(listbuilderpath,"vlb_pieces.vlo")
                 logging.info("3")
+
                 conn = sqlite3.connect(databasepath)
                 if "pieces" not in conn.execute("select name from sqlite_master where type='table'").fetchall()[0]:
                     logging.critical("Database at {}, {}, is corrupted or nonexistent.".format(databasepath,conn))
                 else:
                     logging.info("Database at {}, {}, found...".format(databasepath,conn))
                 logging.info("4")
-                listbuilder.import_from_list(liststr,vlbfilepath,workingpath,conn)
+
+                success, last_item = listbuilder.import_from_list(liststr,vlbfilepath,workingpath,conn)
                 logging.info("5")
-                listbuilder.export_to_vlog(vlogfilepath,vlbfilepath,workingpath)
-                logging.info("6")
-                await bot.send_file(destination=message.channel,fp=vlogfilepath)
-                logging.info("7")
+
+                if not success:
+                    logging.info(last_item)
+                    await bot.send_message(BOT_OWNER, "[!] LISTBUILDER ERROR | {}".format(last_item))
+                    await bot.send_message(message.channel, "Sorry, there was an error. I have reported it to Ardaedhel to fix it.")
+                    await bot.send_message(message.channel, "Details - The error was in parsing this line: ")
+                    await bot.send_message(message.channel, last_item)
+
+                else:
+                    listbuilder.export_to_vlog(vlogfilepath,vlbfilepath,workingpath)
+                    logging.info("6")
+                    await bot.send_file(destination=message.channel,fp=vlogfilepath)
+                    logging.info("7")
                 del h
+
             except Exception as inst:
                 logging.info(inst)
-                await bot.send_message(message.author, "Sorry, there was an error. Please let Ardaedhel know so I can try to fix it.")
-                await bot.send_message(message.author, "Most things from earlier than the SSD should still work--unfortunately, some things (particularly the ambiguously-named cards like Vader and Leia) are broken for the time being.")
-                await bot.send_message(message.author, "Details:")
-                await bot.send_message(message.author, inst)
+                await bot.send_message(BOT_OWNER, "[!] LISTBUILDER ERROR | {}".format(inst))
+                await bot.send_message(message.channel, "Sorry, there was an error. I have reported it to Ardaedhel to fix it.")
+                await bot.send_message(message.channel, "Details - Runtime Error:")
+                await bot.send_message(message.channel, inst)
 
 
 bot.run(BOT_TOKEN)
