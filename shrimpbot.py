@@ -23,6 +23,7 @@ logging.basicConfig(filename='/var/log/shrimp.log',level=logging.DEBUG)
 TOKEN_PATH = '/home/ardaedhel/bin/shrimpbot/privatekey.dsc'
 CARD_IMG_PATH = '/home/ardaedhel/bin/shrimpbot/img/'
 CARD_LOOKUP = '/home/ardaedhel/bin/shrimpbot/cards.txt'
+ACRO_LOOKUP = '/home/ardaedhel/bin/shrimpbot/acronyms.txt'
 
 
 with open(TOKEN_PATH) as t:
@@ -31,19 +32,23 @@ with open(TOKEN_PATH) as t:
 enabled = True
 cheat = False # Changes on login to default to False
 special_chars = "~`@#$%^&* ()_-+=|\\{}[]:;\"\'<>,.?/!"
-bot = commands.Bot(command_prefix='&')
-note = discord.Game(name="'!acro' for definitions")
 
 cardlookup = {}
-
-
 with open(CARD_LOOKUP) as cardslist:
     for line in cardslist.readlines():
         filename,key = line.split(";")
         cardlookup[key.rstrip()] = os.path.join(CARD_IMG_PATH,filename)
-        
 
-acronym_dict = {
+acronym_dict = {}
+with open(ACRO_LOOKUP) as acros:
+    for line in acros.readlines():
+        acronym,definition = line.split(";")
+        acronym_dict[acronym.strip()] = definition.strip()
+
+bot = commands.Bot(command_prefix='&')
+note = discord.Game(name="'!acro' for definitions")
+
+'''acronym_dict = {
     "AA": "Anti-aircraft, i.e. anti-squadron--as distinct from Anti-ship or AS.",
     "AAA": "Anti-aircraft artillery, i.e. anti-squadron--as distinct from Anti-ship or AS.",
     "ACKBARSLASH": "A tactic: rushing through an opponent's battle line while firing both broadsides.",
@@ -84,7 +89,7 @@ acronym_dict = {
     "ECM": "Electronic Countermeasures upgrade card.",
     "ECMS": "Electronic Countermeasures upgrade card.",
     "EF": "Entrapment Formation! upgrade card.",
-    "ET": "normally, Engine Techs upgrade card.",
+    "ET": "Normally, Engine Techs upgrade card.",
     "FAQ": "Frequently Asked Questions document.",
     "FC": "normally, Flight Controllers upgrade card, although sometimes refers to Flight Commander instead.",
     "FCT": "normally, Fighter Coordination Team upgrade card, although sometimes refers to Fire Control Team instead.",
@@ -169,7 +174,7 @@ acronym_dict = {
     "VSD": "Victory-class Star Destroyer.",
     "WAB": "Wide-Area Barrage upgrade card.",
     "WHALE": "Assault Frigate Mark II. See also AF2, Guppy, Potato and RAF."
-}
+}'''
 
 
 def findIn(findMe,findInMe):
@@ -236,7 +241,7 @@ async def on_ready():
     await bot.change_presence(game=note)
 
     #~ await bot.edit_profile(username="ShrimpBot")
-    
+
 @bot.command()
 async def cheat():
     """Flag to set all of Ard's blacks to hit/crit."""
@@ -253,7 +258,7 @@ async def on_message(message):
 
     # don't read our own message or do anything if not enabled
     # ONLY the dice roller should respond to other bots
-    
+
     if message.author.id == bot.user.id:
         return
     if not enabled:
@@ -292,7 +297,7 @@ async def on_message(message):
 
         for word in message.content.split(" "):
             word = word.upper().rstrip("S")
-            
+
             if word[-3::] == "RED":
                 try: redcount += int(word[:-3])
                 except: pass
@@ -341,9 +346,9 @@ async def on_message(message):
                     out += " "
         else:
             out = "Real funny there, funny guy."
-        
+
         dicechannel = [channel for channel in [server for server in bot.servers][0].channels if channel.id == "534871344395845657"][0] # dedicated dice roller channel
-        
+
         if out:
             if cheat and message.author.id == "236683961831653376":
                 await bot.send_message(dicechannel, message.author.mention + " is a dirty cheater.")
@@ -379,7 +384,7 @@ async def on_message(message):
         #else:
         await bot.send_message(message.channel, "His chitinous appendages reach down and grant "+message.author.name+" a pony.  :racehorse:")
         await bot.change_nickname(me,nickname="AcronymBot")
-            
+
     if findIn(["DATA FOR THE DATA GOD"],message.content):
         # if findIn(["FOR"],message.content):
             # if findIn(["GOD"],message.content):
@@ -420,7 +425,7 @@ async def on_message(message):
             searchterm = searchterm.replace(char,"")  # this is super hacky, lrn2regex, scrub
         searchterm = searchterm.upper()
         logging.info("Looking for {}".format(searchterm))
-        
+
         # maybe return SURPRISE MOTHERFUCKER instead of Surprise Attack
         if searchterm == "SURPRISEATTACK" and random.random() > .5:
             try:
@@ -439,7 +444,7 @@ async def on_message(message):
         else:
             logging.info("Didn't find it.  Here is what I checked:")
             logging.info(cardlookup)
-            
+
             wikisearchterm = " ".join([x for x in message.content.split() if not x.startswith("!")])
             wiki_img_url = cardpop.autoPopulateImage(wikisearchterm)
             if wiki_img_url:
@@ -448,22 +453,22 @@ async def on_message(message):
                     with open(tmp_img_path, 'wb') as out_file:
                         shutil.copyfileobj(r.raw, out_file)
                         logging.info("Wiki image retrieval - {} - {}".format(wikisearchterm,wiki_img_url))
-                
+
                 await bot.send_file(destination=message.channel,fp=tmp_img_path)
                 # await bot.send_message(message.author, "I didn't have that image in my database, so I tried finding it on the Wiki.  Was this the picture you wanted?")
                 # await bot.send_message(message.author, "[!yes/!no]")
                 sent = True
-            
+
         if not sent:
             await bot.send_message(message.author, "Sorry, it doesn't look like that is in my list.  Message Ardaedhel if you think it should be.")
             await bot.send_message(message.author, "Please keep in mind that my search functionality is pretty rudimentary at the moment, so you might re-try using a different common name.  Generally I should recognize the full name as printed on the card, with few exceptions.")
-            
+
     if findIn(["!YES"],message.content):
         pass
-    
+
     if findIn(["!NO"],message.content):
         pass
-        
+
 
 #   listBuilder
     if len(message.content) >= 7:

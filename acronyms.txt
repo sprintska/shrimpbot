@@ -1,0 +1,125 @@
+AA;Anti-aircraft, i.e. anti-squadron--as distinct from Anti-ship or AS.
+AAA;Anti-aircraft artillery, i.e. anti-squadron--as distinct from Anti-ship or AS.
+ACKBARSLASH;A tactic: rushing through an opponent's battle line while firing both broadsides.
+ACEHOLES;A successful fleet build archetype relying on General Rieekan and numerous Rebel unique squadrons.
+ACM;Assault Concussion Missiles upgrade card.
+ACMS;Assault Concussion Missiles upgrade card.
+AF2;Assault Frigate Mark II. See also Guppy, Potato, RAF and Whale.
+AFII;Assault Frigate Mark II. See also Guppy, Potato, RAF and Whale.
+AFMK2;Assault Frigate Mark II. See also Guppy, Potato, RAF and Whale.
+AFMKII;Assault Frigate Mark II. See also Guppy, Potato, RAF and Whale.
+AFFM;All Fighters, Follow Me! upgrade card.
+AP;Advanced Projectors upgrade card.
+APT;Assault Proton Torpedoes upgrade card.
+APTS;Assault Proton Torpedoes upgrade card.
+AS;Anti-squadron, generally referring to a ship's dice. See also AA.
+BCC;Bomber Command Center upgrade card.
+BT;Boarding Troopers upgrade card.
+BTA;An Imperial-class Star Destroyer equipped with both the Boarding Troopers and Avenger upgrade cards.
+BTAVENGER;An Imperial-class Star Destroyer equipped with both the Boarding Troopers and Avenger upgrade cards.
+BTVENGER;An Imperial-class Star Destroyer equipped with both the Boarding Troopers and Avenger upgrade cards.
+CAP;Combat Air Patrol, referring to starfighter squadrons deployed as a screen against enemy squadrons.
+CHIRPY;Admiral Chiraneau.
+CF;Concentrate Fire command.
+CLONISHER;A successful fleet build designed by forum member Clontrooper5 around Demolisher.
+DC;Disposable Capacitors upgrade card.
+DCS;Disposable Capacitors upgrade card.
+DCAP;Disposable Capacitors upgrade card.
+DCAPS;Disposable Capacitors upgrade card.
+DCO;Damage Control Officer upgrade card.
+DCOS;Damage Control Officer upgrade card.
+DEMSU;Demolisher and Multiple Small Units, referring to a fleet build.
+DOUBLETAP;Any mechanic enabling two successive attacks against a target by a single unit. See also Triple Tap.
+DTT;Dual Turbolaser Turrets upgrade card.
+DTTS;Dual Turbolaser Turrets upgrade card.
+EA;Enhanced Armament upgrade card.
+EAS;Enhanced Armament upgrade card.
+EDSEL-BLERG;An observation on the rocks-paper-scissors-like effect of squadrons in fleet builds.
+ECM;Electronic Countermeasures upgrade card.
+ECMS;Electronic Countermeasures upgrade card.
+EF;Entrapment Formation! upgrade card.
+ET;Normally, Engine Techs upgrade card.
+FAQ;Frequently Asked Questions document.
+FC;Normally, Flight Controllers upgrade card, although sometimes refers to Flight Commander instead.
+FCT;Normally, Fighter Coordination Team upgrade card, although sometimes refers to Fire Control Team instead.
+FCS;Normally, Flight Controllers upgrade card, although sometimes refers to Flight Commander instead.
+FCTS;Normally, Fighter Coordination Team upgrade card, although sometimes refers to Fire Control Team instead.
+FFG;Fantasy Flight Games.
+FIREBALL;A bomber formation consisting of Major Rhymer and a number of Firespray-31s. See also Rhymerball.
+FLGS;Friendly Local Games Store. See also LGS.
+FT;Flechette Torpedoes upgrade card.
+GENCONSPECIAL;A squadronless fleet build based on a VSD and three GSDs, very successful during the Wave 1 era.
+GLAD;Gladiator-class Star Destroyer.
+GSD;Gladiator-class Star Destroyer. See also Glad.
+GUPPY;Assault Frigate Mark II. See also AF2, RAF, Potato and Whale.
+HH;Hammerhead Corvette.
+HMC80;Home One-type MC80 Cruiser. Contrast LMC80.
+HTT;Heavy Turbolaser Turrets upgrade card.
+IF;Intensify Firepower! upgrade card.
+IFF;Intensify Forward Firepower, a now-defunct podcast dedicated to Armada.
+INTERDOCTOR;An Interdictor used to protect other ships. Often involves PE and/or TS.
+IO;Intel Officer.
+ISD;Imperial-class Star Destroyer.
+ISD1;Imperial I-class Star Destroyer.
+ISD2;Imperial II-class Star Destroyer.
+ISDC;Imperial Cymoon-class Star Destroyer.
+ISD-C;Imperial Cymoon-class Star Destroyer.
+ISDK;Imperial Kuat-class Star Destroyer.
+ISD-K;Imperial Kuat-class Star Destroyer.
+JJ;Moff Jerjerrod. See also Jerry/MoffyJ.
+JERRY;Moff Jerjerrod. See also JJ/MoffyJ.
+LGS;Local Game Store. See also FLGS.
+LIFEBOAT;A throwaway ship equipped with the commander, typically to avoid engagement. Errata'd to be illegal on flotillas.
+LMC80;Liberty-type MC80 Cruiser. Contrast HMC80. See also MC80L.
+LMSU;Large MSU, referring to a fleet build. Several small ships plus a large with Strategic Advisor. See MSU.
+LOS;Line of sight.
+LTP;Learn To Play document summarising the basic rules of Armada.
+META;The current local or global strategic trends, such as predominant fleet archetypes.
+MC80L;Liberty-type MC80 Cruiser. See also LMC80 and HMC80.
+MM;Mon Mothma.
+MOFFYJ;Moff Jerjerrod. See also JJ.
+MOTTISCALE;A measure of fleet robustness: the sum of 1pt per small ship + 2pt per med + 3pt per lg in a fleet.
+MOV;Margin Of Victory, generally used in the context of tournament scoring.
+MSU;Multiple (or Many) Small Units, referring to a fleet build. See also DeMSU.
+NAKED;A ship with no upgrades.
+NEB;Nebulon-B Frigate.
+NEBB;Nebulon-B Frigate.
+OE;Ordnance Experts upgrade card.
+OP;May refer to: a thread's original post(er), an overpowered card or ability, FFG's Organized Play program, or the Overload Pulse upgrade.
+OS;Opening Salvo objective card.
+PE;Projection Experts
+PIC;Planetary Ion Cannon
+PICKLE;Home One-type MC80 cruiser.
+POTATO;Assault Frigate Mark II. See also AF2, Guppy and Whale.
+PROC;To trigger a game effect requiring specific conditions to activate.
+PROCCING;To trigger a game effect requiring specific conditions to activate.
+PROJEX;Projection Experts
+QBT;Quad Battery Turrets upgrade card.
+QLT;Quad Laser Turrets upgrade card.
+QTC;Quad Turbolaser Cannons upgrade card.
+RAF;Rebel Assault Frigate, aka Assault Frigate Mark II. See also AF2, Guppy, Potato and Whale.
+RAI;Rules As Intended, i.e. what the rules were designed to do. Compare with RAW.
+RAW;Rules As Written, i.e. what the rules actually do. Compare with RAI.
+RBD;Reinforced Blast Doors upgrade card.
+RLB;Rapid Launch Bays upgrade card.
+RNG;Random Number Generator. May refer to dice, cards, software or any other way of randomising results.
+RRG;Rules Reference Guide document.
+RHYMERBALL;A bomber formation consisting of Major Rhymer and a number of other squadrons. See also Fireball.
+RS;Ruthless Strategists upgrade card.
+SFO;Skilled First Officer upgrade card.
+SHRIMP;MC30c Frigate.
+SQUID;An aquatic cephalopod.  Completely unrelated to the MC30.
+SSD;Super Star Destroyer, often specifically referring to an Executor-class ship.
+STM;Shields to Maximum! upgrade card.
+SWA;Star Wars Armada.
+SWM20;A legendary ghost ship. Alternatively, the SKU for an as yet unreleased Armada product. See also SSD.
+TABLING;Destroying all of a player's ships, often resulting in a 10-1 win.
+TFA;Task Force Antilles upgrade card.
+TFO;Task Force Organa upgrade card.
+TRC;Turbolaser Reroute Circuits upgrade card.
+TRC90;CR90 Corvette equipped with Turbolaser Reroute Circuits.
+TRIPLETAP;Any mechanic enabling three successive attacks against a target by a single unit. See also Double Tap.
+TS;Targeting Scramblers
+VSD;Victory-class Star Destroyer.
+WAB;Wide-Area Barrage upgrade card.
+WHALE;Assault Frigate Mark II. See also AF2, Guppy, Potato and RAF.
