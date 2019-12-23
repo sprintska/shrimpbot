@@ -377,7 +377,7 @@ async def on_message(message):
                 logging.info("5")
 
                 if not success:
-                    logging.info("[!] LISTBUILDER ERROR | {}".(last_item))
+                    logging.info("[!] LISTBUILDER ERROR | {}".format(last_item))
                     await bot.send_message(BOT_OWNER, "[!] LISTBUILDER ERROR | {}".format(last_item))
                     await bot.send_message(BOT_OWNER, "POC: {}".format(message.author.name))
                     await bot.send_message(BOT_OWNER, "List: \n{}".format(message.content))
