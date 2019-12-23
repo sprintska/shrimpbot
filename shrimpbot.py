@@ -377,8 +377,10 @@ async def on_message(message):
                 logging.info("5")
 
                 if not success:
-                    logging.info(last_item)
+                    logging.info("[!] LISTBUILDER ERROR | {}".(last_item))
                     await bot.send_message(BOT_OWNER, "[!] LISTBUILDER ERROR | {}".format(last_item))
+                    await bot.send_message(BOT_OWNER, "POC: {}".format(message.author.name))
+                    await bot.send_message(BOT_OWNER, "List: \n{}".format(message.content))
                     await bot.send_message(message.channel, "Sorry, there was an error. I have reported it to Ardaedhel to fix it.")
                     await bot.send_message(message.channel, "Details - The error was in parsing this line: ")
                     await bot.send_message(message.channel, last_item)
