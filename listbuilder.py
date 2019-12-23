@@ -423,7 +423,7 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
                 shipnext = False
                 
             elif card_name[0] == "-":
-                upgrade, cost = card_name.split("(")
+                upgrade, cost = card_name.rsplit("(",1)
                 upgrade = scrub_piecename(upgrade)
                 cost = scrub_piecename(cost.split()[0])
                 if (upgrade,cost) in ambiguous_names:
