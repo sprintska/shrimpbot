@@ -88,8 +88,8 @@ vassal_nomenclature_errors = {\
     "yt1300":"yt1300lightfreighter",\
     "yt2400":"yt2400lightfreighter",\
     "yv666":"yv666lightfreighter",\
-    "zertikstrom":"zetrikstrom",\
-    "zertikstromtieadvancedsquadron":"zetrikstrom"\
+    # "zertikstrom":"zetrikstrom",\
+    # "zertikstromtieadvancedsquadron":"zetrikstrom"\
     }
     
 listbuilder_nomenclature_errors = {\
