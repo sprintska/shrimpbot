@@ -54,6 +54,7 @@ vassal_nomenclature_errors = {\
     "arquitensclasscommandcruiser":"arquitenscommandcruiser",\
     "arquitensclasslightcruiser":"arquitenslightcruiser",\
     "coloneljendonlambdaclassshuttle":"coloneljendonlambdaclass",\
+    "doomedstation":"dommedstation",\
     "exectuorclass":"executorclass",\
     "executoriclassstardreadnought":"executoristardn",\
     "executoriiclassstardreadnought":"executoriistardn",\
@@ -70,6 +71,8 @@ vassal_nomenclature_errors = {\
     "imperialstardestroyerkuatrefit":"kuatrefit",\
     "isdcymoon1refit":"cymoon1refit",\
     "isdkuatrefit":"kuatrefit",\
+    "kyrstaagatecom":"kyrstaagate",\
+    "landocalrissianoff":"landocalrissian",\
     "lieutenantblountz95headhuntersquadron":"lieutenantblountz95",\
     "magnitecrystaltractorbeamarray":"magnitecystaltractorbeamarray",\
     "mandaloriangauntletfighter":"mandogauntletfighter",\
@@ -82,6 +85,7 @@ vassal_nomenclature_errors = {\
     "raideriiclasscorvette":"raiderii",\
     "stardreadnoughtassaultprototype":"stardnassaultprototype",\
     "stardreadnoughtcommandprototype":"stardncommandprototype",\
+    "vanguard":"vandguard",\
     "vcx100freighter":"vcx100lightfreighter",\
     "victoryiclassstardestroyer":"victoryi",\
     "victoryiiclassstardestroyer":"victoryii",\
