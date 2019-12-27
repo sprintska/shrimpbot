@@ -874,6 +874,13 @@ class Fleet:
         category = scrub_piecename(category)
         objectivename = scrub_piecename(objectivename)
         
+        if objectivename in nomenclature_translation:
+            ob = nomenclature_translation[objectivename]
+            logging.info("[-] Translated {} to {} - in listbuilder.Fleet.add_objective().".format(
+                objectivename, ob
+                ))
+            objectivename = ob
+        
         if "custom" in objectivename.lower():
             return False
         
