@@ -69,12 +69,13 @@ vassal_nomenclature_errors = {\
     "imperialiiclassstardestroyer":"imperialii",\
     "imperialstardestroyercymoon1refit":"cymoon1refit",\
     "imperialstardestroyerkuatrefit":"kuatrefit",\
+    "independence":"independance",\
     "isdcymoon1refit":"cymoon1refit",\
     "isdkuatrefit":"kuatrefit",\
     "kyrstaagatecom":"kyrstaagate",\
     "landocalrissianoff":"landocalrissian",\
     "lieutenantblountz95headhuntersquadron":"lieutenantblountz95",\
-    "magnitecrystaltractorbeamarray":"magnitecystaltractorbeamarray",\
+    # "magnitecrystaltractorbeamarray":"magnitecystaltractorbeamarray",\
     "mandaloriangauntletfighter":"mandogauntletfighter",\
     "modifiedpeltaclassassaultship":"peltaclassassaultship",\
     "modifiedpeltaclasscommandship":"peltaclasscommandship",\
@@ -108,7 +109,9 @@ listbuilder_nomenclature_errors = {\
     "lambdashuttle":"lambdaclassshuttle",\
     "lancerpursuitcraft":"lancerclasspursuitcraft",\
     "landocarissian":"landocalrissian",\
+    "lietenantblount":"lieutenantblountz95",\
     "maareksteele":"maarekstele",\
+    "moncalamariexodusfleet":"moncalexodusfleet",\
     "onagerstardestroyer":"onagerclassstardestroyer",\
     "onagertestbed":"onagerclasstestbed",\
     "peltaassaultship":"peltaclassassaultship",\
@@ -119,6 +122,8 @@ listbuilder_nomenclature_errors = {\
     "starhawkclassmkii":"starhawkmarkii",\
     "starhawkbattleshipmarki":"starhawkmarki",\
     "starhawkbattleshipmarkii":"starhawkmarkii",\
+    "starhawkclassbattleshipmarki":"starhawkmarki",\
+    "starhawkclassbattleshipmarkii":"starhawkmarkii",\
     "x17turbolasers":"xi7turbolasers"\
     }
 
