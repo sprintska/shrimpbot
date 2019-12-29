@@ -715,6 +715,7 @@ w4_cpt_commandant-aresko.png;COMMANDANTARESKO
 w4_cpt_flight-commander.png;FLIGHTCOMMANDER
 w4_cpt_skilled-first-officer.png;SFO
 w4_cpt_skilled-first-officer.png;SKILLEDFIRSTOFFICER
+w4_cpt_skilled-first-officer.png;SHOUTINGHATMAN
 w4_cpt_skilled-first-officer.png;YELLINGHATMAN
 w4_grv_g7_x_grav_well_projector.png;G7X
 w4_grv_g7_x_grav_well_projector.png;G7XGRAVWELLPROJECTOR
