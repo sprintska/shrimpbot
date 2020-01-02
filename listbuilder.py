@@ -49,7 +49,7 @@ g_conn = sqlite3.connect(g_database)
     values, while the listbuilder errors dict translates incorrect keys
     to Vassal values regardless of the correctness of the Vassal value.
 '''
-    
+
 vassal_nomenclature_errors = {\
     "arquitensclasscommandcruiser":"arquitenscommandcruiser",\
     "arquitensclasslightcruiser":"arquitenslightcruiser",\
@@ -96,7 +96,7 @@ vassal_nomenclature_errors = {\
     # "zertikstrom":"zetrikstrom",\
     # "zertikstromtieadvancedsquadron":"zetrikstrom"\
     }
-    
+
 listbuilder_nomenclature_errors = {\
     "7thfleetstardestroyer":"seventhfleetstardestroyer",\
     "assaultfrigatemk2a":"assaultfrigatemarkiia",\
@@ -124,6 +124,7 @@ listbuilder_nomenclature_errors = {\
     "starhawkbattleshipmarkii":"starhawkmarkii",\
     "starhawkclassbattleshipmarki":"starhawkmarki",\
     "starhawkclassbattleshipmarkii":"starhawkmarkii",\
+    "supriseattack":"surpriseattack",\
     "x17turbolasers":"xi7turbolasers"\
     }
 
@@ -153,8 +154,8 @@ ambiguous_names = {
     ("wedgeantilles","19"):("wedgeantillesxwing","squadron"),
     ("wedgeantilles","4"):("wedgeantillesoff","upgrade"),
     }
-    
-  
+
+
 def unzipall(zip_file_path,tar_path):
 
     '''Unzips all of the files in the zip file at zip_file_path and
@@ -224,16 +225,16 @@ def ident_format(fleet_text):
             if (len(fleet_text.split('\n')[lineloc-1]) == line.count('=')+1) and \
                (line.count('=') > 3):
                 formats['afd'] += 5.0
-                
+
     # Kingston
-    
-    if 'Faction:' in ft: 
+
+    if 'Faction:' in ft:
         formats['kingston'] += 1.0
-    if 'Commander: ' in ft: 
+    if 'Commander: ' in ft:
         formats['kingston'] += 2.0
     for line in ft.split('\n'):
         # try:
-        if line.strip().startswith("• ") or line.strip().startswith(u"\u2022"): 
+        if line.strip().startswith("• ") or line.strip().startswith(u"\u2022"):
             #~ print(line.strip())
             formats['kingston'] += 1
         # except: pass
@@ -242,13 +243,13 @@ def ident_format(fleet_text):
     if fleet_text[0] == "{": formats['aff'] += 30.0
     if fleet_text.startswith("ship:"): formats['aff'] += 30.0
     if fleet_text.startswith("squadron:"): formats['aff'] += 30
-    
+
     logging.info(formats)
     return max(formats.keys(), key=(lambda x: formats[x]))
-    
+
 
 def import_from_list(import_from,output_to,working_path,conn,isvlog=False):
-    
+
     ingest_format = {\
         "fab":import_from_fabs,\
         "warlord":import_from_warlords,\
@@ -257,7 +258,7 @@ def import_from_list(import_from,output_to,working_path,conn,isvlog=False):
         "aff":import_from_aff,\
         "vlog":import_from_vlog
     }
-    
+
     if isvlog:
         import_from_vlog(import_from,output_to,working_path,conn)
     else:
@@ -267,14 +268,14 @@ def import_from_list(import_from,output_to,working_path,conn,isvlog=False):
                 fleet_text = fleet_list.read()
         else:
             fleet_text = import_from
-        
+
         fmt = ident_format(fleet_text)
         success,f = ingest_format[fmt](fleet_text,output_to,working_path,conn)
         logging.info(success,f)
 
         if not success:
             return (success,f)
-        
+
         with open(output_to,"w") as vlb:
             vlb.write("a1\r\nbegin_save{}\r\nend_save{}\r\n".format(chr(27),chr(27)))
             for s in f.ships:
@@ -288,9 +289,9 @@ def import_from_list(import_from,output_to,working_path,conn,isvlog=False):
             for o in f.objectives:
                 #~ print(f.objectives[o])
                 vlb.write(f.objectives[o].content+chr(27))
-                
+
         return (True,None)
-    
+
 
 def import_from_fabs(import_list,vlb_path,working_path,conn):
 
@@ -309,10 +310,10 @@ def import_from_fabs(import_list,vlb_path,working_path,conn):
                 if line.strip()[0].isdigit():
                     l = line.replace("â€¢",u"\u2022").strip()
                     l = "".join("".join(l.split(" {} ".format(u"\u2022"))[1::]).split(" (")[:-1])
-                    
+
                     # only ships and objs are broken up with " - ", and objs are labelled
                     # otherwise, it's either a squadron or an unupgraded ship--indistinguishable
-                    
+
                     if " - " in l:
                         if l.startswith("Objective"):
                             # print("=-"*25)
@@ -323,7 +324,7 @@ def import_from_fabs(import_list,vlb_path,working_path,conn):
                             s = f.add_ship(ll[0].strip())
                             for u in ll[1::]:
                                 s.add_upgrade(u.strip())
-                    
+
                     else:
                         issquadron = False
                         isship = False
@@ -335,29 +336,29 @@ def import_from_fabs(import_list,vlb_path,working_path,conn):
                                 l, t
                                 ))
                             l = t
-                            
-                                            
+
+
                         logging.info("Searching for Fab's piece {} in {}".format(scrub_piecename(l),str(conn)))
-                        try: 
+                        try:
                             issquadron = conn.execute('''SELECT * FROM pieces
-                                    WHERE piecetype='squadroncard' 
+                                    WHERE piecetype='squadroncard'
                                     AND piecename LIKE ?;''',("%"+scrub_piecename(l)+"%",)).fetchall()
                         except: pass
-                        
+
                         try:
                             isship = conn.execute('''SELECT * FROM pieces
-                                    WHERE piecetype='shipcard' 
+                                    WHERE piecetype='shipcard'
                                     AND piecename LIKE ?;''',("%"+scrub_piecename(l),)).fetchall()
                         except: pass
-                        
-                        try: 
+
+                        try:
                             if l.lower()[-8::] == "squadron":
                                 ltmp = l[0:-8]
                                 issquadronfancy = conn.execute('''SELECT * FROM pieces
-                                        WHERE piecetype='squadroncard' 
+                                        WHERE piecetype='squadroncard'
                                         AND piecename LIKE ?;''',("%"+scrub_piecename(ltmp)+"%",)).fetchall()
                         except: pass
-                        
+
                         if bool(issquadron):
                             sq = f.add_squadron(l.strip())
                         elif bool(issquadronfancy):
@@ -380,30 +381,30 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
 
     # with open(import_list) as war_in:
     shipnext = False
-        
+
         # for line in war_in.readlines()[7::]:
     for line in import_list.split("\n"):
 
         card_name = line.strip()
         last_line = card_name
-        
+
         logging.info(card_name)
-        
+
         try:
             if len(card_name.split()) <= 1:
                 shipnext = True
-                
+
             elif card_name.split()[0].strip() in ["Faction:",\
                                           "Points:",\
                                           "Commander:",\
                                           "Author:"]:
                 pass
-            
+
             elif card_name.split()[1] == "Objective:":
                 objective = [card_name.split()[0],card_name.split(':')[1]]
                 f.add_objective(objective[0],objective[1])
                 shipnext = False
-            
+
             elif card_name[0].isdigit():
                 squadron, cost = card_name.split("(", 1)
                 squadron = scrub_piecename("".join(card_name.split("(")[0].split()[1::]))
@@ -416,10 +417,10 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
                     squadron = squadron_new
                 sq = f.add_squadron(squadron)
                 shipnext = False
-            
+
             elif card_name[0] == "=":
                 shipnext = True
-                
+
             elif shipnext:
                 ship, cost = card_name.split("]")[-1].split("(")
                 ship = scrub_piecename(ship.strip(" -\t"))
@@ -430,7 +431,7 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
                     ship = ship_new
                 s = f.add_ship(ship)
                 shipnext = False
-                
+
             elif card_name[0] == "-":
                 upgrade, cost = card_name.rsplit("(",1)
                 upgrade = scrub_piecename(upgrade)
@@ -445,8 +446,8 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
             return (False,last_line)
 
     return (True,f)
-    
-    
+
+
 def import_from_afd(import_list,vlb_path,working_path,conn):
 
     '''Imports an Armada Fleets Designer list into a Fleet object'''
@@ -455,18 +456,18 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
 
     start = False
     shipnext = False
-    
+
     for line in import_list.strip().split("\n"):
-        
+
         try:
             last_line = line.strip()
             card_name = line.strip().split(" x ",1)[-1]
             logging.info(card_name)
-            
+
             if card_name.startswith("==="):
                 start = True
-                
-            elif start: 
+
+            elif start:
 
                 if card_name[0] == "+":
                     upgrade,cost = card_name.split("(")
@@ -479,24 +480,24 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                             upgrade, translated
                             ))
                         upgrade = translated
-                    
+
                     if (upgrade,cost) in ambiguous_names:
                         upgrade_new = ambiguous_names[(upgrade,cost)][0]
                         logging.info("Ambiguous name {} ({}) translated to {}.".format(upgrade,cost,upgrade_new))
                         upgrade = upgrade_new
 
                     u = s.add_upgrade(upgrade)
-                
+
                 else:
                     card_name,cost = card_name.split(" (",1)
                     cost = cost.split(" x ")[-1].split(")")[0]
-                    
+
                     issquadron = False
                     isship = False
-                    
+
                     card_name = scrub_piecename(card_name)
-                        
-                    try: 
+
+                    try:
                         if card_name in nomenclature_translation:
                             t = nomenclature_translation[card_name]
                             logging.info("[-] Translated {} to {} - AFD.".format(
@@ -509,17 +510,17 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                             card_name = card_name_new
                         logging.info("Searching for AFD piece {} in {}".format(scrub_piecename(card_name),str(conn)))
                         issquadron = conn.execute('''SELECT * FROM pieces
-                                WHERE piecetype='squadroncard' 
+                                WHERE piecetype='squadroncard'
                                 AND piecename LIKE ?;''',("%"+scrub_piecename(card_name)+"%",)).fetchall()
                     except: pass
-                    
+
                     try:
                         logging.info("Searching for AFD piece {} in {}".format(card_name,str(conn)))
                         isship = conn.execute('''SELECT * FROM pieces
-                                WHERE piecetype='shipcard' 
+                                WHERE piecetype='shipcard'
                                 AND piecename LIKE ?;''',("%"+card_name,)).fetchall()
                     except: pass
-                            
+
                     if bool(issquadron):
                         sq = f.add_squadron(card_name)
                     elif bool(isship):
@@ -530,70 +531,70 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
             return (False,last_line)
 
     return (True,f)
-    
-    
+
+
 def import_from_kingston(import_list,vlb_path,working_path,conn):
 
     '''Imports an Ryan Kingston list into a Fleet object'''
 
     f = Fleet("Food",conn=conn)
-    
+
     logging.info("Fleet created with database {}.".format(str(conn)))
 
     shipnext = True
-        
+
     for line in import_list.split("\n"):
-        
+
         try:
             card_name = line.replace("â€¢",u"\u2022").strip()
             logging.info(card_name)
             last_line = card_name
-            
+
             if card_name:
-            
+
                 if card_name.split(":")[0].strip() in ["Name","Faction","Commander"]:
                     pass
-                    
+
                 elif card_name.split(":")[0] in ["Assault","Defense","Navigation"]:
                     if card_name.strip()[-1] != ":":
                         logging.info("{}".format(card_name))
                         o = f.add_objective(card_name.split(":")[0].lower().strip(),\
                                         card_name.split(":")[1].lower().strip())
-                                    
+
                 elif shipnext:
-                
+
                     if card_name.lower().strip() == "squadrons:":
                         logging.info("Squadrons next")
                         shipnext = False
-                        
+
                     elif u"\u2022" in card_name:
                         card_name,cost = card_name.split(" (",1)
                         card_name = scrub_piecename(card_name)
                         cost = cost.split(")")[0]
-                        
+
                         if (card_name,cost) in ambiguous_names:
                             card_name_new = ambiguous_names[(card_name,cost)][0]
                             logging.info("Ambiguous name {} ({}) translated to {}.".format(card_name,cost,card_name_new))
                             card_name = card_name_new
-                        
+
                         u = s.add_upgrade(card_name)
-                        
+
                     elif card_name[0] == "=":
                         pass
-                        
+
                     else:
                         s = f.add_ship(card_name.split(" (",1)[0].strip())
-                        
+
                 elif u"\u2022" in card_name and card_name[0] != "=":
                     card_name,cost = card_name.split(" x ")[-1].split(" (",1)
                     card_name = scrub_piecename(card_name)
                     cost = cost.split(")")[0]
-                        
+
                     if (card_name,cost) in ambiguous_names:
                         card_name_new = ambiguous_names[(card_name,cost)][0]
                         logging.info("Ambiguous name {} ({}) translated to {}.".format(card_name,cost,card_name_new))
                         card_name = card_name_new
-                    
+
                     sq = f.add_squadron(card_name)
         except:
             return (False,last_line)
@@ -602,22 +603,22 @@ def import_from_kingston(import_list,vlb_path,working_path,conn):
 
 
 def import_from_aff(import_list,vlb_path,working_path,conn):
-    
+
     '''Imports a .aff (Armada Fleet Format) file into a Fleet object'''
-    
+
     f = Fleet("Food",conn=conn)
 
     # with open(import_list) as aff_in:
     for line in import_list.split("\n"):
         logging.info(line)
     # for line in aff_in.readlines():
-        
+
         if line.lower().startswith("ship:"):
             s = f.add_ship(line.split(":")[-1].strip())
-            
+
         elif line.lower().startswith("upgrade:"):
             u = s.add_upgrade(line.split(":")[-1].strip())
-            
+
         elif line.lower().startswith("squadron:"):
             sq = f.add_squadron(line.split(":")[-1].strip())
 
@@ -648,9 +649,9 @@ def import_from_vlog(import_from,vlb_path,working_path,conn):
             clearint = int(obf_pair,16)^xor_key
             clear += chr(clearint)
             obf_pair = ""
-    
+
     clear = clear[1::].replace("\t","\t\r\n").replace(chr(27),chr(27)+"\r\n\r\n")
-    
+
     with open(vlb_path,"w") as vlb:
         vlb.write(xor_key_str+"\r\n")
         vlb.write(clear)
@@ -664,7 +665,7 @@ def export_to_vlog(export_to,vlb_path,working_path=args.wd):
     compatible .vlog replay file.'''
 
     out_path = os.path.join(working_path,"..","out")
-    
+
     for afile in os.listdir(out_path):
         file_path = os.path.join(out_path, afile)
     try:
@@ -673,7 +674,7 @@ def export_to_vlog(export_to,vlb_path,working_path=args.wd):
         elif os.path.isdir(file_path): shutil.rmtree(file_path)
     except Exception as e:
         logging.info(e)
-    
+
     shutil.copyfile(os.path.join(working_path,"moduledata"),os.path.join(out_path,"moduledata"))
     shutil.copyfile(os.path.join(working_path,"savedata"),os.path.join(out_path,"savedata"))
 
@@ -699,13 +700,13 @@ def export_to_vlog(export_to,vlb_path,working_path=args.wd):
 
 
 def scrub_piecename(piecename):
-    
+
     scrub_these = " :!-'(),\"+.\t\r\n" + u"\u2022"
-    
+
     piecename = piecename.replace("\/","")\
                          .split("/")[0]\
                          .split(";")[-1]
-                         
+
     for char in scrub_these:
         piecename = piecename.replace(char,"")
 
@@ -723,7 +724,7 @@ class Piece:
     '''Meant to be a prototype for the other pieces, not really to be used on its own'''
 
     def __init__(self,piecename,conn=g_conn):
-    
+
         self.upgradename = scrub_piecename(str(pieceename))
         self.conn = conn
         self.content = conn.execute('''select content from pieces where piecename=?;''',(self.upgradename,)).fetchall()[0][0]
@@ -733,18 +734,18 @@ class Piece:
         self.content = self.content.replace("vlb_x_axis","0")
         self.content = self.content.replace("vlb_y_axis","0")
         self.coords = [0,0]
-        
+
     def set_coords(self,coords):
-    
+
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub("Table;\d{1,4};\d{1,4}","Table;{};{}".format(str(coords[0]),str(coords[1])),self.content)
             self.coords = coords
 
 
 class Fleet:
-    
+
     def __init__(self,name,faction="",points=0,mode="",fleet_version="",description="",objectives={},ships=[],squadrons=[],author="",conn=g_conn):
-    
+
         self.name = str(name)
         self.faction = str(faction)
         self.points = int(points)
@@ -756,21 +757,21 @@ class Fleet:
         self.squadrons = list(squadrons)
         self.author = str(author)
         self.conn = conn
-        
+
         # simple piece locations calculations
 
         self.x = 200
         self.ship_y = 850
         self.upgd_upper_y = 775
-        
+
         self.sc_to_obj_x_padding = -100
         self.sc_to_obj_y_padding = 0
         self.obj_x = self.x + self.sc_to_obj_x_padding
         self.obj_y = self.ship_y + self.sc_to_obj_y_padding
-        
+
         self.cmd_to_sc_x_offset = 90
         self.cmd_to_sc_y_offset = -10
-        
+
         self.sc_to_st_x_padding = 173
         self.sc_to_st_y_padding = 0
         self.s_to_u_padding = 80
@@ -783,43 +784,43 @@ class Fleet:
         self.sq_to_sq_y_padding = 240
         self.obj_to_obj_x_offset = 25
         self.obj_to_obj_y_offset = 25
-        
+
         self.sq_y_offset = -120
         self.sq_upper_y = self.ship_y + self.sq_y_offset
         self.sq_lower_y = self.sq_upper_y + self.sq_to_sq_y_padding
         self.sq_row = 1
-        
-        
+
+
     def set_name(self,name):
-    
+
         self.name = str(name)
-        
+
     def set_faction(self,faction):
-        
+
         self.faction = str(faction)
-        
+
     def set_points(self,points):
-    
+
         self.points = int(points)
-        
+
     def set_mode(self,mode):
-    
+
         self.mode = str(mode)
-    
+
     def set_fleet_version(self,fleet_version):
-    
+
         self.fleet_version = str(fleet_version)
-    
+
     def set_description(self,description):
-    
+
         self.description = str(description)
-    
+
     def set_objectives(self,objectives):
-    
+
         self.objectives = dict(objectives)
-    
+
     def add_ship(self,shipclass):
-        
+
         shipclass = scrub_piecename(shipclass)
         if shipclass in nomenclature_translation:
             sc = nomenclature_translation[shipclass]
@@ -827,7 +828,7 @@ class Fleet:
                 shipclass, sc
                 ))
             shipclass = sc
-        
+
         s = Ship(shipclass,self,self.conn)
         self.x += self.u_to_s_padding
         s.set_coords([str(self.x),str(self.ship_y)])
@@ -837,16 +838,16 @@ class Fleet:
         s.shiptoken.set_coords([str(self.x),str(self.ship_y+self.sc_to_st_y_padding)])
         self.x += self.s_to_u_padding
         self.u_row = 1
-        
+
         self.ships.append(s)
         return s
-        
+
     def remove_ship(self,ship):
-    
+
         self.ships.remove(ship)
-        
+
     def add_squadron(self,squadronclass):
-        
+
         squadronclass = scrub_piecename(squadronclass)
         if squadronclass in nomenclature_translation:
             sc = nomenclature_translation[squadronclass]
@@ -854,7 +855,7 @@ class Fleet:
                 squadronclass, sc
                 ))
             squadronclass = sc
-        
+
         sq = Squadron(squadronclass,self,self.conn)
         if self.sq_row%2:
             self.x += self.sq_to_sq_x_padding
@@ -866,29 +867,29 @@ class Fleet:
             sq.squadroncard.set_coords([str(self.x),str(self.sq_lower_y)])
             sq.squadrontoken.set_coords([str(self.x),str(self.sq_lower_y)])
         self.sq_row += 1
-        
+
         self.squadrons.append(sq)
         return sq
 
     def remove_squadron(self,squadron):
-    
+
         self.squadrons.remove(squadron)
-        
+
     def add_objective(self,category,objectivename):
-        
+
         category = scrub_piecename(category)
         objectivename = scrub_piecename(objectivename)
-        
+
         if objectivename in nomenclature_translation:
             ob = nomenclature_translation[objectivename]
             logging.info("[-] Translated {} to {} - in listbuilder.Fleet.add_objective().".format(
                 objectivename, ob
                 ))
             objectivename = ob
-        
+
         if "custom" in objectivename.lower():
             return False
-        
+
         obj_categories = ["assault","defense","navigation","campaign","other"]
         if category.lower() in obj_categories:
             self.objectives[category] = Objective(objectivename,self.conn)
@@ -897,21 +898,21 @@ class Fleet:
                 # raise ValueError
             logging.info("{} is not a valid objective type.".format(str(category)))
             logging.info("Valid types are: {}".format(obj_categories))
-            
+
         self.objectives[category].set_coords([str(self.obj_x),str(self.obj_y)])
         self.obj_x = self.obj_x + self.obj_to_obj_x_offset
         self.obj_y = self.obj_y + self.obj_to_obj_y_offset
-        
+
     def remove_objective(self,category,objective):
-    
+
         if category in self.objectives.keys:
             if self.objectives[category] == objective:
                 del self.objectives[category]
-        
+
     def __add__(self,ship):
-    
+
         self.add_ship(ship)
-        
+
     def __sub__(self,ship):
 
         self.remove_ship(ship)
@@ -920,7 +921,7 @@ class Fleet:
 class Ship:
 
     def __init__(self,shipclass,ownfleet,conn=g_conn):
-    
+
         self.shipclass = scrub_piecename(str(shipclass))     # "name" in .AFF
         self.conn = conn
         self.content = ""
@@ -931,31 +932,31 @@ class Ship:
         self.shipcmdstack = self.shipcard.shipcmdstack
         self.upgrades = []
         self.guid = calc_guid()
-        
+
         self.ownfleet = ownfleet
-        
+
     def set_content(self,content):
-    
+
         self.content = str(content)
-        
+
     def set_coords(self,coords):
-    
+
         self.coords = list(coords)
-    
+
     def set_shipcard(self,shipcard):
-        
+
         self.shipcard = shipcard
-        
+
     def set_shiptoken(self,shiptoken):
-    
+
         self.shiptoken = shiptoken
-        
+
     def set_upgrades(self,upgrades):
-    
+
         self.upgrades = list(upgrades)
-        
+
     def add_upgrade(self,upgradename):
-        
+
         upgradename = scrub_piecename(upgradename)
         if upgradename in nomenclature_translation:
             sc = nomenclature_translation[upgradename]
@@ -963,41 +964,41 @@ class Ship:
                 upgradename, sc
                 ))
             upgradename = sc
-            
+
         u = Upgrade(upgradename,self,self.conn)
-        
+
         if self.ownfleet.u_row%2:
             self.ownfleet.x += self.ownfleet.u_to_u_x_padding
             u.set_coords([str(self.ownfleet.x),str(self.ownfleet.upgd_upper_y)])
         else:
             u.set_coords([str(self.ownfleet.x),str(self.ownfleet.upgd_lower_y)])
         self.ownfleet.u_row += 1
-        
+
         self.upgrades.append(u)
         return u
-        
+
     def remove_upgrade(self,upgrade):
-    
+
         self.upgrades.remove(upgrade)
-        
+
     def __add__(self,upgrade):
-    
+
         self.add_upgrade(upgrade)
-        
+
     def __sub__(self,upgrade):
-    
+
         self.remove_upgrade(upgrade)
-        
-        
+
+
 class ShipCard:
 
     '''A shipcard of type str(shipname) as defined in sqlitedb connection conn.'''
 
     def __init__(self,shipname,conn=g_conn):
-    
+
         self.shipname = scrub_piecename(str(shipname))
         self.conn = conn
-        
+
         logging.info("Searching for ship {} in {}".format(scrub_piecename(shipname),str(conn)))
         [(self.content,self.shiptype)] = conn.execute('''select content,catchall from pieces where piecetype='shipcard' and piecename=?;''',(self.shipname,)).fetchall()
 
@@ -1007,36 +1008,36 @@ class ShipCard:
         self.content = self.content.replace("vlb_GUID",self.guid)
         self.content = self.content.replace("vlb_x_axis","0")
         self.content = self.content.replace("vlb_y_axis","0")
-        
+
         self.command = self.content.split("/placemark;Spawn Command ")[-1][0]
         self.command = "commandstack"+self.command
         self.shipcmdstack = ShipCmdStack(self.command,self.conn)
-        
+
         self.coords = [0,0]
-        
+
     def set_coords(self,coords):
-    
+
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub("Table;\d{1,4};\d{1,4}","Table;{};{}".format(str(coords[0]),str(coords[1])),self.content)
             self.coords = coords
-            
-            
+
+
     def set_guid(self,guid):
-    
+
         self.content = self.content.replace("vlb_GUID",self.guid)
-        
+
     def set_shiptoken(self,shiptype):
-    
+
         self.shiptoken = ShipToken(shiptype,self.conn)
 
 
 class ShipToken:
 
     def __init__(self,shiptype,conn=g_conn):
-    
+
         self.shiptype = scrub_piecename(str(shiptype))
         self.conn = conn
-        
+
         if self.shiptype in nomenclature_translation:
             translated_shiptype = nomenclature_translation[shiptype]
             logging.info("[-] Translated {} to {} - in listbuilder.ShipToken.".format(
@@ -1052,23 +1053,23 @@ class ShipToken:
         self.content = self.content.replace("vlb_x_axis","0")
         self.content = self.content.replace("vlb_y_axis","0")
         self.coords = [0,0]
-        
+
     def set_coords(self,coords):
-    
+
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub("Table;\d{1,4};\d{1,4}","Table;{};{}".format(str(coords[0]),str(coords[1])),self.content)
             self.coords = coords
-            
 
-class ShipCmdStack:            
+
+class ShipCmdStack:
 
     '''A command stack as defined in sqlitedb connection conn.'''
 
     def __init__(self,cmdstack,conn=g_conn):
-    
+
         self.cmdstack = scrub_piecename(str(cmdstack))
         self.conn = conn
-        
+
         logging.info("Searching for command stack {} in {}".format(scrub_piecename(cmdstack),str(conn)))
         self.content = conn.execute('''select content from pieces where piecetype='other' and piecename=?;''',(self.cmdstack,)).fetchall()[0][0]
 
@@ -1077,25 +1078,25 @@ class ShipCmdStack:
         self.content = self.content.replace("vlb_x_axis","0")
         self.content = self.content.replace("vlb_y_axis","0")
         self.coords = [0,0]
-        
+
     def set_coords(self,coords):
-    
+
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub("Table;\d{1,4};\d{1,4}","Table;{};{}".format(str(coords[0]),str(coords[1])),self.content)
             self.coords = coords
-            
+
     def set_guid(self,guid):
-    
+
         self.content = self.content.replace("vlb_GUID",self.guid)
-        
-            
+
+
 class Upgrade:
 
     def __init__(self,upgradename,ownship,conn=g_conn):
-    
+
         self.upgradename = scrub_piecename(str(upgradename))
         self.conn = conn
-        
+
         logging.info("Searching for upgrade {} in {}".format(scrub_piecename(upgradename),str(conn)))
         self.content = conn.execute('''select content from pieces where piecetype='upgradecard' and piecename=?;''',(self.upgradename,)).fetchall()[0][0]
 
@@ -1104,20 +1105,20 @@ class Upgrade:
         self.content = self.content.replace("vlb_x_axis","0")
         self.content = self.content.replace("vlb_y_axis","0")
         self.coords = [0,0]
-        
+
         self.ownship = ownship
-        
+
     def set_coords(self,coords):
-    
+
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub("Table;\d{1,4};\d{1,4}","Table;{};{}".format(str(coords[0]),str(coords[1])),self.content)
             self.coords = coords
-            
+
 
 class Squadron:
 
     def __init__(self,squadronclass,ownfleet,conn=g_conn):
-    
+
         self.squadronclass = scrub_piecename(str(squadronclass))     # "name" in .AFF
         self.conn = conn
         self.content = ""
@@ -1126,36 +1127,36 @@ class Squadron:
         self.squadrontoken = self.squadroncard.squadrontoken
         self.upgrades = []
         self.guid = calc_guid()
-        
+
         self.ownfleet = ownfleet
-        
+
     def set_content(self,content):
-    
+
         self.content = str(content)
-        
+
     def set_coords(self,coords):
-    
+
         self.coords = list(coords)
-    
+
     def set_squadroncard(self,squadroncard):
-        
+
         self.squadroncard = squadroncard
-        
+
     def set_squadrontoken(self,squadrontoken):
-    
+
         self.squadrontoken = squadrontoken
-    
+
 
 class SquadronCard:
 
     '''A squadroncard of type str(squadronname) as defined in sqlitedb connection conn.'''
 
     def __init__(self,squadronname,conn=g_conn):
-    
+
         self.squadronname = scrub_piecename(str(squadronname))
         self.conn = conn
         # print("[*] Retrieving {}".format(self.squadronname))
-        
+
         logging.info("Searching for squadron card {} in {}".format(scrub_piecename(squadronname),str(conn)))
         try:
             [(self.content,self.squadrontype)] = conn.execute('''select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;''',(self.squadronname,)).fetchall()
@@ -1170,26 +1171,26 @@ class SquadronCard:
         self.content = self.content.replace("vlb_x_axis","0")
         self.content = self.content.replace("vlb_y_axis","0")
         self.coords = [0,0]
-        
+
     def set_coords(self,coords):
-    
+
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub("Table;\d{1,4};\d{1,4}","Table;{};{}".format(str(coords[0]),str(coords[1])),self.content)
             self.coords = coords
-            
+
     def set_guid(self,guid):
-    
+
         self.content = self.content.replace("vlb_GUID",self.guid)
-        
+
     def set_squadrontoken(self,squadrontype):
-    
+
         self.squadrontoken = SquadronToken(squadrontype,self.conn)
-    
-    
+
+
 class SquadronToken:
 
     def __init__(self,squadrontype,conn=g_conn):
-    
+
         self.squadrontype = scrub_piecename(str(squadrontype))
         self.conn = conn
         # print(squadrontype)
@@ -1201,9 +1202,9 @@ class SquadronToken:
         self.content = self.content.replace("vlb_x_axis","0")
         self.content = self.content.replace("vlb_y_axis","0")
         self.coords = [0,0]
-        
+
     def set_coords(self,coords):
-    
+
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub("Table;\d{1,4};\d{1,4}","Table;{};{}".format(str(coords[0]),str(coords[1])),self.content)
             self.coords = coords
@@ -1212,7 +1213,7 @@ class SquadronToken:
 class Objective:
 
     def __init__(self,objectivename,conn=g_conn):
-    
+
         self.objectivename = scrub_piecename(str(objectivename))
         self.conn = conn
         logging.info("Searching for objective {} in {}".format(scrub_piecename(objectivename),str(conn)))
@@ -1222,7 +1223,7 @@ class Objective:
         self.content = self.content.replace("vlb_GUID",self.guid)
         self.content = self.content.replace("vlb_x_axis","0")
         self.content = self.content.replace("vlb_y_axis","0")
-        
+
         c = ""
         for line in self.content.split("\t"):
             if line.strip().startswith("piece;;;;"):
@@ -1232,25 +1233,24 @@ class Objective:
             else:
                 l = line
             c += l+"\t"
-            
+
         #~ print(c)
         self.content = c
-        
+
         self.coords = [0,0]
-        
+
     def set_coords(self,coords):
-    
+
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub("Table;\d{1,4};\d{1,4}","Table;{};{}".format(str(coords[0]),str(coords[1])),self.content)
-            self.coords = coords    
+            self.coords = coords
 
 
 
 if __name__ == "__main__":
-    
+
     if args.imp:
         import_from_list(import_from=g_import_flt,output_to=g_vlb_path,working_path=g_working_path,conn=g_conn,isvlog=g_import_vlog)
-    
+
     if args.exp:
         export_to_vlog(export_to=g_export_to,vlb_path=g_vlb_path)
-    
