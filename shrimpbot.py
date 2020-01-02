@@ -82,7 +82,6 @@ async def list():
     await bot.say(str(len(acronym_dict)) + " words")
 
 
-@bot.command()
 async def status():
     """Checks the status of the bot."""
     await bot.say("Shrimpbot info:")
@@ -94,7 +93,6 @@ async def status():
         await bot.say("The bot is disabled.")
 
 
-@bot.command()
 async def toggle():
     """Toggles if the bot is allowed to explain the stuff."""
     global enabled
@@ -103,6 +101,65 @@ async def toggle():
         await bot.say("The bot is now enabled.")
     else:
         await bot.say("The bot is now disabled.")
+
+
+async def acronym():
+    """Define the acronym."""
+
+    sent = False
+    for word in message.content.split():
+        word = word.strip(special_chars)
+        if word.upper() in acronym_dict:
+            await bot.send_message(message.author, word.upper() + ": " + acronym_dict.get(word.upper(), "ERROR!"))
+            sent = True
+    if not sent:
+        await bot.send_message(message.author, "Sorry, it doesn't look like that is in my list.  Message Ardaedhel if you think it should be.")
+
+
+async def card():
+        sent = False
+        searchterm = "".join([x for x in message.content.split() if not x.startswith("!")])
+        for char in special_chars:
+            searchterm = searchterm.replace(char,"")  # this is super hacky, lrn2regex, scrub
+        searchterm = searchterm.upper()
+        logging.info("Looking for {}".format(searchterm))
+
+        # maybe return SURPRISE MOTHERFUCKER instead of Surprise Attack
+        if searchterm == "SURPRISEATTACK" and random.random() > .5:
+            try:
+                filepath = os.path.join(CARD_IMG_PATH,"surprisemofo.png")
+                logging.info("Sending Surprise Motherfucker...")
+                await bot.send_file(destination=message.channel,fp=filepath)
+                sent = True
+            except:
+                logging.info("Surprise Motherfucker broke.")
+        elif searchterm in cardlookup:
+            # Post the image to requested channel
+            filepath = os.path.join(CARD_IMG_PATH,str(cardlookup[searchterm]))
+            logging.info("Looking in {}".format(filepath))
+            await bot.send_file(destination=message.channel,fp=filepath)
+            sent = True
+        else:
+            logging.info("Didn't find it.  Failing over to wiki search.")
+            # logging.info(cardlookup)
+
+            wikisearchterm = " ".join([x for x in message.content.split() if not x.startswith("!")])
+            wiki_img_url = cardpop.autoPopulateImage(wikisearchterm)
+            if wiki_img_url:
+                tmp_img_path = CARD_IMG_PATH + "tmp/" + searchterm + ".png"
+                with requests.get(wiki_img_url, stream=True) as r:
+                    with open(tmp_img_path, 'wb') as out_file:
+                        shutil.copyfileobj(r.raw, out_file)
+                        logging.info("Wiki image retrieval - {} - {}".format(wikisearchterm,wiki_img_url))
+
+                await bot.send_file(destination=message.channel,fp=tmp_img_path)
+                # await bot.send_message(message.author, "I didn't have that image in my database, so I tried finding it on the Wiki.  Was this the picture you wanted?")
+                # await bot.send_message(message.author, "[!yes/!no]")
+                sent = True
+
+        if not sent:
+            await bot.send_message(message.author, "Sorry, it doesn't look like that is in my list.  Message Ardaedhel if you think it should be.")
+            await bot.send_message(message.author, "Please keep in mind that my search functionality is pretty rudimentary at the moment, so you might re-try using a different common name.  Generally I should recognize the full name as printed on the card, with few exceptions.")
 
 
 @bot.event
@@ -114,16 +171,7 @@ async def on_ready():
 
     await bot.change_presence(game=note)
 
-    #~ await bot.edit_profile(username="ShrimpBot")
 
-@bot.command()
-async def cheat():
-    """Flag to set all of Ard's blacks to hit/crit."""
-    global cheat
-    cheat = not cheat
-
-
-@bot.event
 async def on_message(message):
     await bot.process_commands(message)
 
@@ -233,7 +281,6 @@ async def on_message(message):
 
 
     # don't read any bot's messages
-
     if message.author.bot:
         return
 
@@ -251,11 +298,6 @@ async def on_message(message):
         if me:
             await bot.change_nickname(me,nickname="ShrimpBot")
 
-        # No ponies for Truthiness
-        #if message.author.id == "264163431408467978":
-        #    await bot.send_message(message.channel, "No more ponies for "+message.author.name+".  Heretic!")
-        #    await bot.change_nickname(me,nickname="AcronymBot")
-        #else:
         await bot.send_message(message.channel, "His chitinous appendages reach down and grant "+message.author.name+" a pony.  :racehorse:")
         await bot.change_nickname(me,nickname="AcronymBot")
 
@@ -377,10 +419,8 @@ async def on_message(message):
                 logging.info("5")
 
                 if not success:
-                    logging.info("[!] LISTBUILDER ERROR | {}".format(last_item))
+                    logging.info(last_item)
                     await bot.send_message(BOT_OWNER, "[!] LISTBUILDER ERROR | {}".format(last_item))
-                    await bot.send_message(BOT_OWNER, "POC: {}".format(message.author.name))
-                    await bot.send_message(BOT_OWNER, "List: \n{}".format(message.content))
                     await bot.send_message(message.channel, "Sorry, there was an error. I have reported it to Ardaedhel to fix it.")
                     await bot.send_message(message.channel, "Details - The error was in parsing this line: ")
                     await bot.send_message(message.channel, last_item)

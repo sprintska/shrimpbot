@@ -1,0 +1,454 @@
+Name: Rebel Test I
+Faction: Rebel
+Commander: Admiral Ackbar
+
+Assault: Advanced Gunnery
+Defense: Abandoned Mining Facility
+Navigation: Dangerous Territory
+Assault: Blockade Run
+Defense: Asteroid Tactics
+Navigation: Doomed Station
+Assault: Close-Range Intel Scan
+Defense: Capture the VIP
+Navigation: Hyperspace Migration
+Assault: Ion Storm
+Defense: Contested Outpost
+Navigation: Infested Fields
+Assault: Marked For Destruction
+Defense: Fighter Ambush
+Navigation: Intel Sweep
+Assault: Most Wanted
+Defense: Fire Lanes
+Navigation: Minefields
+Assault: Opening Salvo
+Defense: Fleet Ambush
+Navigation: Navigational Hazards
+Assault: Precision Strike
+Defense: Fleet In Being
+Navigation: Salvage Run
+Assault: Rift Assault
+Defense: Hyperspace Assault
+Navigation: Sensor Net
+Assault: Station Assault
+Defense: Jamming Barrier
+Navigation: Solar Corona
+Assault: Suprise Attack
+Defense: Planetary Ion Cannon
+Navigation: Superior Positions
+Assault: Targeting Beacons
+Defense: Rift Ambush
+Navigation: Volatile Deposits
+
+Assault Frigate Mk2 A (81)
+• Mon Mothma (30)
+= 111 Points
+
+Assault Frigate Mk2 A (81)
+• Kyrsta Agate (20)
+= 101 Points
+
+Assault Frigate Mk2 A (81)
+• General Rieekan (30)
+= 111 Points
+
+Assault Frigate Mk2 A (81)
+• General Madine (30)
+= 111 Points
+
+Assault Frigate Mk2 A (81)
+• General Dodonna (20)
+= 101 Points
+
+Assault Frigate Mk2 A (81)
+• General Cracken (26)
+= 107 Points
+
+Assault Frigate Mk2 A (81)
+• Garm Bel Iblis (25)
+= 106 Points
+
+Assault Frigate Mk2 A (81)
+• Leia Organa (38)
+• Admiral Ackbar (38)
+• Admiral Raddus (26)
+• Commander Sato (32)
+• Adar Tallon (10)
+• Caitken and Shollan (6)
+• Advanced Transponder Net (5)
+• Advanced Projectors (6)
+• Gallant Haven (8)
+= 154 Points
+
+Assault Frigate Mk2 A (81)
+• Ahsoka Tano (2)
+• Fire-Control Team (2)
+• Disposable Capacitors (3)
+• Early Warning System (7)
+• Paragon (5)
+= 100 Points
+
+Assault Frigate Mk2 B (72)
+• Bail Organa (7)
+• Flight Controllers (6)
+• Boosted Comms (4)
+• Cluster Bombs (5)
+= 94 Points
+
+Assault Frigate Mk2 B (72)
+• Captain Rex (5)
+• Gunnery Team (7)
+• Expanded Hangar Bay (5)
+• Electronic Countermeasures (7)
+= 96 Points
+
+Assault Frigate Mk2 B (72)
+• Ezra Bridger (3)
+• Ordnance Experts (4)
+• Phylon Q7 Tractor Beams (6)
+• Reinforced Blast Doors (5)
+= 90 Points
+
+Assault Frigate Mk2 B (72)
+• General Draven (3)
+• Ruthless Strategists (4)
+• Point-Defense Reroute (5)
+• Redundant Shields (8)
+= 92 Points
+
+Assault Frigate Mk2 B (72)
+• Kyrsta Agate (5)
+• Sensor Team (5)
+• Proximity Mines (4)
+• Reinforced Blast Doors (5)
+= 91 Points
+
+Assault Frigate Mk2 B (72)
+• Lando Calrissian (4)
+• Veteran Gunners (5)
+= 81 Points
+
+Assault Frigate Mk2 B (72)
+• Leia Organa (3)
+• Weapons Battery Techs (5)
+= 80 Points
+
+Assault Frigate Mk2 B (72)
+• Major Derlin (7)
+• Cham Syndulla (5)
+= 84 Points
+
+Assault Frigate Mk2 B (72)
+• Ray Antilles (7)
+• Jyn Erso (4)
+= 83 Points
+
+Assault Frigate Mk2 B (72)
+• Sabine Wren (4)
+• Shriv Suurgav (6)
+= 82 Points
+
+Assault Frigate Mk2 B (72)
+• Toryn Farr (7)
+• Boarding Engineers (2)
+= 81 Points
+
+Assault Frigate Mk2 B (72)
+• Walex Blissex (5)
+• Boarding Troopers (3)
+= 80 Points
+
+CR90 Corvette A (44)
+• Wedge Antilles (4)
+• Auxiliary Shields Team (3)
+• Dual Turbolaser Turrets (5)
+• Dodonna's Pride (6)
+= 62 Points
+
+CR90 Corvette A (44)
+• Hondo Ohnaka (2)
+• Engine Techs (8)
+• Enhanced Armament (10)
+• Jaina's Light (2)
+= 66 Points
+
+CR90 Corvette A (44)
+• Chart Officer (2)
+• Engineering Team (5)
+• H9 Turbolasers (8)
+• Liberator (2)
+= 61 Points
+
+CR90 Corvette A (44)
+• Damage Control Officer (5)
+• Fighter Coordination Team (3)
+• Heavy Turbolaser Turrets (6)
+• Tantive IV (3)
+= 61 Points
+
+CR90 Corvette A (44)
+• Defense Liaison (3)
+• Medical Team (1)
+• Linked Turbolaser Towers (7)
+= 55 Points
+
+CR90 Corvette A (44)
+• Engineering Captain (6)
+• Nav Team (4)
+• Quad Battery Turrets (5)
+= 59 Points
+
+CR90 Corvette A (44)
+• Expert Shield Tech (5)
+• Projection Experts (6)
+• Quad Turbolaser Cannons (10)
+= 65 Points
+
+CR90 Corvette A (44)
+• Flight Commander (3)
+• Slaved Turrets (6)
+= 53 Points
+
+CR90 Corvette A (44)
+• Intel Officer (7)
+• Spinal Armament (9)
+= 60 Points
+
+CR90 Corvette A (44)
+• Navigation Officer (6)
+• Turbolaser Reroute Circuits (7)
+= 57 Points
+
+CR90 Corvette A (44)
+• Skilled First Officer (1)
+• XI7 Turbolasers (6)
+= 51 Points
+
+CR90 Corvette A (44)
+• Support Officer (4)
+• XX-9 Turbolasers (5)
+= 53 Points
+
+CR90 Corvette B (39)
+• Tactical Expert (6)
+• Heavy Ion Emplacements (9)
+= 54 Points
+
+CR90 Corvette B (39)
+• Veteran Captain (3)
+• High-Capacity Ion Turbines (8)
+= 50 Points
+
+CR90 Corvette B (39)
+• Weapons Liaison (3)
+• Ion Cannon Batteries (5)
+= 47 Points
+
+CR90 Corvette B (39)
+• Wing Commander (6)
+• Leading Shots (4)
+= 49 Points
+
+CR90 Corvette B (39)
+• MS-1 Ion Cannons (2)
+= 41 Points
+
+CR90 Corvette B (39)
+• NK-7 Ion Cannons (10)
+= 49 Points
+
+CR90 Corvette B (39)
+• Overload Pulse (8)
+= 47 Points
+
+CR90 Corvette B (39)
+• SW-7 Ion Batteries (5)
+= 44 Points
+
+GR-75 Combat Retrofits (24)
+• Bomber Command Center (8)
+• Bright Hope (2)
+= 34 Points
+
+GR-75 Medium Transports (18)
+• Comms Net (2)
+• Quantum Storm (1)
+= 21 Points
+
+GR-75 Medium Transports (18)
+• Jamming Field (2)
+= 20 Points
+
+GR-75 Medium Transports (18)
+• Repair Crews (4)
+= 22 Points
+
+GR-75 Medium Transports (18)
+• Slicer Tools (7)
+= 25 Points
+
+Hammerhead Scout Corvette (41)
+• Garel's Honor (4)
+= 45 Points
+
+Hammerhead Torpedo Corvette (36)
+• External Racks (3)
+• Task Force Antilles (3)
+= 42 Points
+
+Hammerhead Torpedo Corvette (36)
+• Flechette Torpedoes (3)
+• Task Force Organa (1)
+= 40 Points
+
+MC30c Scout Frigate (69)
+• Assault Concussion Missiles (7)
+• Admonition (8)
+= 84 Points
+
+MC30c Scout Frigate (69)
+• Assault Proton Torpedoes (5)
+• Foresight (8)
+= 82 Points
+
+MC30c Torpedo Frigate (63)
+• Expanded Launchers (13)
+• Mon Calamari Exodus Fleet (5)
+= 81 Points
+
+MC30c Torpedo Frigate (63)
+• Rapid Reload (8)
+= 71 Points
+
+MC30c Torpedo Frigate (63)
+• Wide-Area Barrage (2)
+= 65 Points
+
+MC75 Armored Cruiser (104)
+• Strategic Adviser (4)
+• Hardend Bulkheads (5)
+• Ordnance Pods (3)
+• Aspiration (3)
+= 119 Points
+
+MC75 Ordnance Cruiser (100)
+• Ordnance Pods (3)
+• Profundity (7)
+= 110 Points
+
+MC80 Assault Cruiser (114)
+• Defiance (5)
+= 119 Points
+
+MC80 Assault Cruiser (114)
+• Home One (7)
+= 121 Points
+
+MC80 Command Cruiser (106)
+• Independence (8)
+= 114 Points
+
+MC80 Battle Cruiser (103)
+• Endeavor (4)
+= 107 Points
+
+MC80 Star Cruiser (96)
+• Liberty (3)
+= 99 Points
+
+MC80 Star Cruiser (96)
+• Mon Karren (8)
+= 104 Points
+
+Nebulon-B Escort Frigate (57)
+• Redemption (8)
+= 65 Points
+
+Nebulon-B Support Refit (51)
+• Salvation (7)
+= 58 Points
+
+Nebulon-B Support Refit (51)
+• Vanguard (4)
+= 55 Points
+
+Nebulon-B Support Refit (51)
+• Yavaris (5)
+= 56 Points
+
+Pelta Assault Ship (56)
+• All fighters, Follow Me! (5)
+• Phoenix Home (3)
+= 64 Points
+
+Pelta Command Ship (60)
+• Entrapment Formation! (5)
+= 65 Points
+
+Pelta Command Ship (60)
+• Intensify Firepower! (6)
+= 66 Points
+
+Pelta Command Ship (60)
+• Shields to Maximum! (6)
+= 66 Points
+
+Pelta Command Ship (60)
+• Take Evasive Action! (6)
+= 66 Points
+
+Starhawk Battleship Mark I (140)
+• Magnite Crystal Tractor Beam Array (10)
+• Amity (6)
+= 156 Points
+
+Starhawk Battleship Mark I (140)
+• Magnite Crystal Tractor Beam Array (10)
+• Concord (12)
+= 162 Points
+
+Starhawk Battleship Mark II (150)
+• Magnite Crystal Tractor Beam Array (10)
+• Unity (10)
+= 170 Points
+
+Squadrons:
+• Biggs Darklighter (19)
+• Corran Horn (22)
+• Dagger Squadron (15)
+• Dash Rendar (24)
+• Dutch Vander (16)
+• Gold Squadron (12)
+• Green Squadron (12)
+• Han Solo (26)
+• Hera Syndulla (28)
+• Jan Ors (19)
+• Kanan Jarrus (19)
+• Ketsu Onyo (22)
+• Keyan Farlander (20)
+• Lieutenant Blount (14)
+• Luke Skywalker (20)
+• Malee Hurra (26)
+• Mart Mattin (22)
+• Norra Wexley (17)
+• Nym (21)
+• Rogue Squadron (14)
+• Shara Bey (17)
+• Ten Numb (19)
+• Tycho Celchu (16)
+• A-wing Squadron (11)
+• B-wing Squadron (14)
+• E-wing Squadron (15)
+• HWK-290 (12)
+• Lancer Pursuit Craft (15)
+• Scurrg H-6 Bomber (16)
+• VCX-100 Freighter (15)
+• X-wing Squadron (13)
+• Y-wing Squadron (10)
+• YT-1300 (13)
+• YT-2400 (16)
+• Z-95 Headhunter Squadron (7)
+• Wedge Antilles (19)
+• Lando Calrissian (23)
+= 597 Points
+
+Total Points: 5543
