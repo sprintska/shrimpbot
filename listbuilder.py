@@ -104,7 +104,6 @@ listbuilder_nomenclature_errors = {\
     "cr90corelliancorvettea":"cr90corvettea",\
     "cr90corelliancorvetteb":"cr90corvetteb",\
     "hardendbulkheads":"hardenedbulkheads",\
-    "ig88":"ig88ig2000",\
     "interdictorclasssuppressionrefit":"interdictorsuppressionrefit",\
     "interdictorclasscombatrefit":"interdictorcombatrefit",\
     "lambdashuttle":"lambdaclassshuttle",\
@@ -117,11 +116,8 @@ listbuilder_nomenclature_errors = {\
     "onagertestbed":"onagerclasstestbed",\
     "peltaassaultship":"peltaclassassaultship",\
     "peltacommandship":"peltaclasscommandship",\
-    "rayantilles":"raymusantilles",\
     "ssdexecutori":"executoristardn",\
     "ssdexecutorii":"executoriistardn",\
-    "ssdcommandprototype":"stardncommandprototype",\
-    "ssdassaultprototype":"stardnassaultprototype",\
     "starhawkclassmki":"starhawkmarki",\
     "starhawkclassmkii":"starhawkmarkii",\
     "starhawkbattleshipmarki":"starhawkmarki",\
@@ -1254,7 +1250,7 @@ class Objective:
 if __name__ == "__main__":
 
     if args.imp:
-        print(import_from_list(import_from=g_import_flt,output_to=g_vlb_path,working_path=g_working_path,conn=g_conn,isvlog=g_import_vlog))
+        import_from_list(import_from=g_import_flt,output_to=g_vlb_path,working_path=g_working_path,conn=g_conn,isvlog=g_import_vlog)
 
     if args.exp:
-        print(export_to_vlog(export_to=g_export_to,vlb_path=g_vlb_path))
+        export_to_vlog(export_to=g_export_to,vlb_path=g_vlb_path)
