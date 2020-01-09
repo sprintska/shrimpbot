@@ -282,6 +282,9 @@ def import_from_list(import_from,output_to,working_path,conn,isvlog=False):
 
         with open(output_to,"w") as vlb:
             vlb.write("a1\r\nbegin_save{}\r\nend_save{}\r\n".format(chr(27),chr(27)))
+            vlb.write("\r\nLOG\r\nCHAT<Listbuilder> - Fleet imported by \
+                       Shrimpbot on the Armada Discord.\r\nCHAT<Listbuilder>\
+                       - https://discord.gg/jY4K4d6\r\n")
             for s in f.ships:
                 vlb.write(s.shipcard.content+chr(27))
                 vlb.write(s.shiptoken.content+chr(27))
@@ -672,12 +675,12 @@ def export_to_vlog(export_to,vlb_path,working_path=args.wd):
 
     for afile in os.listdir(out_path):
         file_path = os.path.join(out_path, afile)
-    try:
-        if os.path.isfile(file_path):
-            os.unlink(file_path)
-        elif os.path.isdir(file_path): shutil.rmtree(file_path)
-    except Exception as e:
-        logging.info(e)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path): shutil.rmtree(file_path)
+        except Exception as e:
+            logging.info(e)
 
     shutil.copyfile(os.path.join(working_path,"moduledata"),os.path.join(out_path,"moduledata"))
     shutil.copyfile(os.path.join(working_path,"savedata"),os.path.join(out_path,"savedata"))
