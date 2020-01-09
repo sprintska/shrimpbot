@@ -282,9 +282,9 @@ def import_from_list(import_from,output_to,working_path,conn,isvlog=False):
 
         with open(output_to,"w") as vlb:
             vlb.write("a1\r\nbegin_save{}\r\nend_save{}\r\n".format(chr(27),chr(27)))
-            vlb.write("\r\nLOG\r\n CHAT<Listbuilder> - Fleet imported by "+\
-                      "Shrimpbot on the Armada Discord.\r\nCHAT<Listbuilder> "+\
-                      "- https://discord.gg/jY4K4d6\r\n{}\r\n".format(chr(27)))
+            vlb.write("\r\nLOG{}\r\n CHAT<Listbuilder> - Fleet imported by ".format(chr(27))+\
+                      "Shrimpbot on the Armada Discord.{}\r\nCHAT<Listbuilder> ".format(chr(27))+\
+                      "- https://discord.gg/jY4K4d6{}\r\n\r\n".format(chr(27)))
             for s in f.ships:
                 vlb.write(s.shipcard.content+chr(27))
                 vlb.write(s.shiptoken.content+chr(27))
