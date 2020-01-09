@@ -27,7 +27,7 @@ parser.add_argument("-aff", help=".aff filename",type=str,default="test.aff")
 parser.add_argument("-flt", help="fleet list location\r\nVAL will attempt to identify and ingest the list in the given format",type=str,default="list.flt")
 parser.add_argument("--imp", help="use VL to import a .vlog to a .vlb",action="store_true")
 parser.add_argument("--exp", help="use VL to export a .vlb to a .vlog",action="store_true")
-parser.add_argument("--impvlog", help="raise this if importing .vlog to .vlb. Mostly for debugging.",action="store_true")
+parser.add_argument("--impvlog", help="use this if importing a .vlog to .vlb.",action="store_true")
 args = parser.parse_args()
 
 g_import_vlb = os.path.abspath(args.vlog)
