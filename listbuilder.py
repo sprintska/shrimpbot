@@ -779,8 +779,10 @@ class Fleet:
         self.sc_to_st_x_padding = 173
         self.sc_to_st_y_padding = 0
         self.s_to_u_padding = 80
-        self.u_to_u_x_padding = 105
-        self.u_to_u_y_padding = 175
+        # self.u_to_u_x_padding = 105
+        # self.u_to_u_y_padding = 175
+        self.u_to_u_x_padding = 125
+        self.u_to_u_y_padding = 195
         self.u_to_s_padding = 195
         self.u_to_sq_padding = 195
         self.upgd_lower_y = self.upgd_upper_y + self.u_to_u_y_padding
