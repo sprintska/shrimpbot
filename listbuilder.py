@@ -101,6 +101,8 @@ listbuilder_nomenclature_errors = {\
     "7thfleetstardestroyer":"seventhfleetstardestroyer",\
     "assaultfrigatemk2a":"assaultfrigatemarkiia",\
     "assaultfrigatemk2b":"assaultfrigatemarkiib",\
+    "assaultfrigatemkiia":"assaultfrigatemarkiia",\
+    "assaultfrigatemkiib":"assaultfrigatemarkiib",\
     "cr90corelliancorvettea":"cr90corvettea",\
     "cr90corelliancorvetteb":"cr90corvetteb",\
     "hardendbulkheads":"hardenedbulkheads",\
