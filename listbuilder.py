@@ -407,7 +407,8 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
                                           "Commander:",\
                                           "Author:"]:
                 pass
-
+            
+            logging.info(card_name.split())
             elif card_name.split()[1] == "Objective:":
                 objective = [card_name.split()[0],card_name.split(':')[1]]
                 f.add_objective(objective[0],objective[1])
