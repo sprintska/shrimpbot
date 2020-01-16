@@ -399,6 +399,8 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
         logging.info(card_name)
 
         try:
+            logging.info(card_name.split())
+            
             if len(card_name.split()) <= 1:
                 shipnext = True
 
@@ -408,7 +410,6 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
                                           "Author:"]:
                 pass
             
-            logging.info(card_name.split())
             elif card_name.split()[1] == "Objective:":
                 objective = [card_name.split()[0],card_name.split(':')[1]]
                 f.add_objective(objective[0],objective[1])
