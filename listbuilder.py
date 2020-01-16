@@ -560,7 +560,7 @@ def import_from_kingston(import_list,vlb_path,working_path,conn):
 
             if card_name:
 
-                if card_name.split(":")[0].strip() in ["Name","Faction","Commander"]:
+                if card_name.split(":")[0].strip() in ["Name","Faction","Commander","Author"]:
                     pass
 
                 elif card_name.split(":")[0] in ["Assault","Defense","Navigation"]:
