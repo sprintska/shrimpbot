@@ -215,7 +215,7 @@ def ident_format(fleet_text):
     # Warlords
 
     ft = fleet_text.replace("â€¢",u"\u2022")
-    if '[ flagship ]' in ft: formats['warlord'] += 3.0
+    if '[flagship]' in ft.replace(" ",""): formats['warlord'] += 5.0
     if 'Armada Warlords' in ft: formats['warlord'] += 5.0
     if 'Commander: ' in ft: formats['warlord'] += 2.0
     for line in ft.split('\n'):
