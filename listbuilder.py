@@ -103,6 +103,8 @@ listbuilder_nomenclature_errors = {\
     "assaultfrigatemk2b":"assaultfrigatemarkiib",\
     "assaultfrigatemkiia":"assaultfrigatemarkiia",\
     "assaultfrigatemkiib":"assaultfrigatemarkiib",\
+    "cr90acorvette":"cr90corvettea",\
+    "cr90bcorvette":"cr90corvetteb",\
     "cr90corelliancorvettea":"cr90corvettea",\
     "cr90corelliancorvetteb":"cr90corvetteb",\
     "hardendbulkheads":"hardenedbulkheads",\
@@ -113,6 +115,8 @@ listbuilder_nomenclature_errors = {\
     "lancerpursuitcraft":"lancerclasspursuitcraft",\
     "landocarissian":"landocalrissian",\
     "lietenantblount":"lieutenantblountz95",\
+    "linkedturbolaserturrets":"linkedturbolasertowers",\
+    "locationfirecontrol":"localfirecontrol",\
     "maareksteele":"maarekstele",\
     "moncalamariexodusfleet":"moncalexodusfleet",\
     "onagerstardestroyer":"onagerclassstardestroyer",\
@@ -120,6 +124,7 @@ listbuilder_nomenclature_errors = {\
     "peltaassaultship":"peltaclassassaultship",\
     "peltacommandship":"peltaclasscommandship",\
     "rayantilles":"raymusantilles",\
+    "solorcorona":"solarcorona",\
     "ssdexecutori":"executoristardn",\
     "ssdexecutorii":"executoriistardn",\
     "ssdcommandprototype":"stardncommandprototype",\
