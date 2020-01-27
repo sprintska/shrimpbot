@@ -55,7 +55,7 @@ vassal_nomenclature_errors = {\
     "arquitensclasslightcruiser":"arquitenslightcruiser",\
     "coloneljendonlambdaclassshuttle":"coloneljendonlambdaclass",\
     "doomedstation":"dommedstation",\
-    "exectuorclass":"executorclass",\
+#    "exectuorclass":"executorclass",\
     "executoriclassstardreadnought":"executoristardn",\
     "executoriiclassstardreadnought":"executoriistardn",\
     "gladiatoriclassstardestroyer":"gladiatori",\
@@ -103,6 +103,8 @@ listbuilder_nomenclature_errors = {\
     "assaultfrigatemk2b":"assaultfrigatemarkiib",\
     "assaultfrigatemkiia":"assaultfrigatemarkiia",\
     "assaultfrigatemkiib":"assaultfrigatemarkiib",\
+    "cr90acorvette":"cr90corvettea",\
+    "cr90bcorvette":"cr90corvetteb",\
     "cr90corelliancorvettea":"cr90corvettea",\
     "cr90corelliancorvetteb":"cr90corvetteb",\
     "hardendbulkheads":"hardenedbulkheads",\
@@ -113,6 +115,8 @@ listbuilder_nomenclature_errors = {\
     "lancerpursuitcraft":"lancerclasspursuitcraft",\
     "landocarissian":"landocalrissian",\
     "lietenantblount":"lieutenantblountz95",\
+    "linkedturbolaserturrets":"linkedturbolasertowers",\
+    "locationfirecontrol":"localfirecontrol",\
     "maareksteele":"maarekstele",\
     "moncalamariexodusfleet":"moncalexodusfleet",\
     "onagerstardestroyer":"onagerclassstardestroyer",\
@@ -120,6 +124,7 @@ listbuilder_nomenclature_errors = {\
     "peltaassaultship":"peltaclassassaultship",\
     "peltacommandship":"peltaclasscommandship",\
     "rayantilles":"raymusantilles",\
+    "solorcorona":"solarcorona",\
     "ssdexecutori":"executoristardn",\
     "ssdexecutorii":"executoriistardn",\
     "ssdcommandprototype":"stardncommandprototype",\
@@ -215,7 +220,7 @@ def ident_format(fleet_text):
     # Warlords
 
     ft = fleet_text.replace("â€¢",u"\u2022")
-    if '[ flagship ]' in ft: formats['warlord'] += 3.0
+    if '[flagship]' in ft.replace(" ",""): formats['warlord'] += 5.0
     if 'Armada Warlords' in ft: formats['warlord'] += 5.0
     if 'Commander: ' in ft: formats['warlord'] += 2.0
     for line in ft.split('\n'):
@@ -399,6 +404,8 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
         logging.info(card_name)
 
         try:
+            logging.info(card_name.split())
+            
             if len(card_name.split()) <= 1:
                 shipnext = True
 
@@ -407,7 +414,7 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
                                           "Commander:",\
                                           "Author:"]:
                 pass
-
+            
             elif card_name.split()[1] == "Objective:":
                 objective = [card_name.split()[0],card_name.split(':')[1]]
                 f.add_objective(objective[0],objective[1])
@@ -560,7 +567,7 @@ def import_from_kingston(import_list,vlb_path,working_path,conn):
 
             if card_name:
 
-                if card_name.split(":")[0].strip() in ["Name","Faction","Commander"]:
+                if card_name.split(":")[0].strip() in ["Name","Faction","Commander","Author"]:
                     pass
 
                 elif card_name.split(":")[0] in ["Assault","Defense","Navigation"]:

@@ -783,6 +783,7 @@ w6_cpt_the-grand-inquisitor.png;GRANDINQUISITOR
 w6_cpt_the-grand-inquisitor.png;THEGRANDINQUISITOR
 w6_ion_disposable-capacitors.png;DC
 w6_ion_disposable-capacitors.png;DISPOSABLECAPACITORS
+w6_ion_disposable-capacitors.png;DCAPS
 w6_ord_external-racks.png;EXRAX
 w6_ord_external-racks.png;EXTERNALRACKS
 w6_ord_external-racks.png;RACKS
