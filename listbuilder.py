@@ -55,7 +55,7 @@ vassal_nomenclature_errors = {\
     "arquitensclasslightcruiser":"arquitenslightcruiser",\
     "coloneljendonlambdaclassshuttle":"coloneljendonlambdaclass",\
     "doomedstation":"dommedstation",\
-#    "exectuorclass":"executorclass",\
+    "exectuorclass":"executorclass",\
     "executoriclassstardreadnought":"executoristardn",\
     "executoriiclassstardreadnought":"executoriistardn",\
     "gladiatoriclassstardestroyer":"gladiatori",\
@@ -405,7 +405,7 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
 
         try:
             logging.info(card_name.split())
-            
+
             if len(card_name.split()) <= 1:
                 shipnext = True
 
@@ -414,7 +414,7 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
                                           "Commander:",\
                                           "Author:"]:
                 pass
-            
+
             elif card_name.split()[1] == "Objective:":
                 objective = [card_name.split()[0],card_name.split(':')[1]]
                 f.add_objective(objective[0],objective[1])
