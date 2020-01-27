@@ -55,7 +55,7 @@ vassal_nomenclature_errors = {\
     "arquitensclasslightcruiser":"arquitenslightcruiser",\
     "coloneljendonlambdaclassshuttle":"coloneljendonlambdaclass",\
     "doomedstation":"dommedstation",\
-    "exectuorclass":"executorclass",\
+#    "exectuorclass":"executorclass",\
     "executoriclassstardreadnought":"executoristardn",\
     "executoriiclassstardreadnought":"executoriistardn",\
     "gladiatoriclassstardestroyer":"gladiatori",\
