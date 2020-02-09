@@ -475,7 +475,7 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
         try:
             last_line = line.strip()
             card_name = line.strip().split(" x ",1)[-1]
-            logging.info("Card name: {}".format(card_name))
+            logging.info(card_name)
 
             if card_name.startswith("==="):
                 start = True
