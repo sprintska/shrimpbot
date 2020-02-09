@@ -503,6 +503,7 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                 
                 elif "(" not in card_name:
                     card_name = scrub_piecename(card_name)
+                    logging.info("Find objective {}.".card_name)
                     f.add_objective(card_name)
                 
                 else:
