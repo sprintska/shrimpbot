@@ -218,7 +218,6 @@ def ident_format(fleet_text):
         except: pass
 
     # Warlords
-
     ft = fleet_text.replace("â€¢",u"\u2022")
     if '[flagship]' in ft.replace(" ",""): formats['warlord'] += 5.0
     if 'Armada Warlords' in ft: formats['warlord'] += 5.0
@@ -238,7 +237,6 @@ def ident_format(fleet_text):
                 formats['afd'] += 5.0
 
     # Kingston
-
     if 'Faction:' in ft:
         formats['kingston'] += 1.0
     if 'Commander: ' in ft:
@@ -502,7 +500,10 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                         upgrade = upgrade_new
 
                     u = s.add_upgrade(upgrade)
-
+                
+                elif "(" not in card_name:
+                    f.add_objective(card_name)
+                
                 else:
                     card_name,cost = card_name.split(" (",1)
                     cost = cost.split(" x ")[-1].split(")")[0]
