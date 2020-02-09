@@ -128,8 +128,7 @@ async def on_message(message):
     await bot.process_commands(message)
 
     # logging
-    print(message.server)
-    logging.info("[{},{},{}] {}: {}".format(time.ctime(),message.guild.name,message.channel.name,message.author.name,message.content))
+    logging.info("[{},{},{}] {}: {}".format(time.ctime(),message.server,message.channel.name,message.author.name,message.content))
 
     # don't read our own message or do anything if not enabled
     # ONLY the dice roller should respond to other bots
