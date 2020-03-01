@@ -470,6 +470,7 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
     f = Fleet("Food",conn=conn)
 
     start = False
+    obj_category = "assault"
     # shipnext = False
 
     for line in import_list.strip().split("\n"):
@@ -506,7 +507,13 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                 elif "(" not in card_name:
                     logging.info("Hit the conditional for {}.".format(card_name))
                     card_name = scrub_piecename(str(card_name))
-                    f.add_objective("other",card_name)
+                    f.add_objective(obj_category,card_name)
+                    
+                    #this is the jankiest shit; I should just retool the objs not to care about categories... :/
+                    if obj_category == "assault":
+                        obj_category = "defense"
+                    else:
+                        obj_category = "navigation"
                 
                 else:
                     card_name,cost = card_name.split(" (",1)
