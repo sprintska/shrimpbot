@@ -196,13 +196,13 @@ def ident_format(fleet_text):
                'vlog': 0.0,
                'vlb': 0.0}
 
-    format_names = {'fab': "Fab's Armada Fleet Builder",
-                    'warlord': "Armada Warlords",
-                    'afd': "Armada Fleets Designer for Android",
-                    'kingston': "Ryan Kingston's Armada Fleet Builder",
-                    'aff': "Armada Fleet Format",
-                    'vlog': "VASSAL Log File",
-                    'vlb': "VASSAL Armada Listbuilder"}
+    # format_names = {'fab': "Fab's Armada Fleet Builder",
+    #                 'warlord': "Armada Warlords",
+    #                 'afd': "Armada Fleets Designer for Android",
+    #                 'kingston': "Ryan Kingston's Armada Fleet Builder",
+    #                 'aff': "Armada Fleet Format",
+    #                 'vlog': "VASSAL Log File",
+    #                 'vlb': "VASSAL Armada Listbuilder"}
 
     # Fab's
     if ' • ' in fleet_text: formats['fab'] += 1.0
@@ -371,7 +371,8 @@ def import_from_fabs(import_list,vlb_path,working_path,conn):
                         except: pass
 
                         if bool(issquadron):
-                            sq = f.add_squadron(l.strip())
+                            # sq = f.add_squadron(l.strip())
+                            f.add_squadron(l.strip())
                         elif bool(issquadronfancy):
                             sq = f.add_squadron(ltmp.strip())
                         elif bool(isship):
@@ -428,7 +429,8 @@ def import_from_warlords(import_list,vlb_path,working_path,conn):
                     squadron_new = ambiguous_names[(squadron,cost)][0]
                     logging.info("Ambiguous name {} ({}) translated to {}.".format(squadron,cost,squadron_new))
                     squadron = squadron_new
-                sq = f.add_squadron(squadron)
+                # sq = f.add_squadron(squadron)
+                f.add_squadron(squadron)
                 shipnext = False
 
             elif card_name[0] == "=":
@@ -468,7 +470,7 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
     f = Fleet("Food",conn=conn)
 
     start = False
-    shipnext = False
+    # shipnext = False
 
     for line in import_list.strip().split("\n"):
 
@@ -504,7 +506,7 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                 elif "(" not in card_name:
                     card_name = scrub_piecename(card_name)
                     logging.info("Find objective {}.".card_name)
-                    f.add_objective(card_name)
+                    f.add_objective("other",card_name)
                 
                 else:
                     card_name,cost = card_name.split(" (",1)
@@ -743,7 +745,7 @@ class Piece:
 
     def __init__(self,piecename,conn=g_conn):
 
-        self.upgradename = scrub_piecename(str(pieceename))
+        self.upgradename = scrub_piecename(str(piecename))
         self.conn = conn
         self.content = conn.execute('''select content from pieces where piecename=?;''',(self.upgradename,)).fetchall()[0][0]
 
@@ -926,7 +928,7 @@ class Fleet:
 
     def remove_objective(self,category,objective):
 
-        if category in self.objectives.keys:
+        if category in self.objectives.keys():
             if self.objectives[category] == objective:
                 del self.objectives[category]
 
