@@ -505,7 +505,8 @@ def import_from_afd(import_list,vlb_path,working_path,conn):
                 
                 elif "(" not in card_name:
                     logging.info("Hit the conditional for {}.".format(card_name))
-                    card_name = scrub_piecename(str(card_name))
+                    card_name = scrub_piecename(card_name)
+                    logging.info("Find objective {}.".card_name)
                     f.add_objective("other",card_name)
                 
                 else:
