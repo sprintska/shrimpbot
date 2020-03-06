@@ -115,6 +115,9 @@ rr_cpt_expert-shield-tech.png;EST
 rr_cpt_expert-shield-tech.png;EXPERTSHIELDTECH
 rr_cpt_ezra-bridger.png;EZRA
 rr_cpt_ezra-bridger.png;EZRABRIDGER
+rr_cpt_sabine_wren.png;SABINE
+rr_cpt_sabine_wren.png;SABINEWREN
+rr_cpt_sabine_wren.png;SW
 rr_flc_take-evasive-action.png;TAKEEVASIVEACTION
 rr_flc_take-evasive-action.png;TEA
 rr_off_advanced-transponder-net.png;ADVANCEDTRANSPONDERNET
@@ -128,9 +131,6 @@ rr_off_proximity-mines.png;PROXMINES
 rr_off_reserve-hangar-deck.png;RESERVEHANGARDECK
 rr_off_reserve-hangar-deck.png;RESERVEHANGARDECKS
 rr_off_reserve-hangar-deck.png;RHD
-rr_off_sabine_wren.png;SABINE
-rr_off_sabine_wren.png;SABINEWREN
-rr_off_sabine_wren.png;SW
 rr_sup_auxiliary-shields-team.png;AST
 rr_sup_auxiliary-shields-team.png;AUXILIARYSHIELDSTEAM
 rr_sup_auxiliary-shields-team.png;AUXILIARYSHIELDSTEAMS
