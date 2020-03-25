@@ -433,7 +433,7 @@ async def on_message(message):
 
                 liststr = message.content.strip()[7::].strip()
                 if not liststr:
-                    raise Exception("List test not found. Did you forget the list?")
+                    raise Exception("List not found. Did you forget the list?")
                 h = hashlib.new("md5")
                 h.update(str(time.time()).encode())
                 guid = h.hexdigest()[0:16]
