@@ -74,3 +74,4 @@ working/savedGame
 img/tmp/*.png
 vlb/*.vlb
 out/*.vlb
+out/*.vlog
