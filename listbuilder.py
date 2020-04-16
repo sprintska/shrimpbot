@@ -155,6 +155,7 @@ listbuilder_nomenclature_errors = {
     "starhawkclassbattleshipmarki": "starhawkmarki",
     "starhawkclassbattleshipmarkii": "starhawkmarkii",
     "supriseattack": "surpriseattack",
+    "xcustomcommander": "admiralkonstantine",
     "x17turbolasers": "xi7turbolasers",
 }
 
