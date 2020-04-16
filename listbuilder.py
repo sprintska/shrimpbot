@@ -126,6 +126,7 @@ listbuilder_nomenclature_errors = {
     "cr90bcorvette": "cr90corvetteb",
     "cr90corelliancorvettea": "cr90corvettea",
     "cr90corelliancorvetteb": "cr90corvetteb",
+    "genericritrcommander": "admiralkonstantine",
     "hardendbulkheads": "hardenedbulkheads",
     "ig88": "ig88ig2000",
     "interdictorclasssuppressionrefit": "interdictorsuppressionrefit",
