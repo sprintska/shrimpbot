@@ -371,7 +371,7 @@ async def on_message(message):
             try:
                 filepath = os.path.join(CARD_IMG_PATH, "surprisemofo.png")
                 logging.info("Sending Surprise Motherfucker...")
-                await bot.send_file(destination=message.channel, fp=filepath)
+                await message.channel.send(file=discord.File(filepath))
                 sent = True
             except:
                 logging.info("Surprise Motherfucker broke.")
@@ -379,7 +379,7 @@ async def on_message(message):
             # Post the image to requested channel
             filepath = os.path.join(CARD_IMG_PATH, str(cardlookup[searchterm]))
             logging.info("Looking in {}".format(filepath))
-            await bot.send_file(destination=message.channel, fp=filepath)
+            await message.channel.send(file=discord.File(filepath))
             sent = True
         else:
             logging.info("Didn't find it.  Failing over to wiki search.")
@@ -400,7 +400,7 @@ async def on_message(message):
                             )
                         )
 
-                await bot.send_file(destination=message.channel, fp=tmp_img_path)
+                await message.channel.send(file=discord.File(tmp_img_path))
                 # await bot.send_message(message.author, "I didn't have that image in my database, so I tried finding it on the Wiki.  Was this the picture you wanted?")
                 # await bot.send_message(message.author, "[!yes/!no]")
                 sent = True
@@ -488,7 +488,7 @@ async def on_message(message):
                 else:
                     listbuilder.export_to_vlog(vlogfilepath, vlbfilepath, workingpath)
                     logging.info("6")
-                    await bot.send_file(destination=message.channel, fp=vlogfilepath)
+                    await message.channel.send(file=discord.File(vlogfilepath))
                     logging.info("7")
                 del h
 
