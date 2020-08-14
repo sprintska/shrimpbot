@@ -112,7 +112,7 @@ async def on_ready():
     logging.info(bot.user.id)
     logging.info("------")
 
-    await bot.change_presence(game=note)
+    await bot.change_presence(status=discord.Status.online, activity=note)
 
     # ~ await bot.edit_profile(username="ShrimpBot")
 
@@ -128,16 +128,19 @@ async def cheat():
 async def on_message(message):
     await bot.process_commands(message)
 
-    # logging
-    logging.info(
-        "[{} | {} | {} | {}] {}".format(
-            time.ctime(),
-            message.server,
-            message.channel.name,
-            message.author.name,
-            message.content,
+
+    if (message.channel.type is not discord.ChannelType.private):
+
+        # logging
+        logging.info(
+            "[{} | {} | {} | {}] {}".format(
+                time.ctime(),
+                message.guild,
+                message.channel.name,
+                message.author.name,
+                message.content,
+            )
         )
-    )
 
     # don't read our own message or do anything if not enabled
     # ONLY the dice roller should respond to other bots
@@ -252,13 +255,13 @@ async def on_message(message):
 
         if out:
             if cheating and message.author.id == "236683961831653376":
-                await bot.send_message(
-                    dicechannel, message.author.mention + " is a dirty cheater."
+                await dicechannel.send(
+                    message.author.mention + " is a dirty cheater."
                 )
-                await bot.send_message(dicechannel, out)
+                #await bot.send_message(dicechannel, out)
             else:
-                await bot.send_message(dicechannel, message.author.mention)
-                await bot.send_message(dicechannel, out)
+                await dicechannel.send(message.author.mention)
+                #await bot.send_message(dicechannel, out)
 
     # don't read any bot's messages
 
@@ -280,46 +283,44 @@ async def on_message(message):
         ],
         message.content,
     ):
-        await bot.add_reaction(message, "\U0001f990")
+        await message.add_reaction("\U0001f990")
 
     if findIn(["HAIL SHRIMPBOT"], message.content):
         me = None
 
-        for server in bot.servers:
-            for member in server.members:
+        for guild in bot.guilds:
+            for member in guild.members:
                 if member.name == bot.user.name:
                     me = member
         if me:
-            await bot.change_nickname(me, nickname="ShrimpBot")
+            await me.edit(nick="ShrimpBot")
 
         # No ponies for Truthiness
         # if message.author.id == "264163431408467978":
         #    await bot.send_message(message.channel, "No more ponies for "+message.author.name+".  Heretic!")
         #    await bot.change_nickname(me,nickname="AcronymBot")
         # else:
-        await bot.send_message(
-            message.channel,
+        await message.channel.send(
             "His chitinous appendages reach down and grant "
             + message.author.name
             + " a pony.  :racehorse:",
         )
-        await bot.change_nickname(me, nickname="AcronymBot")
+        await me.edit(nick="AcronymBot")
 
     if findIn(["DATA FOR THE DATA GOD"], message.content):
         # if findIn(["FOR"],message.content):
         # if findIn(["GOD"],message.content):
 
-        await bot.send_message(
-            message.channel,
+        await message.channel.send(
             "Statistics, likelihoods, and probabilities mean everything to men, nothing to Shrimpbot.",
         )
 
     #   garmBot(message.content,bot)
     if findIn(["GARM"], message.content):
-        await bot.add_reaction(message, "\U000026ab")
-        await bot.add_reaction(message, "\U0001f534")
-        await bot.add_reaction(message, "\U0001f535")
-        await bot.add_reaction(message, "\U0001f525")
+        await message.add_reaction("\U000026ab")
+        await message.add_reaction("\U0001f534")
+        await message.add_reaction("\U0001f535")
+        await message.add_reaction("\U0001f525")
 
     #   acronymExplain(message.content,bot)
     if findIn(["!ACRONYM", "!ACRO", "!DEFINE"], message.content):
@@ -327,14 +328,12 @@ async def on_message(message):
         for word in message.content.split():
             word = word.strip(special_chars)
             if word.upper() in acronym_dict:
-                await bot.send_message(
-                    message.author,
+                await message.author.send(
                     word.upper() + ": " + acronym_dict.get(word.upper(), "ERROR!"),
                 )
                 sent = True
         if not sent:
-            await bot.send_message(
-                message.author,
+            await message.author.send(
                 "Sorry, it doesn't look like that is in my list.  Message Ardaedhel if you think it should be.",
             )
 
@@ -344,8 +343,7 @@ async def on_message(message):
         for word in message.content.split():
             word = word.strip(special_chars)
             if word.upper() in acronym_dict:
-                await bot.send_message(
-                    message.author,
+                await message.author.send(
                     "It looks like you're asking for the definition of "
                     + word.upper()
                     + ": "
@@ -408,12 +406,10 @@ async def on_message(message):
                 sent = True
 
         if not sent:
-            await bot.send_message(
-                message.author,
+            await message.author.send(
                 "Sorry, it doesn't look like that is in my list.  Message Ardaedhel if you think it should be.",
             )
-            await bot.send_message(
-                message.author,
+            await message.author.send(
                 "Please keep in mind that my search functionality is pretty rudimentary at the moment, so you might re-try using a different common name.  Generally I should recognize the full name as printed on the card, with few exceptions.",
             )
 
@@ -426,8 +422,7 @@ async def on_message(message):
     if len(message.content) >= 7:
         if findIn(["!VASSAL"], message.content):
             try:
-                await bot.send_message(
-                    message.channel, "Generating a VASSAL list, hang on..."
+                await message.channel.send( "Generating a VASSAL list, hang on..."
                 )
                 logging.info("1")
 
@@ -473,24 +468,22 @@ async def on_message(message):
 
                 if not success:
                     logging.info("[!] LISTBUILDER ERROR | {}".format(last_item))
-                    await bot.send_message(
-                        BOT_OWNER, "[!] LISTBUILDER ERROR | {}".format(last_item)
+                    await BOT_OWNER.send(
+                        "[!] LISTBUILDER ERROR | {}".format(last_item)
                     )
-                    await bot.send_message(
-                        BOT_OWNER, "POC: {}".format(message.author.name)
+                    await BOT_OWNER.send(
+                        "POC: {}".format(message.author.name)
                     )
-                    await bot.send_message(
-                        BOT_OWNER, "List: \n{}".format(message.content)
+                    await BOT_OWNER.send(
+                        "List: \n{}".format(message.content)
                     )
-                    await bot.send_message(
-                        message.channel,
+                    await message.channel.send(
                         "Sorry, there was an error. I have reported it to Ardaedhel to fix it.",
                     )
-                    await bot.send_message(
-                        message.channel,
+                    await message.channel.send(
                         "Details - The error was in parsing this line: ",
                     )
-                    await bot.send_message(message.channel, last_item)
+                    await message.channel.send( last_item)
 
                 else:
                     listbuilder.export_to_vlog(vlogfilepath, vlbfilepath, workingpath)
@@ -501,15 +494,14 @@ async def on_message(message):
 
             except Exception as inst:
                 logging.info(inst)
-                await bot.send_message(
-                    BOT_OWNER, "[!] LISTBUILDER ERROR | {}".format(inst)
+                await BOT_OWNER.send(
+                    "[!] LISTBUILDER ERROR | {}".format(inst)
                 )
-                await bot.send_message(
-                    message.channel,
+                await message.channel.send(
                     "Sorry, there was an error. I have reported it to Ardaedhel to fix it.",
                 )
-                await bot.send_message(message.channel, "Details - Runtime Error:")
-                await bot.send_message(message.channel, inst)
+                await message.channel.send( "Details - Runtime Error:")
+                await message.channel.send( inst)
 
 
 bot.run(BOT_TOKEN)
