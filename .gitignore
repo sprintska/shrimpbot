@@ -75,3 +75,5 @@ img/tmp/*.png
 vlb/*.vlb
 out/*.vlb
 out/*.vlog
+__pycache__/cardpop.cpython-38.pyc
+__pycache__/listbuilder.cpython-38.pyc

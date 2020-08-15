@@ -24,8 +24,7 @@ TOKEN_PATH = "/home/ardaedhel/bin/shrimpbot/privatekey.dsc"
 CARD_IMG_PATH = "/home/ardaedhel/bin/shrimpbot/img/"
 CARD_LOOKUP = "/home/ardaedhel/bin/shrimpbot/cards.txt"
 ACRO_LOOKUP = "/home/ardaedhel/bin/shrimpbot/acronyms.txt"
-BOT_OWNER = discord.User()
-BOT_OWNER.id = "236683961831653376"
+BOT_OWNER_ID = 236683961831653376
 
 
 with open(TOKEN_PATH) as t:
@@ -49,6 +48,8 @@ with open(ACRO_LOOKUP) as acros:
 
 bot = commands.Bot(command_prefix="&")
 note = discord.Game(name="'!acro' for definitions")
+
+BOT_OWNER = bot.get_user(BOT_OWNER_ID)
 
 
 def findIn(findMe, findInMe):
