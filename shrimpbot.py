@@ -425,6 +425,16 @@ async def on_message(message):
     if findIn(["!NO"], message.content):
         pass
     #   listBuilder
+
+    if findIn(["!listhelp"], message.content):
+        await message.author.send("To use a generated Vassal fleet:"+
+        "\n\t1. Click to download the .vlog file I just provided you."+
+        "\n\t2. Start a new game in Vassal as normal."+
+        "\n\t3. File > Load Continuation... > Select the downloaded .vlog file > Open"+
+        "\n\t4. Click the 'Step forward through logfile' (shown) in the upper left corner of the Star Wars Armada Controls dialog box until your whole list is visible.")
+        await message.author.send(file=discord.File("/home/ardaedhel/bin/shrimpbot/img/arrowed.png"))
+
+
     if len(message.content) >= 7:
         if findIn(["!VASSAL"], message.content):
             try:
@@ -489,12 +499,7 @@ async def on_message(message):
                 else:
                     listbuilder.export_to_vlog(vlogfilepath, vlbfilepath, workingpath)
                     await message.channel.send(file=discord.File(vlogfilepath))
-                    await message.author.send("To use the generated Vassal fleet:"+
-                    "\n1. Click to download the .vlog file I just provided you."+
-                    "\n2. Start a new game in Vassal as normal."+
-                    "\n3. File > Load Continuation... > Select the downloaded .vlog file > Open"+
-                    "\n4. Click the 'Step forward through logfile' (shown) in the upper left corner of the Star Wars Armada Controls dialog box until your whole list is visible.")
-                    await message.author.send(file=discord.File("/home/ardaedhel/bin/shrimpbot/img/arrowed.png"))
+                    await message.author.send("For usage instructions, pm me '!listhelp'.")
                 del h
 
             except Exception as inst:
