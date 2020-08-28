@@ -49,8 +49,6 @@ with open(ACRO_LOOKUP) as acros:
 bot = commands.Bot(command_prefix="&")
 note = discord.Game(name="'!acro' for definitions")
 
-BOT_OWNER = bot.get_user(BOT_OWNER_ID)
-
 
 def findIn(findMe, findInMe):
     for word in findMe:
@@ -108,6 +106,9 @@ async def toggle():
 
 @bot.event
 async def on_ready():
+
+    BOT_OWNER = bot.get_user(BOT_OWNER_ID)
+
     logging.info("Logged in as")
     logging.info(bot.user.name)
     logging.info(bot.user.id)
@@ -473,13 +474,13 @@ async def on_message(message):
 
                 if not success:
                     logging.info("[!] LISTBUILDER ERROR | {}".format(last_item))
-                    await BOT_OWNER.send(
+                    await bot.get_user(BOT_OWNER_ID).send(
                         "[!] LISTBUILDER ERROR | {}".format(last_item)
                     )
-                    await BOT_OWNER.send(
+                    await bot.get_user(BOT_OWNER_ID).send(
                         "POC: {}".format(message.author.name)
                     )
-                    await BOT_OWNER.send(
+                    await bot.get_user(BOT_OWNER_ID).send(
                         "List: \n{}".format(message.content)
                     )
                     await message.channel.send(
@@ -499,7 +500,7 @@ async def on_message(message):
 
             except Exception as inst:
                 logging.info(inst)
-                await BOT_OWNER.send(
+                await bot.get_user(BOT_OWNER_ID).send(
                     "[!] LISTBUILDER ERROR | {}".format(inst)
                 )
                 await message.channel.send(
