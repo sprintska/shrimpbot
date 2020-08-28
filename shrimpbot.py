@@ -50,6 +50,7 @@ bot = commands.Bot(command_prefix="&")
 note = discord.Game(name="'!acro' for definitions")
 
 BOT_OWNER = bot.get_user(BOT_OWNER_ID)
+logging.info(BOT_OWNER)
 
 
 def findIn(findMe, findInMe):

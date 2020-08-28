@@ -15,7 +15,6 @@ import logging
 # import update_pieces
 
 PWD = os.getcwd()
-# GUID = time.time()
 # VLOGFILENAME = "mtmtest2.vlog"
 # VLBFILENAME = "mtmtest2.vlb"
 
@@ -274,6 +273,8 @@ def ident_format(fleet_text):
                 line.count("=") > 3
             ):
                 formats["afd"] += 5.0
+            if line.strip().startswith("· "):
+                formats["afd"] += 1
 
     # Kingston
     if "Faction:" in ft:
@@ -567,7 +568,7 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
 
             elif start:
 
-                if card_name[0] == "+":
+                if card_name[0] == "·":
                     upgrade, cost = card_name.split("(")
                     upgrade = scrub_piecename(upgrade)
                     cost = cost.split(")")[0]
