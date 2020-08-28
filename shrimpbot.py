@@ -50,7 +50,6 @@ bot = commands.Bot(command_prefix="&")
 note = discord.Game(name="'!acro' for definitions")
 
 BOT_OWNER = bot.get_user(BOT_OWNER_ID)
-logging.info(BOT_OWNER)
 
 
 def findIn(findMe, findInMe):
@@ -112,6 +111,10 @@ async def on_ready():
     logging.info("Logged in as")
     logging.info(bot.user.name)
     logging.info(bot.user.id)
+    logging.info("------")
+    logging.info("Owner is")
+    logging.info(BOT_OWNER.name)
+    logging.info(BOT_OWNER.id)
     logging.info("------")
 
     await bot.change_presence(status=discord.Status.online, activity=note)
