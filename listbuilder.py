@@ -859,7 +859,7 @@ def export_to_vlog(export_to, vlb_path, working_path=args.wd):
 
 def scrub_piecename(piecename):
 
-    scrub_these = " :!-'(),\"+.\t\r\n" + u"\u2022"
+    scrub_these = " :!-'(),\"+.\t\r\n·" + u"\u2022"
 
     piecename = piecename.replace("\/", "").split("/")[0].split(";")[-1]
 
