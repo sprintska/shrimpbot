@@ -566,7 +566,7 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
             if card_name.startswith("==="):
                 start = True
 
-            elif start:
+            elif start and len(card_name) > 0:
 
                 if card_name[0] == "·":
                     upgrade, cost = card_name.split("(")
