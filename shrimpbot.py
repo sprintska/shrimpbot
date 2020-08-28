@@ -430,7 +430,6 @@ async def on_message(message):
             try:
                 await message.channel.send( "Generating a VASSAL list, hang on..."
                 )
-                logging.info("1")
 
                 liststr = message.content.strip()[7::].strip()
                 if not liststr:
@@ -438,7 +437,6 @@ async def on_message(message):
                 h = hashlib.new("md5")
                 h.update(str(time.time()).encode())
                 guid = h.hexdigest()[0:16]
-                logging.info("2")
 
                 listbuilderpath = os.path.abspath("/home/ardaedhel/bin/shrimpbot/")
                 workingpath = os.path.join(listbuilderpath, "working/")
@@ -447,7 +445,6 @@ async def on_message(message):
                 vlbfilepath = os.path.join(vlbdirpath, guid + ".vlb")
                 vlogfilepath = os.path.join(outpath, guid + ".vlog")
                 databasepath = os.path.join(listbuilderpath, "vlb_pieces.vlo")
-                logging.info("3")
 
                 conn = sqlite3.connect(databasepath)
                 if (
@@ -465,12 +462,10 @@ async def on_message(message):
                     logging.info(
                         "Database at {}, {}, found...".format(databasepath, conn)
                     )
-                logging.info("4")
 
                 success, last_item = listbuilder.import_from_list(
                     liststr, vlbfilepath, workingpath, conn
                 )
-                logging.info("5")
 
                 if not success:
                     logging.info("[!] LISTBUILDER ERROR | {}".format(last_item))
@@ -493,9 +488,13 @@ async def on_message(message):
 
                 else:
                     listbuilder.export_to_vlog(vlogfilepath, vlbfilepath, workingpath)
-                    logging.info("6")
                     await message.channel.send(file=discord.File(vlogfilepath))
-                    logging.info("7")
+                    await message.author.send("To use the generated Vassal fleet:"+
+                    "\n1. Click to download the .vlog file I just provided you."+
+                    "\n2. Start a new game in Vassal as normal."+
+                    "\n3. File > Load Continuation... > Select the downloaded .vlog file > Open"+
+                    "\n4. Click the 'Step forward through logfile' (shown) in the upper left corner of the Star Wars Armada Controls dialog box until your whole list is visible.")
+                    await message.author.send(file=discord.File("/home/ardaedhel/bin/shrimpbot/img/arrowed.png"))
                 del h
 
             except Exception as inst:
