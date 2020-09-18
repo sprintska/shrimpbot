@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import json
+import os
 import pathlib
 import requests
 import shutil
@@ -30,9 +31,12 @@ def findPage(page_name):
     
     try:
         with requests.get(urlString,params=payload) as r:
-            sig = """</strong>\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t</p>\\n\\n\\t\\t\\t\\t\\t<ul class="Results">\\n\\t\\t\\t\\t\\t\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t<li class="result">\\n\\t<article>\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t<h1>\\n\\t\\t\\t\\t<a href="""
-            
-            return str(r.content).split(sig)[1].split('data-name="')[1].split('"')[0]
+#            sig = """</strong>\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t</p>\\n\\n\\t\\t\\t\\t\\t<ul class="Results">\\n\\t\\t\\t\\t\\t\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t<li class="result">\\n\\t<article>\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t<h1>\\n\\t\\t\\t\\t<a href="""
+            start = """</strong>\\t\\t\\t\\t\\t\\t\\t\\t\\t</p>\\n\\n\\t\\t\\t\\t<ul class="unified-search__results">\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t<li class="unified-search__result">\\n\\t<article>\\n\\t\\t<h1>\\n\\t\\t\\t\\t\\t\\t<a href="""
+            end = """\\n\\t\\t\\t   class=\"unified-search__result__title"""
+
+            # return str(r.content).split(start)[1].split('data-name="')[1].split('"')[0]
+            return str(r.content).split(start)[1].split(end)[0].strip('"')
     except IndexError:
         return False
         
@@ -56,7 +60,7 @@ def getBestMatchImageTitle(pageTitle):
         with requests.get(urlString,params=payload) as r:
             data = r.json()
         
-        for key, val in data['query']['pages'].items():
+        for _, val in data['query']['pages'].items():
             for img in val['images']:
                 imgfile = img['title']
                 if imgfile.endswith('.png'):
@@ -94,7 +98,7 @@ def getImageUrl(img_title):
     except:
         raise
         
-    for key, val in data['query']['pages'].items():
+    for _, val in data['query']['pages'].items():
         for entry in val['imageinfo']:
             return entry['url'].split("/revision/")[0]
             
@@ -102,14 +106,14 @@ def getImageUrl(img_title):
 def addCardToReference(img_src_path,img_dest_path,card_name,reference_table_path):
     
     src = pathlib.Path(img_src_path).resolve()
-    dst = pathlib.Path(img_dst_path).resolve()
+    dst = pathlib.Path(img_dest_path).resolve()
     table = pathlib.Path(reference_table_path).resolve()
     
     img_filename = "_" + src.name
     dst = dst / img_filename
     
     shutil.copy(src,dst)
-    shutil.unlink(src)
+    os.remove(src)
     
     table_entry = "\n{};{}".format(img_filename,card_name)
     
