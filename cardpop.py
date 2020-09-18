@@ -28,18 +28,24 @@ def findPage(page_name):
     """Search by page name.  Return page title of the top result."""
     
     payload = {
-        "query":page_name,
+        "action":"query",
+        "list":"search",
+        "srsearch":page_name,
+        "format":"json",
         }
-    urlString = "https://starwars-armada.fandom.com/wiki/Special:Search"
+    urlString = "https://starwars-armada.fandom.com/api.php"
     
     try:
         with requests.get(urlString,params=payload) as r:
+            data = r.json()
+        logging.info("Top wiki hit: {}".format(data["query"]["search"][0]["title"]))
+        return data["query"]["search"][0]["title"]
 #            sig = """</strong>\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t</p>\\n\\n\\t\\t\\t\\t\\t<ul class="Results">\\n\\t\\t\\t\\t\\t\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t<li class="result">\\n\\t<article>\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t<h1>\\n\\t\\t\\t\\t<a href="""
-            start = """</strong>\\t\\t\\t\\t\\t\\t\\t\\t\\t</p>\\n\\n\\t\\t\\t\\t<ul class="unified-search__results">\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t<li class="unified-search__result">\\n\\t<article>\\n\\t\\t<h1>\\n\\t\\t\\t\\t\\t\\t<a href="""
-            end = """\\n\\t\\t\\t   class=\"unified-search__result__title"""
+            # start = """</strong>\\t\\t\\t\\t\\t\\t\\t\\t\\t</p>\\n\\n\\t\\t\\t\\t<ul class="unified-search__results">\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t<li class="unified-search__result">\\n\\t<article>\\n\\t\\t<h1>\\n\\t\\t\\t\\t\\t\\t<a href="""
+            # end = """\\n\\t\\t\\t   class=\"unified-search__result__title"""
 
             # return str(r.content).split(start)[1].split('data-name="')[1].split('"')[0]
-            return str(r.content).split(start)[1].split(end)[0].strip('"')
+            # return str(r.content).split(start)[1].split(end)[0].strip('"')
     except IndexError:
         return False
         
@@ -49,7 +55,7 @@ def getBestMatchImageTitle(pageTitle):
     """Return the main image from the page of the given title."""
     
     
-    print("Searching for a good match in {}...".format(pageTitle))
+    logging.info("Searching for a good match in {}...".format(pageTitle))
     
     payload = {
         "action":"query",
@@ -64,6 +70,7 @@ def getBestMatchImageTitle(pageTitle):
             data = r.json()
         
         for _, val in data['query']['pages'].items():
+            [logging.info(v) for v in val]
             for img in val['images']:
                 imgfile = img['title']
                 if imgfile.endswith('.png'):
@@ -78,7 +85,7 @@ def getBestMatchImageTitle(pageTitle):
                         return imgfile
                     print("[-]")
     except Exception as err:
-        logging.error(Exception)
+        logging.error("{} - {} - {}".format(type(err), err.args, err))
         
     return False
         
