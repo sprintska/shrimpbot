@@ -40,12 +40,6 @@ def findPage(page_name):
             data = r.json()
         logging.info("Top wiki hit: {}".format(data["query"]["search"][0]["title"]))
         return data["query"]["search"][0]["title"]
-#            sig = """</strong>\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t</p>\\n\\n\\t\\t\\t\\t\\t<ul class="Results">\\n\\t\\t\\t\\t\\t\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t<li class="result">\\n\\t<article>\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t<h1>\\n\\t\\t\\t\\t<a href="""
-            # start = """</strong>\\t\\t\\t\\t\\t\\t\\t\\t\\t</p>\\n\\n\\t\\t\\t\\t<ul class="unified-search__results">\\n\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t\\t<li class="unified-search__result">\\n\\t<article>\\n\\t\\t<h1>\\n\\t\\t\\t\\t\\t\\t<a href="""
-            # end = """\\n\\t\\t\\t   class=\"unified-search__result__title"""
-
-            # return str(r.content).split(start)[1].split('data-name="')[1].split('"')[0]
-            # return str(r.content).split(start)[1].split(end)[0].strip('"')
     except IndexError:
         return False
         
