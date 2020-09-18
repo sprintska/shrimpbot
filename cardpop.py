@@ -1,11 +1,14 @@
 #!/usr/bin/python3
 
 import json
+import logging
 import os
 import pathlib
 import requests
 import shutil
 
+
+logging.basicConfig(filename="/var/log/shrimp.log", level=logging.DEBUG)
 
 def autoPopulateImage(subject):
 
@@ -74,8 +77,8 @@ def getBestMatchImageTitle(pageTitle):
                         print("[+]")
                         return imgfile
                     print("[-]")
-    except:
-        raise
+    except Exception as err:
+        logging.error(Exception)
         
     return False
         
