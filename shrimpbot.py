@@ -376,7 +376,7 @@ async def on_message(message):
         if searchterm == "SURPRISEATTACK" and random.random() > 0.5:
             try:
                 filepath = os.path.join(CARD_IMG_PATH, "surprisemofo.png")
-                logging.info("Sending Surprise Motherfucker...")
+                logging.info("Sending to channel {} - Surprise Motherfucker...".format(message.channel))
                 await message.channel.send(file=discord.File(filepath))
                 sent = True
             except:
@@ -384,7 +384,8 @@ async def on_message(message):
         elif searchterm in cardlookup:
             # Post the image to requested channel
             filepath = os.path.join(CARD_IMG_PATH, str(cardlookup[searchterm]))
-            logging.info("Looking in {}".format(filepath))
+            # logging.info("Looking in {}".format(filepath))
+            logging.info("Sending to channel {} - {}".format(message.channel, filepath))
             await message.channel.send(file=discord.File(filepath))
             sent = True
         else:
@@ -406,6 +407,7 @@ async def on_message(message):
                             )
                         )
 
+                logging.info("Sending to channel {} - {}".format(message.channel, tmp_img_path))
                 await message.channel.send(file=discord.File(tmp_img_path))
                 # await bot.send_message(message.author, "I didn't have that image in my database, so I tried finding it on the Wiki.  Was this the picture you wanted?")
                 # await bot.send_message(message.author, "[!yes/!no]")
