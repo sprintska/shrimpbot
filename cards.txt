@@ -115,6 +115,9 @@ rr_cpt_expert-shield-tech.png;EST
 rr_cpt_expert-shield-tech.png;EXPERTSHIELDTECH
 rr_cpt_ezra-bridger.png;EZRA
 rr_cpt_ezra-bridger.png;EZRABRIDGER
+rr_cpt_iden_versio.png;IDEN
+rr_cpt_iden_versio.png;IDENVERSIO
+rr_cpt_iden_versio.png;IV
 rr_cpt_sabine_wren.png;SABINE
 rr_cpt_sabine_wren.png;SABINEWREN
 rr_cpt_sabine_wren.png;SW
@@ -122,9 +125,6 @@ rr_flc_take-evasive-action.png;TAKEEVASIVEACTION
 rr_flc_take-evasive-action.png;TEA
 rr_off_advanced-transponder-net.png;ADVANCEDTRANSPONDERNET
 rr_off_advanced-transponder-net.png;ATN
-rr_off_iden_versio.png;IDEN
-rr_off_iden_versio.png;IDENVERSIO
-rr_off_iden_versio.png;IV
 rr_off_proximity-mines.png;PM
 rr_off_proximity-mines.png;PROXIMITYMINES
 rr_off_proximity-mines.png;PROXMINES
