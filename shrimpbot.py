@@ -121,6 +121,9 @@ async def on_ready():
     for guild in bot.guilds:
         logging.info(" {}".format(str(guild)))
         logging.info(" - ID: {}".format(str(guild.id)))
+        if guild.id == 697833083201650689:
+            await guild.leave()
+            logging.info(" [!] LEFT {}".format(str(guild)))
     logging.info("======")
 
     await bot.change_presence(status=discord.Status.online, activity=note)
