@@ -120,6 +120,7 @@ async def on_ready():
     logging.info("Servers using Shrimpbot")
     for guild in bot.guilds:
         logging.info(" {}".format(str(guild)))
+        logging.info(" - ID: {}".format(str(guild.id)))
     logging.info("======")
 
     await bot.change_presence(status=discord.Status.online, activity=note)
