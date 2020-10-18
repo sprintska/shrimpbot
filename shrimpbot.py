@@ -18,7 +18,7 @@ from discord import emoji
 from discord.ext import commands
 
 
-logging.basicConfig(filename="/var/log/shrimp.log", level=logging.DEBUG)
+logging.basicConfig(filename="/var/log/shrimp.log", level=logging.INFO)
 
 TOKEN_PATH = "/home/ardaedhel/bin/shrimpbot/privatekey.dsc"
 CARD_IMG_PATH = "/home/ardaedhel/bin/shrimpbot/img/"
@@ -117,6 +117,10 @@ async def on_ready():
     logging.info(BOT_OWNER.name)
     logging.info(BOT_OWNER.id)
     logging.info("------")
+    logging.info("Servers using Shrimpbot")
+    for guild in bot.guilds:
+        logging.info(" {}".format(str(guild)))
+    logging.info("======")
 
     await bot.change_presence(status=discord.Status.online, activity=note)
 
