@@ -33,7 +33,7 @@ parser.add_argument("-vlb", help=".vlb filename", type=str, default="list.vlb")
 parser.add_argument("-aff", help=".aff filename", type=str, default="test.aff")
 parser.add_argument(
     "-flt",
-    help="fleet list location\r\nVAL will attempt to identify and ingest the list in the given format",
+    help="fleet list location--VAL will attempt to identify and ingest the list in the given format",
     type=str,
     default="list.flt",
 )
@@ -965,6 +965,7 @@ class Fleet:
         self.sq_upper_y = self.ship_y + self.sq_y_offset
         self.sq_lower_y = self.sq_upper_y + self.sq_to_sq_y_padding
         self.sq_row = 1
+
     def set_name(self, name):
 
         self.name = str(name)
