@@ -1,0 +1,82 @@
++/766976690488/placemark;Spawn Command 1;65,195;VASSAL.build.module.PieceWindow:Game pieces\/VASSAL.build.widget.TabWidget\/VASSAL.build.widget.ListWidget:Ship Essentials\/VASSAL.build.widget.PieceSlot:Command Stack 1;null;88;12;false;;Spawn Command 1;16602;1;false
+placemark;Spawn CR90;83,195;VASSAL.build.module.PieceWindow:Game pieces\/VASSAL.build.widget.TabWidget\/VASSAL.build.widget.TabWidget:Rebel\/VASSAL.build.widget.TabWidget:Capital Ships\/VASSAL.build.widget.ListWidget:CR90 Corvette\/VASSAL.build.widget.PieceSlot:CR90 Corvette;null;175;0;true;;Spawn CR90;16603;0;false\
+piece;;;;CR90 Corvette A/
+Table;350;300;438\
+
+piece;;;;CR90 Corvette/
+Table;450;300;603\
+
+piece;;;;Jaina's Light/
+Table;700;400;508\
+
+piece;;;;Admiral Ackbar/
+Table;700;225;563\
+
+piece;;;;Turbolaser Reroute Circuits/
+Table;800;225;2265\
+
+
++/4793347057668/placemark;Spawn Command 1;65,195;VASSAL.build.module.PieceWindow:Game pieces\/VASSAL.build.widget.TabWidget\/VASSAL.build.widget.ListWidget:Ship Essentials\/VASSAL.build.widget.PieceSlot:Command Stack 1;null;88;12;false;;Spawn Command 1;16626;1;false
+placemark;Spawn GR-75;83,195;VASSAL.build.module.PieceWindow:Game pieces\/VASSAL.build.widget.TabWidget\/VASSAL.build.widget.TabWidget:Rebel\/VASSAL.build.widget.TabWidget:Capital Ships\/VASSAL.build.widget.ListWidget:GR-75 Transports\/VASSAL.build.widget.PieceSlot:GR-75 Flotilla;null;175;0;true;;Spawn GR-75;16627;0;false\
+piece;;;;GR-75 Medium Transports/
+Table;1050;300;155:24\
+
+piece;;;;GR-75 Flotilla/
+Table;1100;300;155:15\
+
+piece;;;;Comms Net/
+Table;1375;300;155:43\
+
+
++/2087576376221/placemark;Spawn Command 3;65,195;VASSAL.build.module.PieceWindow:Game pieces\/VASSAL.build.widget.TabWidget\/VASSAL.build.widget.ListWidget:Ship Essentials\/VASSAL.build.widget.PieceSlot:Command Stack 3;null;88;12;false;;Spawn Command 3;16596;1;false
+placemark;Spawn AF2mk2;83,195;VASSAL.build.module.PieceWindow:Game pieces\/VASSAL.build.widget.TabWidget\/VASSAL.build.widget.TabWidget:Rebel\/VASSAL.build.widget.TabWidget:Capital Ships\/VASSAL.build.widget.ListWidget:Assault Frigate Mark II\/VASSAL.build.widget.PieceSlot:Assault Frigate Mark II;null;175;0;true;;Spawn AF2mk2;16597;0;false\
+piece;;;;Assault Frigate Mark II B/
+Table;1600;300;1429\
+
+piece;;;;Assault Frigate Mark II/
+Table;1650;300;8934\
+
+piece;;;;Electronic Countermeasures/
+Table;2750;400;803\
+
+
++/2464760494093/placemark;Spawn Command 3;65,195;VASSAL.build.module.PieceWindow:Game pieces\/VASSAL.build.widget.TabWidget\/VASSAL.build.widget.ListWidget:Ship Essentials\/VASSAL.build.widget.PieceSlot:Command Stack 3;null;88;12;false;;Spawn Command 3;16662;1;false
+placemark;Spawn MC80H1;83,195;VASSAL.build.module.PieceWindow:Game pieces\/VASSAL.build.widget.TabWidget\/VASSAL.build.widget.TabWidget:Rebel\/VASSAL.build.widget.TabWidget:Capital Ships\/VASSAL.build.widget.ListWidget:MC80 Home One\/VASSAL.build.widget.PieceSlot:MC80 Home One;null;175;0;true;;Spawn MC80H1;16663;0;false\
+piece;;;;MC80 Command Cruiser/
+Table;2300;300;8928\
+
+piece;;;;MC80 Home One/
+Table;2375;300;8925\
+
+piece;;;;Strategic Adviser/
+Table;2625;400;15147\
+
+piece;;;;Caitken And Shollan/
+Table;2025;225;14975\
+
+piece;;;;Quad Battery Turrets/
+Table;2025;400;13887\
+
+piece;;;;Electronic Countermeasures/
+Table;1900;400;803\
+
+piece;;;;Intel Officer/
+Table;1900;225;570\
+
+
+
+
+
+piece;;;;Leading Shots/
+Table;2750;225;16728\
+
+piece;;;;Defiance/
+Table;2625;225;8929\
+
+Table;2394;298;2142\
+
+Table;1680;310;2142\
+
+Table;1130;304;1310\
+
+Table;456;284;1310

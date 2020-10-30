@@ -95,12 +95,13 @@ def add_wackier_slashes(vlb_unprocessed):
             terminating_whacks.append(terminating_whack_match)
         elif len(terminating_whacks[-1]) < len(terminating_whack_match):
             terminating_whacks.append(terminating_whack_match)
-    [(vlb_unprocessed = vlb_unprocessed + twm)  for twm in terminating_whacks]
+    for twm in terminating_whacks:
+        vlb_unprocessed += twm  
 
     return vlb_unprocessed
 
 
-with open("buildFile") as build_file_obj:
+with open("z:\\home\\ardaedhel\\Documents\\Development\\scratch\\buildFile") as build_file_obj:
     build_file = build_file_obj.read()
 
 build_file = preprocess_build_file(build_file)

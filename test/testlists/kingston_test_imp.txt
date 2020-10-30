@@ -1,0 +1,265 @@
+
+
+Name: Imp Test I
+Faction: Imperial
+Commander: Admiral Konstantine
+
+Assault:
+Defense:
+Navigation:
+
+Arquitens Command Cruiser (59)
+• Admiral Ozzel (20)
+= 79 Points
+
+Arquitens Command Cruiser (59)
+• Admiral Motti (24)
+= 83 Points
+
+Arquitens Command Cruiser (59)
+• Admiral Piett (22)
+= 81 Points
+
+Arquitens Command Cruiser (59)
+• Admiral Screed (26)
+= 85 Points
+
+Arquitens Command Cruiser (59)
+• Admiral Sloane (24)
+= 83 Points
+
+Arquitens Command Cruiser (59)
+• Darth Vader (36)
+= 95 Points
+
+Arquitens Command Cruiser (59)
+• Emperor Palpatine (35)
+= 94 Points
+
+Arquitens Command Cruiser (59)
+• General Romodi (20)
+= 79 Points
+
+Arquitens Command Cruiser (59)
+• General Tagge (25)
+= 84 Points
+Arquitens Command Cruiser (59)
+• Grand Admiral Thrawn (32)
+= 91 Points
+
+Arquitens Command Cruiser (59)
+• Grand Moff Tarkin (38)
+= 97 Points
+
+Arquitens Command Cruiser (59)
+• Moff Jerjerrod (23)
+= 82 Points
+
+Arquitens Command Cruiser (59)
+• Darth Vader (1)
+= 60 Points
+
+Arquitens Command Cruiser (59)
+• Admiral Konstantine (23)
+• Admiral Chiraneau (10)
+• Centicore (3)
+= 95 Points
+
+Arquitens Light Cruiser (54)
+• Admiral Montferrat (5)
+• Hand of Justice (4)
+= 63 Points
+
+Gladiator I (56)
+• Admiral Ozzel (2)
+• Demolisher (10)
+= 68 Points
+
+Gladiator II (62)
+• Admiral Titus (2)
+• Insidious (3)
+= 67 Points
+
+Gladiator II (62)
+• Agent Kallus (3)
+• Seventh Fleet Star Destroyer (5)
+= 70 Points
+
+Gozanti Assault Carriers (28)
+• Captain Brunson (5)
+• Suppressor (4)
+= 37 Points
+
+Gozanti Cruisers (23)
+• Captain Needa (2)
+• Vector (2)
+= 27 Points
+
+Imperial I (110)
+• Commandant Aresko (7)
+• Darth Vader (3)
+• Avenger (5)
+= 125 Points
+
+Imperial II (120)
+• Commander Beck (3)
+• Gunnery Chief Varnillian (6)
+• Chimaera (4)
+= 133 Points
+
+ISD Cymoon 1 Refit (112)
+• Commander Gherant (2)
+• Devastator (10)
+= 124 Points
+
+ISD Kuat Refit (112)
+• Commander Vanto (7)
+• Relentless (3)
+= 122 Points
+
+ISD Kuat Refit (112)
+• Commander Woldar (4)
+• Sovereign (4)
+= 120 Points
+
+Interdictor Combat Refit (93)
+• Director Isard (3)
+• G-8 Experimental Projector (8)
+• Interdictor (3)
+= 107 Points
+
+Interdictor Suppression Refit (90)
+• Director Krennic (8)
+• Grav Shift Reroute (2)
+• G7-X Grav Well Projector (2)
+= 102 Points
+
+Interdictor Suppression Refit (90)
+• Emperor Palpatine (3)
+• Targeting Scrambler (5)
+= 98 Points
+
+Onager Star Destroyer (110)
+• Governor Pryce (7)
+• Orbital Bombardment Particle Cannons (5)
+• Cataclysm (5)
+= 127 Points
+
+Onager Testbed (96)
+• Iden Versio (6)
+• Superheavy Composite Beam Turbolasers (7)
+• Rakehell (4)
+= 113 Points
+
+Onager Testbed (96)
+• Instructor Goran (7)
+• Sunder (10)
+= 113 Points
+
+Quasar Fire I (54)
+• Lira Wessex (2)
+• Pursuant (2)
+= 58 Points
+
+Quasar Fire II (61)
+• Minister Tua (2)
+• Squall (3)
+= 66 Points
+
+Quasar Fire II (61)
+• Reeva Demesne (4)
+• Stronghold (5)
+= 70 Points
+
+Raider I (44)
+• Taskmaster Grint (5)
+• Corvus (2)
+= 51 Points
+
+Raider I (44)
+• The Grand Inquisitor (4)
+• Impetuous (4)
+= 52 Points
+
+Raider II (48)
+• Wulff Yularen (7)
+• Instigator (4)
+= 59 Points
+
+Victory I (73)
+• Hondo Ohnaka (2)
+• Corrupter (5)
+= 80 Points
+
+Victory II (85)
+• Chart Officer (2)
+• Dominator (12)
+= 99 Points
+
+Victory II (85)
+• Harrow (3)
+= 88 Points
+
+Victory II (85)
+• Warlord (8)
+= 93 Points
+
+SSD Command Prototype (220)
+• Annihilator (8)
+= 228 Points
+
+SSD Assault Prototype (250)
+• Eclipse (3)
+= 253 Points
+
+SSD Executor I (381)
+• Executor (2)
+= 383 Points
+
+SSD Executor II (411)
+• Ravager (4)
+= 415 Points
+
+Squadrons:
+• Black Squadron (9)
+• Boba Fett (26)
+• Bossk (23)
+• Captain Jonus (16)
+• Ciena Ree (17)
+• Colonel Jendon (20)
+• Dengar (20)
+• Gamma Squadron (10)
+• Gar Saxon (23)
+• Howlrunner (16)
+• IG-88B (21)
+• IG-88 (21)
+• Maarek Stele (21)
+• Major Rhymer (16)
+• Mauler Mithel (15)
+• Moralo Eval (22)
+• Morna Kee (27)
+• Saber Squadron (12)
+• Soontir Fel (18)
+• Tel Trevura (17)
+• Tempest Squadron (13)
+• Valen Rudor (13)
+• Whisper (20)
+• Zertik Strom (15)
+• Aggressor Assault Fighter (16)
+• Firespray-31 (18)
+• JumpMaster 5000 (12)
+• Lambda Shuttle (15)
+• Mandalorian Gauntlet Fighter (20)
+• TIE Advanced Squadron (12)
+• TIE Bomber Squadron (9)
+• TIE Defender Squadron (16)
+• TIE Fighter Squadron (8)
+• TIE Interceptor Squadron (11)
+• TIE Phantom Squadron (14)
+• VT-49 Decimator (22)
+• YV-666 (15)
+• Darth Vader (21)
+• Hondo Ohnaka (24)
+= 619 Points
+
+Total Points: 4325

@@ -63,9 +63,10 @@ g_conn = sqlite3.connect(g_database)
 """ These dicts translate between canonical names and non-canonical
     (some misspelled, mostly just shorthand).  Because they all have
     to match the Vassal name (as that's what the db is generated
-    from), the Vassal errors dict translates correct keys to incorrect
-    values, while the listbuilder errors dict translates incorrect keys
-    to Vassal values regardless of the correctness of the Vassal value.
+    from), the Vassal errors dict translates correct keys to the 
+    corresponding incorrect Vassal values, while the listbuilder errors
+    dict translates incorrect keys to Vassal values regardless of the 
+    correctness of the Vassal value.
 """
 
 vassal_nomenclature_errors = {
@@ -193,7 +194,10 @@ ambiguous_names = {
 def unzipall(zip_file_path, tar_path):
 
     """Unzips all of the files in the zip file at zip_file_path and
-    dumps all those files into directory tar_path."""
+    dumps all those files into directory tar_path.
+    
+    I'm pretty sure this duplicates a built-in function, but, I mean...
+    it works."""
 
     zip_ref = zipfile.ZipFile(zip_file_path, "r")
     zip_ref.extractall(tar_path)
@@ -203,7 +207,10 @@ def unzipall(zip_file_path, tar_path):
 def zipall(tar_path, zip_file_path):
 
     """Creates a new zip file at zip_file_path and populates it with
-    the zipped contents of tar_path."""
+    the zipped contents of tar_path.
+
+    I'm pretty sure this duplicates a built-in function, but, I mean...
+    it works."""
 
     shittyname = shutil.make_archive(zip_file_path, "zip", tar_path)
     shutil.move(shittyname, zip_file_path)
