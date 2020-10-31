@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 
 import shutil
-import sys
 import os
 import zipfile
 import argparse
 import sqlite3
 import re
-import time
 import random
-import json
 import logging
 
 # import update_pieces
@@ -63,9 +60,9 @@ g_conn = sqlite3.connect(g_database)
 """ These dicts translate between canonical names and non-canonical
     (some misspelled, mostly just shorthand).  Because they all have
     to match the Vassal name (as that's what the db is generated
-    from), the Vassal errors dict translates correct keys to the 
+    from), the Vassal errors dict translates correct keys to the
     corresponding incorrect Vassal values, while the listbuilder errors
-    dict translates incorrect keys to Vassal values regardless of the 
+    dict translates incorrect keys to Vassal values regardless of the
     correctness of the Vassal value.
 """
 
@@ -195,7 +192,7 @@ def unzipall(zip_file_path, tar_path):
 
     """Unzips all of the files in the zip file at zip_file_path and
     dumps all those files into directory tar_path.
-    
+
     I'm pretty sure this duplicates a built-in function, but, I mean...
     it works."""
 
@@ -251,7 +248,7 @@ def ident_format(fleet_text):
                 if int(line[0]) == i + 1:
                     formats["fab"] += 1
                 i += int(line[0])
-        except:
+        except IndexError:
             pass
 
     # Warlords
@@ -375,39 +372,41 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
         try:
             if line.strip():
                 if line.strip()[0].isdigit():
-                    l = line.replace("â€¢", u"\u2022").strip()
-                    l = "".join(
-                        "".join(l.split(" {} ".format(u"\u2022"))[1::]).split(" (")[:-1]
+                    this_line = line.replace("â€¢", u"\u2022").strip()
+                    this_line = "".join(
+                        "".join(this_line.split(" {} ".format(u"\u2022"))[1::]).split(
+                            " ("
+                        )[:-1]
                     )
 
                     # only ships and objs are broken up with " - ", and objs are labelled
                     # otherwise, it's either a squadron or an unupgraded ship--indistinguishable
 
-                    if " - " in l:
-                        if l.startswith("Objective"):
+                    if " - " in this_line:
+                        if this_line.startswith("Objective"):
                             # print("=-"*25)
                             # print("Objectives: {}".format(l))
                             pass
                         else:
-                            ll = l.split(" - ")
-                            s = f.add_ship(ll[0].strip())
-                            for u in ll[1::]:
+                            working_line = this_line.split(" - ")
+                            s = f.add_ship(working_line[0].strip())
+                            for u in working_line[1::]:
                                 s.add_upgrade(u.strip())
 
                     else:
                         issquadron = False
                         isship = False
                         issquadronfancy = False
-                        l = scrub_piecename(l)
-                        if l in nomenclature_translation:
-                            t = nomenclature_translation[l]
+                        this_line = scrub_piecename(this_line)
+                        if this_line in nomenclature_translation:
+                            t = nomenclature_translation[this_line]
                             logging.info(
-                                "[-] Translated {} to {} - Fab's.".format(l, t)
+                                "[-] Translated {} to {} - Fab's.".format(this_line, t)
                             )
-                            l = t
+                            this_line = t
                         logging.info(
                             "Searching for Fab's piece {} in {}".format(
-                                scrub_piecename(l), str(conn)
+                                scrub_piecename(this_line), str(conn)
                             )
                         )
                         try:
@@ -415,7 +414,7 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                 """SELECT * FROM pieces
                                     WHERE piecetype='squadroncard'
                                     AND piecename LIKE ?;""",
-                                ("%" + scrub_piecename(l) + "%",),
+                                ("%" + scrub_piecename(this_line) + "%",),
                             ).fetchall()
                         except:
                             pass
@@ -425,14 +424,14 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                 """SELECT * FROM pieces
                                     WHERE piecetype='shipcard'
                                     AND piecename LIKE ?;""",
-                                ("%" + scrub_piecename(l),),
+                                ("%" + scrub_piecename(this_line),),
                             ).fetchall()
                         except:
                             pass
 
                         try:
-                            if l.lower()[-8::] == "squadron":
-                                ltmp = l[0:-8]
+                            if this_line.lower()[-8::] == "squadron":
+                                ltmp = this_line[0:-8]
                                 issquadronfancy = conn.execute(
                                     """SELECT * FROM pieces
                                         WHERE piecetype='squadroncard'
@@ -444,14 +443,16 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
 
                         if bool(issquadron):
                             # sq = f.add_squadron(l.strip())
-                            f.add_squadron(l.strip())
+                            f.add_squadron(this_line.strip())
                         elif bool(issquadronfancy):
-                            sq = f.add_squadron(ltmp.strip())
+                            _ = f.add_squadron(ltmp.strip())
                         elif bool(isship):
-                            s = f.add_ship(l.strip())
+                            s = f.add_ship(this_line.strip())
                         else:
                             logging.info(
-                                "{}{} IS FUCKED UP, YO{}".format("=" * 40, l, "=" * 40)
+                                "{}{} IS FUCKED UP, YO{}".format(
+                                    "=" * 40, this_line, "=" * 40
+                                )
                             )
         except:
             return (False, last_line)
@@ -545,7 +546,7 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
                         )
                     )
                     upgrade = upgrade_new
-                u = s.add_upgrade(upgrade)
+                _ = s.add_upgrade(upgrade)
                 shipnext = False
         except:
             return (False, last_line)
@@ -596,7 +597,7 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                         )
                         upgrade = upgrade_new
 
-                    u = s.add_upgrade(upgrade)
+                    _ = s.add_upgrade(upgrade)
 
                 elif "(" not in card_name:
                     logging.info("Hit the conditional for {}.".format(card_name))
@@ -663,7 +664,7 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                         pass
 
                     if bool(issquadron):
-                        sq = f.add_squadron(card_name)
+                        _ = f.add_squadron(card_name)
                     elif bool(isship):
                         s = f.add_ship(card_name)
                     else:
@@ -708,7 +709,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                 elif card_name.split(":")[0] in ["Assault", "Defense", "Navigation"]:
                     if card_name.strip()[-1] != ":":
                         logging.info("{}".format(card_name))
-                        o = f.add_objective(
+                        _ = f.add_objective(
                             card_name.split(":")[0].lower().strip(),
                             card_name.split(":")[1].lower().strip(),
                         )
@@ -733,7 +734,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                             )
                             card_name = card_name_new
 
-                        u = s.add_upgrade(card_name)
+                        _ = s.add_upgrade(card_name)
 
                     elif card_name[0] == "=":
                         pass
@@ -755,7 +756,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                         )
                         card_name = card_name_new
 
-                    sq = f.add_squadron(card_name)
+                    _ = f.add_squadron(card_name)
         except:
             return (False, last_line)
 
@@ -777,10 +778,10 @@ def import_from_aff(import_list, vlb_path, working_path, conn):
             s = f.add_ship(line.split(":")[-1].strip())
 
         elif line.lower().startswith("upgrade:"):
-            u = s.add_upgrade(line.split(":")[-1].strip())
+            _ = s.add_upgrade(line.split(":")[-1].strip())
 
         elif line.lower().startswith("squadron:"):
-            sq = f.add_squadron(line.split(":")[-1].strip())
+            _ = f.add_squadron(line.split(":")[-1].strip())
 
     return f
 
@@ -1228,6 +1229,7 @@ class ShipCard:
                 self.content,
             )
             self.coords = coords
+
     def set_guid(self, guid):
 
         self.content = self.content.replace("vlb_GUID", self.guid)
@@ -1497,10 +1499,10 @@ class Objective:
             if line.strip().startswith("piece;;;;"):
                 # ~ print("[!] Replaced on line:")
                 # ~ print(line)
-                l = line.replace("1", "2")
+                this_line = line.replace("1", "2")
             else:
-                l = line
-            c += l + "\t"
+                this_line = line
+            c += this_line + "\t"
 
         # ~ print(c)
         self.content = c
@@ -1533,4 +1535,3 @@ if __name__ == "__main__":
 
     if args.exp:
         print(export_to_vlog(export_to=g_export_to, vlb_path=g_vlb_path))
-
