@@ -347,10 +347,10 @@ class PieceDefinition(ModuleElement):
 
         output = "LOG\t+/vlb_GUID/"
         for tloc, trait in enumerate(self.traits):
-            output += "{}{}\t".format(trait[0].trait_text, "\\" * tloc)
+            output += "{}{}\t".format(trait[0].trait_text.strip(), "\\" * tloc)
         output = output.rstrip("\\\t") + "/"
         for tloc, trait in enumerate(self.traits):
-            output += "{}{}\t".format(trait[1].state_text, "\\" * tloc)
+            output += "{}{}\t".format(trait[1].state_text.strip(), "\\" * tloc)
         output = output.rstrip("\\\t") + "\\"
         output = re.sub(
             r"\tnull;\d{1,4};\d{1,4};(?=\d{1,10}\\)",
