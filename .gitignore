@@ -12,3 +12,4 @@ out/*.vlog
 __pycache__/*
 *.pyc
 .vscode/*
+vlb_pieces.vlo.bak

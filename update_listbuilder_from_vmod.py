@@ -4,6 +4,7 @@ import argparse
 import os
 import re
 import datetime
+import sqlite3
 import zipfile
 import xml.etree.ElementTree as ET
 
@@ -21,6 +22,15 @@ class VassalModule:
 
         self.prototypes = {}
         self.pieces = {}
+        self.piece_type_signatures = {
+            "prototype;Objective card prototype": "objective",
+            "Actual Obstacle": "obstacle",
+            "prototype;Basic Ship": "ship",
+            "prototype;Ship card prototype": "shipcard",
+            "prototype;Fighter Prototype": "squadron",
+            "prototype;Squadron Card prototype": "squadroncard",
+            "prototype;Upgrade card prototype": "upgradecard",
+        }
 
         _ = self.__parse_prototypes()
         _ = self.__parse_pieces()
@@ -52,37 +62,51 @@ class VassalModule:
 
             return err
 
-        # error_regex = re.compile(r"(?<!>)\+.*?emb2")
-        error_regex = re.compile(r"(?<!>)\+.*?emb2.*?(?<!\\);")
-        good_regex = re.compile(r"VASSAL.build.module.[\s\S]{1,}?(?=\\;)")
+        #     # From any "+" not preceded by "<" through the first subsequent ";" not escaped
+        #     # by an immediately preceding "\" and not stopping for anything inside curlies
+        #     # https://regex101.com/r/w2jI1S/1
+        # error_regex = re.compile(r"(?<!>)\+.*?(\{.*?\}.*?|[^\{\}])(?<!\\);")
+        #     # From the opening "VASSAL.build..." inside the error string through the first
+        #     # subsequent ";" __escaped__ by a leading "\".
+        # good_regex = re.compile(r"VASSAL.build.module.[\s\S]{1,}?(?=\\;)")
 
-        error_count = len(error_regex.findall(self.build_xml_raw))
+        # error_count = len(error_regex.findall(self.build_xml_raw))
 
-        if error_count:
-            for error_item in range(error_count):
+        # if error_count:
+        #     for error_item in range(error_count):
 
-                try:
+        #         try:
 
-                    error_match = error_regex.search(self.build_xml_raw)
-                    error_string = error_match[0]
+        #             error_match = error_regex.search(self.build_xml_raw)
+        #             error_string = error_match[0]
 
-                    good_match = good_regex.search(error_string)
-                    good_string = good_match[0].replace("\\\\", "\\")
+        #             # print(error_string)
 
-                    self.build_xml_raw = (
-                        self.build_xml_raw[: error_match.start(0)]
-                        + good_string
-                        + self.build_xml_raw[error_match.end(0) - 1 :]
-                    )
+        #             good_match = good_regex.search(error_string)
+        #             if good_match:
+        #                 good_string = good_match[0].replace("\\\\", "\\")
+        #                 self.build_xml_raw = (
+        #                     self.build_xml_raw[: error_match.start(0)]
+        #                     + good_string
+        #                     + self.build_xml_raw[error_match.end(0) - 1 :]
+        #                 )
+        #                 print("\t[-] Replacing:\n{}".format(error_string))
+        #                 print("\t[+] With:\n{}\n".format(good_string))
+        #             # print(self.build_xml_raw[error_match.start(0)-10:error_match.start(0)+len(good_string)+10])
 
-                    # print(self.build_xml_raw[error_match.start(0)-10:error_match.start(0)+len(good_string)+10])
+        #         except TypeError as type_err:
 
-                except TypeError as type_err:
+        #             if "object is not subscriptable" not in str(type_err.args[0]):
+        #                 raise type_err
 
-                    if "object is not subscriptable" not in str(type_err.args[0]):
-                        raise type_err
+        #             else:
+        #                 # print("[!] {}".format(type_err))
+        #                 pass
 
-                    print("[+] No weird ass errors found in processing the buildFile.")
+        #             # print("[+] No weird ass errors found in processing the buildFile.")
+
+        # # print(self.build_xml_raw)
+        # exit()
 
     def __get_vmod_metadata(self):
         """Unzip the vmod and parse out the module's metadata."""
@@ -126,7 +150,7 @@ class VassalModule:
 
     def __parse_prototypes(self):
         """Retrieves all the prototypes and populates them to the Module."""
-        prototype_definitions = {}
+        # prototype_definitions = {}
 
         for element_x in self.build_xml.iter("VASSAL.build.module.PrototypeDefinition"):
             try:
@@ -136,7 +160,6 @@ class VassalModule:
 
     def __parse_pieces(self):
         """Retrieves all the pieces and populates them to the Module"""
-        piece_definitions = {}
 
         for element_x in self.build_xml.iter("VASSAL.build.widget.PieceSlot"):
             try:
@@ -144,15 +167,19 @@ class VassalModule:
             except RuntimeError as err:
                 [print(arg) for arg in err.args]
 
-        # [self.dereference(self.pieces[piece]) for piece in self.pieces]
-
         for piece in self.pieces:
-            print("[+] Piece     | {}".format(piece))
-            self.dereference(self.pieces[piece])
-            # [print("    Trait     | {}\n    State     | {}".format(trait[0].trait_text,trait[0].state.state_text)) for trait in o.traits]
-            # for trait in self.pieces[piece].traits:
-            #     # if trait[0].trait_text.startswith("piece;;;;") and o.name not in trait[0].trait_text.replace("\\",""):
-            #     print("       {}".format(trait[0].trait_text))
+
+            for signature in self.piece_type_signatures:
+                if signature in self.pieces[piece].traits_raw:
+                    self.pieces[piece].piece_type = self.piece_type_signatures[
+                        signature
+                    ]
+
+            print("\n[=] {}\n".format(piece))
+            dereferenced_traits = [
+                trait for trait in self.dereference(self.pieces[piece], top_level=True)
+            ]
+            self.pieces[piece].traits = dereferenced_traits
 
     def add_element(self, module_element):
         """Add element to the right list."""
@@ -164,14 +191,21 @@ class VassalModule:
         else:
             print(str(type(module_element)))
 
-    def dereference(self, referring_element):
+    def dereference(self, referring_element, top_level=False):
         """Lookup the references to prototypes and replaces the
         reference with the text of the prototype."""
 
         for trait in referring_element.traits:
-            if trait[0].trait_text.startswith("prototype;"):
-                prototype_name = trait[0].trait_text.split(";")[1].replace("\\","")
-                print("    [-] {}\n    [|] {}".format(prototype_name,self.prototypes[prototype_name]))
+            if trait[0].trait_type == "prototype":
+                prototype_name = trait[0].trait_text.split(";")[1].replace("\\", "")
+                for dereferenced_trait in self.dereference(
+                    self.prototypes[prototype_name]
+                ):
+                    yield dereferenced_trait
+            elif trait[0].trait_type != "piece":
+                yield trait
+            elif trait[0].trait_type == "piece" and top_level:
+                yield trait
 
 
 class ModuleElement:
@@ -216,19 +250,30 @@ class PrototypeDefinition(ModuleElement):
 
         self.traits = []
 
-        traits = self.traits_raw.split("\t")
+        escaped_text_regex = re.compile(r"(?<!>)\+.*?(\{.*?\}.*?|[^\{\}])(?<!\\);")
+        escaped_text_instances = [
+            match_instance.group()
+            for match_instance in escaped_text_regex.finditer(self.traits_raw)
+        ]
+        traits_raw_interim = escaped_text_regex.sub(
+            "___SUB_ESCAPED_BACK_IN___", self.traits_raw
+        )
+        traits_raw_interim = traits_raw_interim.replace("\t", "___SPLIT_ON_ME___")
+        for escaped_text_instance in escaped_text_instances:
+            traits_raw_interim = traits_raw_interim.replace(
+                "___SUB_ESCAPED_BACK_IN___", escaped_text_instance, 1
+            )
+        traits = traits_raw_interim.split("___SPLIT_ON_ME___")
+
         states = self.states_raw.split("\t")
 
-        # print(self.name)
+        print(self.name)
 
         if len(traits) == len(states):
             for tloc, trait in enumerate(traits):
                 self.traits.append((Trait(trait), State(states[tloc])))
                 self.traits[tloc][0].associate_state(self.traits[tloc][1])
         else:
-            [print("|T|{}".format(trait)) for trait in traits]
-            [print("|S|{}".format(state)) for state in states]
-            exit()
             raise RuntimeError(
                 "[!] Failed to import Prototype {} - {} traits vs {} states".format(
                     self.name, len(traits), len(states)
@@ -267,10 +312,25 @@ class PieceDefinition(ModuleElement):
 
         self.traits = []
 
-        traits = self.traits_raw.split("\t")
+        escaped_text_regex = re.compile(r"(?<!>)\+.*?(\{.*?\}.*?|[^\{\}])(?<!\\);")
+        escaped_text_instances = [
+            match_instance.group()
+            for match_instance in escaped_text_regex.finditer(self.traits_raw)
+        ]
+        traits_raw_interim = escaped_text_regex.sub(
+            "___SUB_ESCAPED_BACK_IN___", self.traits_raw
+        )
+        traits_raw_interim = traits_raw_interim.replace("\t", "___SPLIT_ON_ME___")
+        for escaped_text_instance in escaped_text_instances:
+            traits_raw_interim = traits_raw_interim.replace(
+                "___SUB_ESCAPED_BACK_IN___", escaped_text_instance, 1
+            )
+        traits = traits_raw_interim.split("___SPLIT_ON_ME___")
+
         states = self.states_raw.split("\t")
 
-        # print(self.name)
+        print("[+] Populating traits for {}".format(self.name))
+        self.piece_type = "other"
 
         if len(traits) == len(states):
             for tloc, trait in enumerate(traits):
@@ -282,6 +342,22 @@ class PieceDefinition(ModuleElement):
                     self.name, len(traits), len(states)
                 )
             )
+
+    def compile_vlb_entry(self):
+
+        output = "LOG\t+/vlb_GUID/"
+        for tloc, trait in enumerate(self.traits):
+            output += "{}{}\t".format(trait[0].trait_text, "\\" * tloc)
+        output = output.rstrip("\\\t") + "/"
+        for tloc, trait in enumerate(self.traits):
+            output += "{}{}\t".format(trait[1].state_text, "\\" * tloc)
+        output = output.rstrip("\\\t") + "\\"
+        output = re.sub(
+            r"\tnull;\d{1,4};\d{1,4};(?=\d{1,10}\\)",
+            "Table;vlb_x_axis;vlb_y_axis;",
+            output,
+        )
+        return output
 
 
 class Trait:
@@ -319,11 +395,117 @@ class State:
         self.trait.state = self
 
 
+def create_db(db_path):
+
+    """Create the db at the path if it doesn't exist"""
+
+    if not os.path.exists(db_path):
+        open(db_path, "w")
+
+        conn = sqlite3.connect(db_path)
+
+        conn.execute(
+            "CREATE TABLE pieces (piecetype text, piecename text, content text, catchall text)"
+        )
+        conn.commit()
+        conn.close()
+
+
+def exists_piece(conn, piecetype, piecename):
+
+    """checks for existence of piece name/type."""
+
+    return bool(
+        conn.execute(
+            """SELECT * FROM pieces
+                                WHERE piecetype=?
+                                AND piecename=?;""",
+            (piecetype, piecename),
+        ).fetchall()
+    )
+
+
+def update_piece(conn, piecetype, piecename, content):
+
+    """updates the content of an existing entry, or creates a new one."""
+
+    catchall = associated_token(piecename, piecetype, content)
+
+    if not exists_piece(conn, piecetype, piecename):
+        print("[+] {} - {} does not exist, creating it...".format(piecetype, piecename))
+        conn.execute(
+            """INSERT INTO pieces VALUES (?,?,?,?)""",
+            (piecetype, piecename, content, catchall),
+        )
+        conn.commit()
+
+    else:
+        print("[^] {} - {} exists, updating it...".format(piecetype, piecename))
+        conn.execute(
+            """UPDATE pieces
+                        SET content=? ,
+                            catchall=?
+                        WHERE piecename=?
+                        AND piecetype=?""",
+            (content, catchall, piecename, piecetype),
+        )
+        conn.commit()
+
+
+def scrub_piecename(piecename):
+    piecename = (
+        piecename.replace("\/", "")
+        .split("/")[0]
+        .split(";")[-1]
+        .replace(" ", "")
+        .replace(":", "")
+        .replace("!", "")
+        .replace("-", "")
+        .replace("'", "")
+        .replace("(", "")
+        .replace(")", "")
+        .lower()
+    )
+    return piecename
+
+
+def associated_token(piece_name, piece_type, vlb_content):
+    """Determines if the vlb_content indicates that the entry should be associated with
+    a ship or squadron token; returns the name of that token, if so."""
+
+    # associate the ship token to the ship card
+    if piece_type == "shipcard":
+        ship_token = ""
+        if "quasar" in piece_name:
+            ship_token = "quasarfirecruisercarrier"  # fuck the Quasar, I don't know why it can't be fucking normal
+        else:
+            for line in vlb_content.split("\t"):
+                if line.startswith("placemark;Spawn") and ("Capital Ships" in line):
+                    ship_token = line.split("\\/VASSAL.build.widget.PieceSlot:")[
+                        -1
+                    ].split(";")[0]
+                    ship_token = scrub_piecename(ship_token)
+        return ship_token
+
+    # associate the squadron token to the squadron card
+    elif piece_type == "squadroncard":
+        sqd_token = ""
+        for line in vlb_content.split("\t"):
+            if line.startswith("placemark;Spawn squadron"):
+                sqd_token = line.split("\\/VASSAL.build.widget.PieceSlot:")[-1].split(
+                    ";"
+                )[0]
+                sqd_token = scrub_piecename(sqd_token)
+        return sqd_token
+
+    return ""
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-db", help="VLO DB to reference for pieces", type=str, default="vlb_pieces.vlo"
+        "-db", help="Path to VLO DB to update", type=str, default="vlb_pieces.vlo"
     )
     parser.add_argument(
         "-m",
@@ -337,3 +519,17 @@ if __name__ == "__main__":
     database_path = os.path.abspath(args.db)
 
     armada_module = VassalModule(vmod_path)
+
+    create_db(database_path)
+    conn = sqlite3.connect(database_path)
+
+    for piece in armada_module.pieces:
+
+        vlb_entry = armada_module.pieces[piece].compile_vlb_entry()
+
+        update_piece(
+            conn,
+            armada_module.pieces[piece].piece_type,
+            scrub_piecename(armada_module.pieces[piece].name),
+            vlb_entry,
+        )
