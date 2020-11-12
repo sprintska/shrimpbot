@@ -354,7 +354,7 @@ class PieceDefinition(ModuleElement):
         output = output.rstrip("\\\t") + "\\"
         output = re.sub(
             r"\tnull;\d{1,4};\d{1,4};(?=\d{1,10}\\)",
-            "Table;vlb_x_axis;vlb_y_axis;",
+            "\tTable;vlb_x_axis;vlb_y_axis;",
             output,
         )
         return output
@@ -526,6 +526,9 @@ if __name__ == "__main__":
     for piece in armada_module.pieces:
 
         vlb_entry = armada_module.pieces[piece].compile_vlb_entry()
+
+        # if armada_module.pieces[piece].piece_type == "shipcard":
+        #     print(vlb_entry)
 
         update_piece(
             conn,
