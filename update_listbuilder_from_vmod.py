@@ -353,7 +353,7 @@ class PieceDefinition(ModuleElement):
             output += "{}{}\t".format(trait[1].state_text.strip(), "\\" * tloc)
         output = output.rstrip("\\\t") + "\\"
         output = re.sub(
-            r"\tnull;\d{1,4};\d{1,4};(?=\d{1,10}\\)",
+            r"\tnull;\d{1,4};\d{1,4};",
             "\tTable;vlb_x_axis;vlb_y_axis;",
             output,
         )
