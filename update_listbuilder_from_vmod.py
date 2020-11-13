@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import difflib
 import os
 import re
 import datetime
@@ -22,6 +23,7 @@ class VassalModule:
 
         self.prototypes = {}
         self.pieces = {}
+        self.xml_parent_map = {child:parent for parent in self.build_xml.iter() for child in parent}
         self.piece_type_signatures = {
             "prototype;Objective card prototype": "objective",
             "Actual Obstacle": "obstacle",
@@ -34,6 +36,11 @@ class VassalModule:
 
         _ = self.__parse_prototypes()
         _ = self.__parse_pieces()
+        
+        # for prototype in self.prototypes:
+        #     self.__resolve_embedded_references(self.prototypes[prototype])
+        # for piece in self.pieces:
+        #     self.__resolve_embedded_references(self.pieces[piece])
 
     def __preprocess_build_xml(self):
         """Wrote this specifically to unfuck the fucked up Leading Shots entry under
@@ -145,8 +152,70 @@ class VassalModule:
 
             self.build_xml_raw = str(build_xml_file.read(), "utf-8")
 
-        _ = self.__preprocess_build_xml()
+        # _ = self.__preprocess_build_xml()
         self.build_xml = ET.fromstring(self.build_xml_raw)
+
+    def __resolve_embedded_references(self, element):
+        """Regexes out all the weird mangled pieces sorta-embedded into the traits
+        of other pieces, fuzzy-matches them to another piece, and 're-references'
+        the piece."""
+
+        if "dice" in element.name.lower():
+            print(f"\n\t [!] Not adding | {element.name}")
+            return False
+        
+        error_regex = re.compile(r"(?<!^)(\+.*?)(\{.*?\}.*?|[^\{\}])(?<!\\);")
+        error_matches = error_regex.finditer(element.vassal_data_raw)
+        ex = False
+
+        for error_match in error_matches:
+            print(f"\n\t [*] Amending embedded reference in | {element.name}")
+            full_error_match = error_match.group(0)
+            full_error_match = full_error_match.replace("\\;",";").replace("\\/","/")
+            full_error_match = re.sub(r"\\+\t","\t",full_error_match)
+            full_error_match = full_error_match.split("\t")
+            full_error_match = "\t".join([(x + "\\"*xloc) for xloc, x in enumerate(full_error_match)])
+            # [print(ele.text) for ele in self.build_xml.iter() if ele.text]
+            
+            try:
+                fuzzy_matched_xml = [x for x in difflib.get_close_matches(full_error_match, [ele.text for ele in self.build_xml.iter() if ele.text], cutoff=0.7)]
+                matching_xml_element = [ele for ele in self.build_xml.iter() if ele.text == fuzzy_matched_xml[0]][0]
+            except Exception as err:
+                raise err
+            
+            target_absolute_reference = self.__get_parent_path(matching_xml_element)
+            # print(f"\n\n\t[+] Replace...\n{error_match.group(0)}\n\t    With...\n{target_absolute_reference}")
+            element.vassal_data_raw = element.vassal_data_raw.replace(error_match.group(0), target_absolute_reference, 1)
+
+            ex = True
+
+        
+        element.clear_traits()
+        element._parse_traits()
+
+        return element
+        # if ex: exit()
+
+    def __get_parent_path(self, xml_element):
+        """Returns the absolute XML path of xml_element, in the format VASSAL likes."""
+
+        try:
+            out = xml_element.tag
+            for x in ["name","entryName"]:
+                if x in xml_element.attrib.keys():
+                    name = xml_element.attrib[x]
+                    name = name.replace("/","\\\\/")
+                    out = f"{out}:{name}"
+                    break
+            # print(f"[-] {out}")
+            parent = self.__get_parent_path(self.xml_parent_map[xml_element])
+            if parent:
+                out = f"{parent}\\/{out}"
+            return out
+        except KeyError as err:
+            return ""
+        except Exception as err:
+            raise(err)
 
     def __parse_prototypes(self):
         """Retrieves all the prototypes and populates them to the Module."""
@@ -175,7 +244,7 @@ class VassalModule:
                         signature
                     ]
 
-            print("\n[=] {}\n".format(piece))
+            # print("\n[=] {}\n".format(piece))
             dereferenced_traits = [
                 trait for trait in self.dereference(self.pieces[piece], top_level=True)
             ]
@@ -183,6 +252,11 @@ class VassalModule:
 
     def add_element(self, module_element):
         """Add element to the right list."""
+
+        module_element = self.__resolve_embedded_references(module_element)
+
+        if not module_element:
+            return False
 
         if isinstance(module_element, PrototypeDefinition):
             self.prototypes[module_element.name] = module_element
@@ -220,6 +294,45 @@ class ModuleElement:
 
         # print("="*50+"\n"+self.vassal_data_raw)
 
+    def _parse_traits(self):
+
+        self.traits = []
+
+        escaped_text_regex = re.compile(r"(?<!>)\+.*?(\{.*?\}.*?|[^\{\}])(?<!\\);")
+        escaped_text_instances = [
+            match_instance.group()
+            for match_instance in escaped_text_regex.finditer(self.traits_raw)
+        ]
+        traits_raw_interim = escaped_text_regex.sub(
+            "___SUB_ESCAPED_BACK_IN___", self.traits_raw
+        )
+        traits_raw_interim = traits_raw_interim.replace("\t", "___SPLIT_ON_ME___")
+        for escaped_text_instance in escaped_text_instances:
+            traits_raw_interim = traits_raw_interim.replace(
+                "___SUB_ESCAPED_BACK_IN___", escaped_text_instance, 1
+            )
+        traits = traits_raw_interim.split("___SPLIT_ON_ME___")
+
+        states = self.states_raw.split("\t")
+
+        # print("[+] Populating traits for {}".format(self.name))
+        self.piece_type = "other"
+
+        if len(traits) == len(states):
+            for tloc, trait in enumerate(traits):
+                self.traits.append((Trait(trait), State(states[tloc])))
+                self.traits[tloc][0].associate_state(self.traits[tloc][1])
+        else:
+            raise RuntimeError(
+                "[!] Failed to import {} - {} traits vs {} states".format(
+                    self.name, len(traits), len(states)
+                )
+            )
+
+    def clear_traits(self):
+
+        self.traits = []
+
 
 class PrototypeDefinition(ModuleElement):
 
@@ -243,42 +356,42 @@ class PrototypeDefinition(ModuleElement):
         ) = self.segments
 
         # if "ship movement template" not in self.name:
-        #     self.__parse_traits()
-        self.__parse_traits()
+        #     self._parse_traits()
+        self._parse_traits()
 
-    def __parse_traits(self):
+    # def _parse_traits(self):
 
-        self.traits = []
+    #     self.traits = []
 
-        escaped_text_regex = re.compile(r"(?<!>)\+.*?(\{.*?\}.*?|[^\{\}])(?<!\\);")
-        escaped_text_instances = [
-            match_instance.group()
-            for match_instance in escaped_text_regex.finditer(self.traits_raw)
-        ]
-        traits_raw_interim = escaped_text_regex.sub(
-            "___SUB_ESCAPED_BACK_IN___", self.traits_raw
-        )
-        traits_raw_interim = traits_raw_interim.replace("\t", "___SPLIT_ON_ME___")
-        for escaped_text_instance in escaped_text_instances:
-            traits_raw_interim = traits_raw_interim.replace(
-                "___SUB_ESCAPED_BACK_IN___", escaped_text_instance, 1
-            )
-        traits = traits_raw_interim.split("___SPLIT_ON_ME___")
+    #     escaped_text_regex = re.compile(r"(?<!>)\+.*?(\{.*?\}.*?|[^\{\}])(?<!\\);")
+    #     escaped_text_instances = [
+    #         match_instance.group()
+    #         for match_instance in escaped_text_regex.finditer(self.traits_raw)
+    #     ]
+    #     traits_raw_interim = escaped_text_regex.sub(
+    #         "___SUB_ESCAPED_BACK_IN___", self.traits_raw
+    #     )
+    #     traits_raw_interim = traits_raw_interim.replace("\t", "___SPLIT_ON_ME___")
+    #     for escaped_text_instance in escaped_text_instances:
+    #         traits_raw_interim = traits_raw_interim.replace(
+    #             "___SUB_ESCAPED_BACK_IN___", escaped_text_instance, 1
+    #         )
+    #     traits = traits_raw_interim.split("___SPLIT_ON_ME___")
 
-        states = self.states_raw.split("\t")
+    #     states = self.states_raw.split("\t")
 
-        print(self.name)
+    #     print(self.name)
 
-        if len(traits) == len(states):
-            for tloc, trait in enumerate(traits):
-                self.traits.append((Trait(trait), State(states[tloc])))
-                self.traits[tloc][0].associate_state(self.traits[tloc][1])
-        else:
-            raise RuntimeError(
-                "[!] Failed to import Prototype {} - {} traits vs {} states".format(
-                    self.name, len(traits), len(states)
-                )
-            )
+    #     if len(traits) == len(states):
+    #         for tloc, trait in enumerate(traits):
+    #             self.traits.append((Trait(trait), State(states[tloc])))
+    #             self.traits[tloc][0].associate_state(self.traits[tloc][1])
+    #     else:
+    #         raise RuntimeError(
+    #             "[!] Failed to import Prototype {} - {} traits vs {} states".format(
+    #                 self.name, len(traits), len(states)
+    #             )
+    #         )
 
 
 class PieceDefinition(ModuleElement):
@@ -306,42 +419,7 @@ class PieceDefinition(ModuleElement):
             self.states_raw,
         ) = self.segments
 
-        self.__parse_traits()
-
-    def __parse_traits(self):
-
-        self.traits = []
-
-        escaped_text_regex = re.compile(r"(?<!>)\+.*?(\{.*?\}.*?|[^\{\}])(?<!\\);")
-        escaped_text_instances = [
-            match_instance.group()
-            for match_instance in escaped_text_regex.finditer(self.traits_raw)
-        ]
-        traits_raw_interim = escaped_text_regex.sub(
-            "___SUB_ESCAPED_BACK_IN___", self.traits_raw
-        )
-        traits_raw_interim = traits_raw_interim.replace("\t", "___SPLIT_ON_ME___")
-        for escaped_text_instance in escaped_text_instances:
-            traits_raw_interim = traits_raw_interim.replace(
-                "___SUB_ESCAPED_BACK_IN___", escaped_text_instance, 1
-            )
-        traits = traits_raw_interim.split("___SPLIT_ON_ME___")
-
-        states = self.states_raw.split("\t")
-
-        print("[+] Populating traits for {}".format(self.name))
-        self.piece_type = "other"
-
-        if len(traits) == len(states):
-            for tloc, trait in enumerate(traits):
-                self.traits.append((Trait(trait), State(states[tloc])))
-                self.traits[tloc][0].associate_state(self.traits[tloc][1])
-        else:
-            raise RuntimeError(
-                "[!] Failed to import Piece {} - {} traits vs {} states".format(
-                    self.name, len(traits), len(states)
-                )
-            )
+        self._parse_traits()
 
     def compile_vlb_entry(self):
 
@@ -527,8 +605,9 @@ if __name__ == "__main__":
 
         vlb_entry = armada_module.pieces[piece].compile_vlb_entry()
 
-        # if armada_module.pieces[piece].piece_type == "shipcard":
-        #     print(vlb_entry)
+        # if armada_module.pieces[piece].name == "Onager-class":
+        #     # print(armada_module.pieces[piece].name)
+        #     [print(trait[0].trait_text) for trait in armada_module.pieces[piece].traits]
 
         update_piece(
             conn,
