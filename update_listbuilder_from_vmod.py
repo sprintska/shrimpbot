@@ -178,7 +178,7 @@ class VassalModule:
         except KeyError as err:
             return ""
         except Exception as err:
-            raise (err)
+            raise err
 
     def __parse_prototypes(self):
         """Retrieves all the prototypes and populates them to the Module."""
