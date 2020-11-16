@@ -470,7 +470,7 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
 
     # Make sure the cretinous user isn't just schwacking off all the garbage at
     # the top of a Warlords export.
-    ship_check = import_list.split("\n")[0].strip.split[0]
+    ship_check = import_list.split("\n")[0].strip().split[0]
     if len(ship_check) >= 3:
         ship_query = conn.execute("SELECT piecetype FROM pieces where piecename LIKE ?""",('%'+ship_check+'%',)).fetchall
     if len(ship_query) > 0:
