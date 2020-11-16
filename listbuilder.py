@@ -475,7 +475,7 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
         ship_query = conn.execute(
             "SELECT piecetype FROM pieces where piecename LIKE ?" "",
             ("%" + ship_check + "%",),
-        ).fetchall
+        ).fetchall()
     if len(ship_query) > 0:
         if ("ship",) in ship_query or ("shipcard",) in ship_query:
             shipnext = True
