@@ -470,15 +470,17 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
 
     # Make sure the cretinous user isn't just schwacking off all the garbage at
     # the top of a Warlords export.
-    ship_check = import_list.split("\n")[0].strip().split()[0]
-    if len(ship_check) >= 3:
+    ship_regex = re.compile(r".*\([\d]{1,3} points\)")
+    ship_check = import_list.split("\n")[0].strip()
+    if ship_regex.search(ship_check):
+        ship_check = ship_check.split()[0]
         ship_query = conn.execute(
             "SELECT piecetype FROM pieces where piecename LIKE ?" "",
-            ("%" + ship_check + "%",),
+            ("%" + scrub_piecename(ship_check) + "%",),
         ).fetchall()
-    if len(ship_query) > 0:
-        if ("ship",) in ship_query or ("shipcard",) in ship_query:
-            shipnext = True
+        if len(ship_query) > 0:
+            if ("ship",) in ship_query or ("shipcard",) in ship_query:
+                shipnext = True
 
     for line in import_list.split("\n"):
 
