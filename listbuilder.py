@@ -466,10 +466,17 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
 
     f = Fleet("Food", conn=conn)
 
-    # with open(import_list) as war_in:
     shipnext = False
 
-    # for line in war_in.readlines()[7::]:
+    # Make sure the cretinous user isn't just schwacking off all the garbage at
+    # the top of a Warlords export.
+    ship_check = import_list.split("\n")[0].strip.split[0]
+    if len(ship_check) >= 3:
+        ship_query = conn.execute("SELECT piecetype FROM pieces where piecename LIKE ?""",('%'+ship_check+'%',)).fetchall
+    if len(ship_query) > 0:
+        if ('ship',) in ship_query or ('shipcard',) in ship_query:
+            shipnext = True
+
     for line in import_list.split("\n"):
 
         card_name = line.strip()
