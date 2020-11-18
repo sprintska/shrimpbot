@@ -1430,8 +1430,8 @@ class SquadronCard:
                 (self.squadronname,),
             ).fetchall()
         except Exception as err:
-            print(err)
-            print(traceback.print_stack())
+            print(type(err))
+            [print(arg) for arg in err.args]
             [(self.content, self.squadrontype)] = conn.execute(
                 """select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;""",
                 ("%" + self.squadronname + "%",),
