@@ -8,6 +8,7 @@ import sqlite3
 import re
 import random
 import logging
+import traceback
 
 # import update_pieces
 
@@ -1430,6 +1431,7 @@ class SquadronCard:
             ).fetchall()
         except Exception as err:
             print(err)
+            print(traceback.print_stack())
             [(self.content, self.squadrontype)] = conn.execute(
                 """select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;""",
                 ("%" + self.squadronname + "%",),
