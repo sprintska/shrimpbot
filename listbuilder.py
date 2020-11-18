@@ -777,7 +777,8 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                         card_name = card_name_new
 
                     _ = f.add_squadron(card_name)
-        except:
+        except Exception as err:
+            logging.info(err)
             return (False, last_line)
 
     return (True, f)
@@ -1427,7 +1428,8 @@ class SquadronCard:
                 """select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;""",
                 (self.squadronname,),
             ).fetchall()
-        except:
+        except Exception as err:
+            print(err)
             [(self.content, self.squadrontype)] = conn.execute(
                 """select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;""",
                 ("%" + self.squadronname + "%",),
