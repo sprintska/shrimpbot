@@ -12,7 +12,6 @@ import logging
 # import update_pieces
 
 PWD = os.getcwd()
-logging.basicConfig(filename="/var/log/shrimp.log")
 # VLOGFILENAME = "mtmtest2.vlog"
 # VLBFILENAME = "mtmtest2.vlb"
 
@@ -1541,6 +1540,8 @@ class Objective:
 
 
 if __name__ == "__main__":
+
+    logging.basicConfig(filename="/var/log/shrimp.log", level=logging.INFO)
 
     if args.imp:
         print(
