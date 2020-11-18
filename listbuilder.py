@@ -179,7 +179,7 @@ ambiguous_names = {
     ("hondoohnaka", "2"): ("hondoohnaka", "upgrade"),
     ("kyrstaagate", "20"): ("kyrstaagate", "upgrade"),
     ("kyrstaagate", "5"): ("kyrstaagateoff", "upgrade"),
-    ("landocalrissian", "23"): ("landocalrissiansquad", "squadron"),
+    ("landocalrissian", "23"): ("landocalrissian", "squadron"),
     ("landocalrissian", "4"): ("landocalrissian", "upgrade"),
     ("leiaorgana", "38"): ("leiaorganacom", "upgrade"),
     ("leiaorgana", "3"): ("leiaorganaoff", "upgrade"),
@@ -416,8 +416,9 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                     AND piecename LIKE ?;""",
                                 ("%" + scrub_piecename(this_line) + "%",),
                             ).fetchall()
-                        except:
-                            pass
+                        except Exception as err:
+                            print(err)
+                            # pass
 
                         try:
                             isship = conn.execute(
@@ -426,8 +427,9 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                     AND piecename LIKE ?;""",
                                 ("%" + scrub_piecename(this_line),),
                             ).fetchall()
-                        except:
-                            pass
+                        except Exception as err:
+                            print(err)
+                            # pass
 
                         try:
                             if this_line.lower()[-8::] == "squadron":
@@ -438,8 +440,9 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                         AND piecename LIKE ?;""",
                                     ("%" + scrub_piecename(ltmp) + "%",),
                                 ).fetchall()
-                        except:
-                            pass
+                        except Exception as err:
+                            print(err)
+                            # pass
 
                         if bool(issquadron):
                             # sq = f.add_squadron(l.strip())
@@ -454,8 +457,9 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                     "=" * 40, this_line, "=" * 40
                                 )
                             )
-        except:
+        except Exception as err:
             return (False, last_line)
+            logging.info(err)
 
     return (True, f)
 
@@ -560,7 +564,8 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
                     upgrade = upgrade_new
                 _ = s.add_upgrade(upgrade)
                 shipnext = False
-        except:
+        except Exception as err:
+            logging.info(err)
             return (False, last_line)
 
     return (True, f)
@@ -657,8 +662,9 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                                 AND piecename LIKE ?;""",
                             ("%" + scrub_piecename(card_name) + "%",),
                         ).fetchall()
-                    except:
-                        pass
+                    except Exception as err:
+                        print(err)
+                        # pass
 
                     try:
                         logging.info(
@@ -672,8 +678,9 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                                 AND piecename LIKE ?;""",
                             ("%" + card_name,),
                         ).fetchall()
-                    except:
-                        pass
+                    except Exception as err:
+                        print(err)
+                        # pass
 
                     if bool(issquadron):
                         _ = f.add_squadron(card_name)
@@ -685,7 +692,8 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                                 "=" * 40, card_name, "=" * 40
                             )
                         )
-        except:
+        except Exception as err:
+            logging.info(err)
             return (False, last_line)
 
     return (True, f)
