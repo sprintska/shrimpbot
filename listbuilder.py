@@ -417,9 +417,8 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                     AND piecename LIKE ?;""",
                                 ("%" + scrub_piecename(this_line) + "%",),
                             ).fetchall()
-                        except Exception as err:
-                            print(err)
-                            # pass
+                        except ValueError as err:
+                            pass
 
                         try:
                             isship = conn.execute(
@@ -428,9 +427,8 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                     AND piecename LIKE ?;""",
                                 ("%" + scrub_piecename(this_line),),
                             ).fetchall()
-                        except Exception as err:
-                            print(err)
-                            # pass
+                        except ValueError as err:
+                            pass
 
                         try:
                             if this_line.lower()[-8::] == "squadron":
@@ -441,9 +439,8 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                         AND piecename LIKE ?;""",
                                     ("%" + scrub_piecename(ltmp) + "%",),
                                 ).fetchall()
-                        except Exception as err:
-                            print(err)
-                            # pass
+                        except ValueError as err:
+                            pass
 
                         if bool(issquadron):
                             # sq = f.add_squadron(l.strip())
@@ -459,8 +456,8 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                 )
                             )
         except Exception as err:
+            logging.error(err)
             return (False, last_line)
-            logging.info(err)
 
     return (True, f)
 
@@ -663,9 +660,8 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                                 AND piecename LIKE ?;""",
                             ("%" + scrub_piecename(card_name) + "%",),
                         ).fetchall()
-                    except Exception as err:
-                        print(err)
-                        # pass
+                    except ValueError as err:
+                        pass
 
                     try:
                         logging.info(
@@ -679,9 +675,8 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                                 AND piecename LIKE ?;""",
                             ("%" + card_name,),
                         ).fetchall()
-                    except Exception as err:
-                        print(err)
-                        # pass
+                    except ValueError as err:
+                        pass
 
                     if bool(issquadron):
                         _ = f.add_squadron(card_name)
@@ -694,7 +689,7 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                             )
                         )
         except Exception as err:
-            logging.info(err)
+            logging.error(err)
             return (False, last_line)
 
     return (True, f)
@@ -779,7 +774,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
 
                     _ = f.add_squadron(card_name)
         except Exception as err:
-            logging.info(err)
+            logging.error(err)
             return (False, last_line)
 
     return (True, f)
@@ -857,7 +852,7 @@ def export_to_vlog(export_to, vlb_path, working_path=args.wd):
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
         except Exception as e:
-            logging.info(e)
+            logging.error(e)
 
     shutil.copyfile(
         os.path.join(working_path, "moduledata"), os.path.join(out_path, "moduledata")
@@ -1429,13 +1424,13 @@ class SquadronCard:
                 """select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;""",
                 (self.squadronname,),
             ).fetchall()
-        except Exception as err:
-            print(type(err))
-            [print(arg) for arg in err.args]
+        except ValueError:
             [(self.content, self.squadrontype)] = conn.execute(
                 """select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;""",
                 ("%" + self.squadronname + "%",),
             ).fetchall()
+        except Exception as err:
+            raise err
 
         self.squadrontoken = SquadronToken(self.squadrontype, self.conn)
 
