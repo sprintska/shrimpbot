@@ -13,6 +13,7 @@ import traceback
 # import update_pieces
 
 PWD = os.getcwd()
+logging.basicConfig(filename="/var/log/shrimp.log", level=logging.INFO)
 # VLOGFILENAME = "mtmtest2.vlog"
 # VLBFILENAME = "mtmtest2.vlb"
 
