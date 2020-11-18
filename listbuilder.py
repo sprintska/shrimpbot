@@ -8,12 +8,11 @@ import sqlite3
 import re
 import random
 import logging
-import traceback
 
 # import update_pieces
 
 PWD = os.getcwd()
-logging.basicConfig(filename="/var/log/shrimp.log", level=logging.INFO)
+logging.basicConfig(filename="/var/log/shrimp.log")
 # VLOGFILENAME = "mtmtest2.vlog"
 # VLBFILENAME = "mtmtest2.vlb"
 
@@ -1431,6 +1430,7 @@ class SquadronCard:
                 ("%" + self.squadronname + "%",),
             ).fetchall()
         except Exception as err:
+            logging.error("banana")
             raise err
 
         self.squadrontoken = SquadronToken(self.squadrontype, self.conn)
