@@ -12,6 +12,7 @@ import logging
 # import update_pieces
 
 PWD = os.getcwd()
+logging.basicConfig(filename="/var/log/shrimp.log")
 # VLOGFILENAME = "mtmtest2.vlog"
 # VLBFILENAME = "mtmtest2.vlb"
 
@@ -252,7 +253,7 @@ def ident_format(fleet_text):
             pass
 
     # Warlords
-    ft = fleet_text.replace("â€¢", u"\u2022")
+    ft = fleet_text.replace("â€¢", "\u2022")
     if "[flagship]" in ft.replace(" ", ""):
         formats["warlord"] += 5.0
     if "Armada Warlords" in ft:
@@ -287,7 +288,7 @@ def ident_format(fleet_text):
         formats["kingston"] += 2.0
     for line in ft.split("\n"):
         # try:
-        if line.strip().startswith("• ") or line.strip().startswith(u"\u2022"):
+        if line.strip().startswith("• ") or line.strip().startswith("\u2022"):
             # ~ print(line.strip())
             formats["kingston"] += 1
         # except: pass
@@ -372,9 +373,9 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
         try:
             if line.strip():
                 if line.strip()[0].isdigit():
-                    this_line = line.replace("â€¢", u"\u2022").strip()
+                    this_line = line.replace("â€¢", "\u2022").strip()
                     this_line = "".join(
-                        "".join(this_line.split(" {} ".format(u"\u2022"))[1::]).split(
+                        "".join(this_line.split(" {} ".format("\u2022"))[1::]).split(
                             " ("
                         )[:-1]
                     )
@@ -707,7 +708,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
     for line in import_list.split("\n"):
 
         try:
-            card_name = line.replace("â€¢", u"\u2022").strip()
+            card_name = line.replace("â€¢", "\u2022").strip()
             logging.info(card_name)
             last_line = card_name
 
@@ -735,7 +736,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                         logging.info("Squadrons next")
                         shipnext = False
 
-                    elif u"\u2022" in card_name:
+                    elif "\u2022" in card_name:
                         card_name, cost = card_name.split(" (", 1)
                         card_name = scrub_piecename(card_name)
                         cost = cost.split(")")[0]
@@ -757,7 +758,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                     else:
                         s = f.add_ship(card_name.split(" (", 1)[0].strip())
 
-                elif u"\u2022" in card_name and card_name[0] != "=":
+                elif "\u2022" in card_name and card_name[0] != "=":
                     card_name, cost = card_name.split(" x ")[-1].split(" (", 1)
                     card_name = scrub_piecename(card_name)
                     cost = cost.split(")")[0]
@@ -883,7 +884,7 @@ def export_to_vlog(export_to, vlb_path, working_path=args.wd):
 
 def scrub_piecename(piecename):
 
-    scrub_these = " :!-'(),\"+.\t\r\n·" + u"\u2022"
+    scrub_these = " :!-'(),\"+.\t\r\n·" + "\u2022"
 
     piecename = piecename.replace("\/", "").split("/")[0].split(";")[-1]
 
@@ -904,7 +905,7 @@ class Piece:
 
     def __init__(self, piecename, conn=g_conn):
 
-        self.upgradename = scrub_piecename(str(piecename))
+        self.banana = scrub_piecename(str(piecename))
         self.conn = conn
         self.content = conn.execute(
             """select content from pieces where piecename=?;""", (self.upgradename,)
@@ -1216,12 +1217,24 @@ class ShipCard:
         self.conn = conn
 
         logging.info(
-            "Searching for ship {} in {}".format(scrub_piecename(shipname), str(conn))
+            "Searching for ship {} in {}".format(self.shipname, str(self.conn))
         )
-        [(self.content, self.shiptype)] = conn.execute(
-            """select content,catchall from pieces where piecetype='shipcard' and piecename=?;""",
-            (self.shipname,),
-        ).fetchall()
+
+        try:
+            exact_match = conn.execute(
+                """select content,catchall from pieces where piecetype='shipcard' and piecename=?;""",
+                (self.shipname,),
+            ).fetchall()
+            if len(exact_match) == 1:
+                [(self.content, self.shiptype)] = exact_match
+            if not self.content and self.shiptype:
+                raise RuntimeError(f"Did not find ship card {self.shipname}")
+        except RuntimeError as err:
+            logging.error(err)
+            raise err
+        except Exception as err:
+            logging.debug(exc_info=err)
+            raise err
 
         self.shiptoken = ShipToken(self.shiptype, self.conn)
 
@@ -1262,7 +1275,7 @@ class ShipToken:
         self.conn = conn
 
         if self.shiptype in nomenclature_translation:
-            translated_shiptype = nomenclature_translation[shiptype]
+            translated_shiptype = nomenclature_translation[self.shiptype]
             logging.info(
                 "[-] Translated {} to {} - in listbuilder.ShipToken.".format(
                     self.shiptype, translated_shiptype
@@ -1271,14 +1284,25 @@ class ShipToken:
             self.shiptype = translated_shiptype
 
         logging.info(
-            "Searching for ship token {} in {}".format(
-                scrub_piecename(shiptype), str(conn)
-            )
+            "Searching for ship token {} in {}".format(self.shiptype, str(self.conn))
         )
-        self.content = conn.execute(
-            """select content from pieces where piecetype='ship' and piecename=?;""",
-            (self.shiptype,),
-        ).fetchall()[0][0]
+
+        try:
+            exact_match = conn.execute(
+                """select content from pieces where piecetype='ship' and piecename=?;""",
+                (self.shiptype,),
+            ).fetchall()
+            if len(exact_match) == 1:
+                if len(exact_match[0]) == 1:
+                    self.content = exact_match[0][0]
+            if not self.content:
+                raise RuntimeError(f"Did not find ship token {self.shiptype}")
+        except RuntimeError as err:
+            logging.error(err)
+            raise err
+        except Exception as err:
+            logging.debug(exc_info=err)
+            raise err
 
         self.guid = calc_guid()
         self.content = self.content.replace("vlb_GUID", self.guid)
@@ -1307,14 +1331,24 @@ class ShipCmdStack:
         self.conn = conn
 
         logging.info(
-            "Searching for command stack {} in {}".format(
-                scrub_piecename(cmdstack), str(conn)
-            )
+            "Searching for command stack {} in {}".format(self.cmdstack, str(self.conn))
         )
-        self.content = conn.execute(
-            """select content from pieces where piecetype='other' and piecename=?;""",
-            (self.cmdstack,),
-        ).fetchall()[0][0]
+        try:
+            exact_match = conn.execute(
+                """select content from pieces where piecetype='other' and piecename=?;""",
+                (self.cmdstack,),
+            ).fetchall()
+            if len(exact_match) == 1:
+                if len(exact_match[0]) == 1:
+                    self.content = exact_match[0][0]
+            if not self.content:
+                raise RuntimeError(f"Did not find command stack {self.cmdstack}")
+        except RuntimeError as err:
+            logging.error(err)
+            raise err
+        except Exception as err:
+            logging.debug(exc_info=err)
+            raise err
 
         self.guid = calc_guid()
         self.content = self.content.replace("vlb_GUID", self.guid)
@@ -1344,14 +1378,25 @@ class Upgrade:
         self.conn = conn
 
         logging.info(
-            "Searching for upgrade {} in {}".format(
-                scrub_piecename(upgradename), str(conn)
-            )
+            "Searching for upgrade {} in {}".format(self.upgradename, str(self.conn))
         )
-        self.content = conn.execute(
-            """select content from pieces where piecetype='upgradecard' and piecename=?;""",
-            (self.upgradename,),
-        ).fetchall()[0][0]
+
+        try:
+            exact_match = conn.execute(
+                """select content from pieces where piecetype='upgradecard' and piecename=?;""",
+                (self.upgradename,),
+            ).fetchall()
+            if len(exact_match) == 1:
+                if len(exact_match[0]) == 1:
+                    self.content = exact_match[0][0]
+            if not self.content:
+                raise RuntimeError(f"Did not find upgrade {self.upgradename}")
+        except RuntimeError as err:
+            logging.error(err)
+            raise err
+        except Exception as err:
+            logging.debug(exc_info=err)
+            raise err
 
         self.guid = calc_guid()
         self.content = self.content.replace("vlb_GUID", self.guid)
@@ -1415,21 +1460,27 @@ class SquadronCard:
 
         logging.info(
             "Searching for squadron card {} in {}".format(
-                scrub_piecename(squadronname), str(conn)
+                self.squadronname, str(self.conn)
             )
         )
+
         try:
-            [(self.content, self.squadrontype)] = conn.execute(
+            exact_match = conn.execute(
                 """select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;""",
                 (self.squadronname,),
             ).fetchall()
-        except ValueError:
-            [(self.content, self.squadrontype)] = conn.execute(
-                """select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;""",
-                ("%" + self.squadronname + "%",),
-            ).fetchall()
+            if len(exact_match) == 1:
+                [(self.content, self.squadrontype)] = exact_match
+            else:
+                [(self.content, self.squadrontype)] = conn.execute(
+                    """select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;""",
+                    ("%" + self.squadronname + "%",),
+                ).fetchall()
+        except ValueError as err:
+            logging.error(f"Did not find squadron {self.squadronname}")
+            raise err
         except Exception as err:
-            logging.error("banana")
+            logging.debug(exc_info=err)
             raise err
 
         self.squadrontoken = SquadronToken(self.squadrontype, self.conn)
@@ -1471,10 +1522,23 @@ class SquadronToken:
                 scrub_piecename(squadrontype), str(conn)
             )
         )
-        self.content = conn.execute(
-            """select content from pieces where piecetype='squadron' and piecename=?;""",
-            (self.squadrontype,),
-        ).fetchall()[0][0]
+
+        try:
+            exact_match = conn.execute(
+                """select content from pieces where piecetype='squadron' and piecename=?;""",
+                (self.squadrontype,),
+            ).fetchall()
+            if len(exact_match) == 1:
+                if len(exact_match[0]) == 1:
+                    self.content = exact_match[0][0]
+            if not self.content:
+                raise RuntimeError(f"Did not find squadron token {self.squadrontype}")
+        except RuntimeError as err:
+            logging.error(err)
+            raise err
+        except Exception as err:
+            logging.debug(exc_info=err)
+            raise err
 
         self.guid = calc_guid()
         self.content = self.content.replace("vlb_GUID", self.guid)
@@ -1500,13 +1564,26 @@ class Objective:
         self.conn = conn
         logging.info(
             "Searching for objective {} in {}".format(
-                scrub_piecename(objectivename), str(conn)
+                self.objectivename, str(self.conn)
             )
         )
-        self.content = conn.execute(
-            """select content from pieces where piecetype='objective' and piecename=?;""",
-            (self.objectivename,),
-        ).fetchall()[0][0]
+
+        try:
+            exact_match = self.conn.execute(
+                """select content from pieces where piecetype='objective' and piecename=?;""",
+                (self.objectivename,),
+            ).fetchall()
+            if len(exact_match) == 1:
+                if len(exact_match[0]) == 1:
+                    self.content = exact_match[0][0]
+            if not self.content:
+                raise RuntimeError(f"Did not find objective {self.objectivename}")
+        except RuntimeError as err:
+            logging.error(err)
+            raise err
+        except Exception as err:
+            logging.debug(exc_info=err)
+            raise err
 
         self.guid = calc_guid()
         self.content = self.content.replace("vlb_GUID", self.guid)
@@ -1540,8 +1617,6 @@ class Objective:
 
 
 if __name__ == "__main__":
-
-    logging.basicConfig(filename="/var/log/shrimp.log", level=logging.INFO)
 
     if args.imp:
         print(
