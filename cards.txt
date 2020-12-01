@@ -943,3 +943,4 @@ shipcard_starhawk-class-battleship-mark-ii.png;STARHAWKMKII
 shipcard_starhawk-class-battleship-mark-ii.png;STARHAWKMK2
 shipcard_starhawk-class-battleship-mark-ii.png;STARHAWKII
 shipcard_starhawk-class-battleship-mark-ii.png;STARHAWK2
+geeksrevenge.png;GEEKSREVENGE
