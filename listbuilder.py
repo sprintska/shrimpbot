@@ -71,6 +71,7 @@ vassal_nomenclature_errors = {
     "arquitensclasscommandcruiser": "arquitenscommandcruiser",
     "arquitensclasslightcruiser": "arquitenslightcruiser",
     "coloneljendonlambdaclassshuttle": "coloneljendon",
+    "consularclasschargerc70": "consularclasschargerc70retrofit",
     # "doomedstation": "dommedstation",
     # "exectuorclass": "executorclass",
     "executoriclassstardreadnought": "executoristardn",
@@ -122,6 +123,7 @@ listbuilder_nomenclature_errors = {
     "assaultfrigatemk2b": "assaultfrigatemarkiib",
     "assaultfrigatemkiia": "assaultfrigatemarkiia",
     "assaultfrigatemkiib": "assaultfrigatemarkiib",
+    "commsfrigate": "munificentclasscommsfrigate"
     "cr90acorvette": "cr90corvettea",
     "cr90bcorvette": "cr90corvetteb",
     "cr90corelliancorvettea": "cr90corvettea",
@@ -149,6 +151,7 @@ listbuilder_nomenclature_errors = {
     "ssdexecutorii": "executoriistardn",
     "ssdcommandprototype": "stardncommandprototype",
     "ssdassaultprototype": "stardnassaultprototype",
+    "starfrigate": "munificentclassstarfrigate"
     "starhawkclassmki": "starhawkmarki",
     "starhawkclassmkii": "starhawkmarkii",
     "starhawkbattleshipmarki": "starhawkmarki",
