@@ -13,3 +13,4 @@ __pycache__/*
 *.pyc
 .vscode/*
 vlb_pieces.vlo.bak
+vlb_pieces.vlo

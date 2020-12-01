@@ -123,7 +123,7 @@ listbuilder_nomenclature_errors = {
     "assaultfrigatemk2b": "assaultfrigatemarkiib",
     "assaultfrigatemkiia": "assaultfrigatemarkiia",
     "assaultfrigatemkiib": "assaultfrigatemarkiib",
-    "commsfrigate": "munificentclasscommsfrigate"
+    "commsfrigate": "munificentclasscommsfrigate",
     "cr90acorvette": "cr90corvettea",
     "cr90bcorvette": "cr90corvetteb",
     "cr90corelliancorvettea": "cr90corvettea",
@@ -151,7 +151,7 @@ listbuilder_nomenclature_errors = {
     "ssdexecutorii": "executoriistardn",
     "ssdcommandprototype": "stardncommandprototype",
     "ssdassaultprototype": "stardnassaultprototype",
-    "starfrigate": "munificentclassstarfrigate"
+    "starfrigate": "munificentclassstarfrigate",
     "starhawkclassmki": "starhawkmarki",
     "starhawkclassmkii": "starhawkmarkii",
     "starhawkbattleshipmarki": "starhawkmarki",
