@@ -461,7 +461,7 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                 )
                             )
         except Exception as err:
-            logging.error(err)
+            logging.exception(err)
             return (False, last_line)
 
     return (True, f)
@@ -479,6 +479,8 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
     # the top of a Warlords export.
     logging.info("Warlords")
     ship_regex = re.compile(r".*\([\d]{1,3} points\)")
+    squadron_regex = re.compile(r"[\d]{1,2}.*\(.*[\d]{1,3} points\)")
+
     ship_check = import_list.split("\n")[0].strip()
     if ship_regex.search(ship_check):
         logging.info("Ship check regex hit on: " + str(ship_regex.search(ship_check)))
@@ -518,7 +520,7 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
                 f.add_objective(objective[0], objective[1])
                 shipnext = False
 
-            elif card_name[0].isdigit():
+            elif squadron_regex.search(card_name):
                 squadron, cost = card_name.split("(", 1)
                 squadron = scrub_piecename(
                     "".join(card_name.split("(")[0].split()[1::])
@@ -571,7 +573,7 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
                 _ = s.add_upgrade(upgrade)
                 shipnext = False
         except Exception as err:
-            logging.info(err)
+            logging.exception(err)
             return (False, last_line)
 
     return (True, f)
@@ -697,7 +699,7 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                             )
                         )
         except Exception as err:
-            logging.error(err)
+            logging.exception(err)
             return (False, last_line)
 
     return (True, f)
@@ -782,7 +784,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
 
                     _ = f.add_squadron(card_name)
         except Exception as err:
-            logging.error(err)
+            logging.exception(err)
             return (False, last_line)
 
     return (True, f)
@@ -860,7 +862,7 @@ def export_to_vlog(export_to, vlb_path, working_path=args.wd):
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
         except Exception as e:
-            logging.error(e)
+            logging.exception(e)
 
     shutil.copyfile(
         os.path.join(working_path, "moduledata"), os.path.join(out_path, "moduledata")
@@ -1238,7 +1240,7 @@ class ShipCard:
             if not self.content and self.shiptype:
                 raise RuntimeError(f"Did not find ship card {self.shipname}")
         except RuntimeError as err:
-            logging.error(err)
+            logging.exception(err)
             raise err
         except Exception as err:
             logging.debug(exc_info=err)
@@ -1306,7 +1308,7 @@ class ShipToken:
             if not self.content:
                 raise RuntimeError(f"Did not find ship token {self.shiptype}")
         except RuntimeError as err:
-            logging.error(err)
+            logging.exception(err)
             raise err
         except Exception as err:
             logging.debug(exc_info=err)
@@ -1352,7 +1354,7 @@ class ShipCmdStack:
             if not self.content:
                 raise RuntimeError(f"Did not find command stack {self.cmdstack}")
         except RuntimeError as err:
-            logging.error(err)
+            logging.exception(err)
             raise err
         except Exception as err:
             logging.debug(exc_info=err)
@@ -1400,7 +1402,7 @@ class Upgrade:
             if not self.content:
                 raise RuntimeError(f"Did not find upgrade {self.upgradename}")
         except RuntimeError as err:
-            logging.error(err)
+            logging.exception(err)
             raise err
         except Exception as err:
             logging.debug(exc_info=err)
@@ -1485,7 +1487,7 @@ class SquadronCard:
                     ("%" + self.squadronname + "%",),
                 ).fetchall()
         except ValueError as err:
-            logging.error(f"Did not find squadron {self.squadronname}")
+            logging.exception(f"Did not find squadron {self.squadronname}")
             raise err
         except Exception as err:
             logging.debug(exc_info=err)
@@ -1542,7 +1544,7 @@ class SquadronToken:
             if not self.content:
                 raise RuntimeError(f"Did not find squadron token {self.squadrontype}")
         except RuntimeError as err:
-            logging.error(err)
+            logging.exception(err)
             raise err
         except Exception as err:
             logging.debug(exc_info=err)
@@ -1587,7 +1589,7 @@ class Objective:
             if not self.content:
                 raise RuntimeError(f"Did not find objective {self.objectivename}")
         except RuntimeError as err:
-            logging.error(err)
+            logging.exception(err)
             raise err
         except Exception as err:
             logging.debug(exc_info=err)
