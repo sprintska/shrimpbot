@@ -480,7 +480,9 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
     ship_regex = re.compile(r".*\([\d]{1,3} points\)")
     ship_check = import_list.split("\n")[0].strip()
     if ship_regex.search(ship_check):
+        logging.info("Ship check regex hit on: " + str(ship_regex.search(ship_check)))
         ship_check = ship_check.split()[0]
+        logging.info("SELECT piecetype FROM pieces where piecename LIKE %{}%")
         ship_query = conn.execute(
             "SELECT piecetype FROM pieces where piecename LIKE ?" "",
             ("%" + scrub_piecename(ship_check) + "%",),
