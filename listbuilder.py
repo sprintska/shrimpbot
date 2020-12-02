@@ -477,6 +477,7 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
 
     # Make sure the cretinous user isn't just schwacking off all the garbage at
     # the top of a Warlords export.
+    logging.info("Warlords")
     ship_regex = re.compile(r".*\([\d]{1,3} points\)")
     ship_check = import_list.split("\n")[0].strip()
     if ship_regex.search(ship_check):
