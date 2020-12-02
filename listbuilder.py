@@ -68,6 +68,7 @@ g_conn = sqlite3.connect(g_database)
 """
 
 vassal_nomenclature_errors = {
+    "arc170starfightersquadron": "arc170squadron",
     "arquitensclasscommandcruiser": "arquitenscommandcruiser",
     "arquitensclasslightcruiser": "arquitenslightcruiser",
     "coloneljendonlambdaclassshuttle": "coloneljendon",
