@@ -73,6 +73,7 @@ vassal_nomenclature_errors = {
     "arquitensclasslightcruiser": "arquitenslightcruiser",
     "coloneljendonlambdaclassshuttle": "coloneljendon",
     "consularclasschargerc70": "consularclasschargerc70retrofit",
+    "dist81": "distb1",
     # "doomedstation": "dommedstation",
     # "exectuorclass": "executorclass",
     "executoriclassstardreadnought": "executoristardn",
