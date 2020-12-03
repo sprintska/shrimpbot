@@ -34,6 +34,7 @@ class VassalModule:
             "prototype;Fighter Prototype": "squadron",
             "prototype;Squadron Card prototype": "squadroncard",
             "prototype;Upgrade card prototype": "upgradecard",
+            "prototype;Nonrecurring upgrade card prototype": "upgradecard",
         }
 
         _ = self.__parse_prototypes()
