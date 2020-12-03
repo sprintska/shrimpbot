@@ -99,6 +99,7 @@ vassal_nomenclature_errors = {
     "modifiedpeltaclassassaultship": "peltaclassassaultship",
     "modifiedpeltaclasscommandship": "peltaclasscommandship",
     "nebulonbsupportrefit": "negulonbsupportrefit",
+    "obiwankenobi": "obiwankenobicom",
     "quasarfireiclasscruisercarrier": "quasarfirei",
     "quasarfireiiclasscruisercarrier": "quasarfireii",
     "raidericlasscorvette": "raideri",
@@ -488,7 +489,7 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
         ship_check = ship_check.split()[0]
         logging.info("SELECT piecetype FROM pieces where piecename LIKE %{}%")
         ship_query = conn.execute(
-            "SELECT piecetype FROM pieces where piecename LIKE ?" "",
+            '''SELECT piecetype FROM pieces where piecename LIKE ?" "''',
             ("%" + scrub_piecename(ship_check) + "%",),
         ).fetchall()
         if len(ship_query) > 0:
