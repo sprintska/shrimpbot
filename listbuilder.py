@@ -127,6 +127,7 @@ listbuilder_nomenclature_errors = {
     "assaultfrigatemkiib": "assaultfrigatemarkiib",
     "bltbywingsquadron": "btlbywingsquadron",
     "commsfrigate": "munificentclasscommsfrigate",
+    "consulararmedcruiser": "consularclassarmedcruiser",
     "cr90acorvette": "cr90corvettea",
     "cr90bcorvette": "cr90corvetteb",
     "cr90corelliancorvettea": "cr90corvettea",
