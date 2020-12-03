@@ -191,7 +191,7 @@ ambiguous_names = {
     ("landocalrissian", "4"): ("landocalrissian", "upgrade"),
     ("leiaorgana", "38"): ("leiaorganacom", "upgrade"),
     ("leiaorgana", "3"): ("leiaorganaoff", "upgrade"),
-    ("obiwankenobi": "28"): ("obiwankenobicom", "upgrade"),
+    ("obiwankenobi", "28"): ("obiwankenobicom", "upgrade"),
     ("wedgeantilles", "19"): ("wedgeantilles", "squadron"),
     ("wedgeantilles", "4"): ("wedgeantillesoff", "upgrade"),
 }
