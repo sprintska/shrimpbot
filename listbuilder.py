@@ -99,7 +99,6 @@ vassal_nomenclature_errors = {
     "modifiedpeltaclassassaultship": "peltaclassassaultship",
     "modifiedpeltaclasscommandship": "peltaclasscommandship",
     "nebulonbsupportrefit": "negulonbsupportrefit",
-    "obiwankenobi": "obiwankenobicom",
     "quasarfireiclasscruisercarrier": "quasarfirei",
     "quasarfireiiclasscruisercarrier": "quasarfireii",
     "raidericlasscorvette": "raideri",
@@ -192,6 +191,7 @@ ambiguous_names = {
     ("landocalrissian", "4"): ("landocalrissian", "upgrade"),
     ("leiaorgana", "38"): ("leiaorganacom", "upgrade"),
     ("leiaorgana", "3"): ("leiaorganaoff", "upgrade"),
+    ("obiwankenobi": "28"): ("obiwankenobicom", "upgrade"),
     ("wedgeantilles", "19"): ("wedgeantilles", "squadron"),
     ("wedgeantilles", "4"): ("wedgeantillesoff", "upgrade"),
 }
