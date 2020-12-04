@@ -113,6 +113,7 @@ vassal_nomenclature_errors = {
     "vcx100freighter": "vcx100lightfreighter",
     "victoryiclassstardestroyer": "victoryi",
     "victoryiiclassstardestroyer": "victoryii",
+    "vulturedroidsquadron": "vultureclassdroidfightersquadron",
     "yt1300": "yt1300lightfreighter",
     "yt2400": "yt2400lightfreighter",
     "yv666": "yv666lightfreighter",
@@ -171,6 +172,7 @@ listbuilder_nomenclature_errors = {
     "starhawkclassbattleshipmarki": "starhawkmarki",
     "starhawkclassbattleshipmarkii": "starhawkmarkii",
     "supriseattack": "surpriseattack",
+    "vulturedroidfightersquadron": "vulturedroidsquadron",
     "xcustomcommander": "admiralkonstantine",
     "x17turbolasers": "xi7turbolasers",
 }
