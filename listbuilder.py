@@ -149,6 +149,8 @@ listbuilder_nomenclature_errors = {
     "locationfirecontrol": "localfirecontrol",
     "maareksteele": "maarekstele",
     "moncalamariexodusfleet": "moncalexodusfleet",
+    "munificentcommsfrigate": "munificentclasscommsfrigate",
+    "munificentstarfrigate": "munificentclassstarfrigate",
     "onagerstardestroyer": "onagerclassstardestroyer",
     "onagertestbed": "onagerclasstestbed",
     "partsresuppy": "partsresupply",
