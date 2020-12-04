@@ -121,6 +121,8 @@ vassal_nomenclature_errors = {
 
 listbuilder_nomenclature_errors = {
     "7thfleetstardestroyer": "seventhfleetstardestroyer",
+    "acclamatori": "acclamatoriclassassaultship",
+    "acclamatorii": "acclamatoriiclassassaultship",
     "assaultfrigatemk2a": "assaultfrigatemarkiia",
     "assaultfrigatemk2b": "assaultfrigatemarkiib",
     "assaultfrigatemkiia": "assaultfrigatemarkiia",
@@ -133,6 +135,8 @@ listbuilder_nomenclature_errors = {
     "cr90corelliancorvettea": "cr90corvettea",
     "cr90corelliancorvetteb": "cr90corvetteb",
     "genericritrcommander": "admiralkonstantine",
+    "hardcellbattlerefit": "hardcellclassbattlerefit",
+    "hardcelltransport": "hardcellclasstransport",
     "hardendbulkheads": "hardenedbulkheads",
     "ig88": "ig88ig2000",
     "interdictorclasssuppressionrefit": "interdictorsuppressionrefit",
