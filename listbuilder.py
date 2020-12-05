@@ -151,6 +151,7 @@ listbuilder_nomenclature_errors = {
     "hardcellbattlerefit": "hardcellclassbattlerefit",
     "hardcelltransport": "hardcellclasstransport",
     "hardendbulkheads": "hardenedbulkheads",
+    "hyenadroidbombersquadron": "hyenaclassdroidbombersquadron",
     "ig88": "ig88ig2000",
     "interdictorclasssuppressionrefit": "interdictorsuppressionrefit",
     "interdictorclasscombatrefit": "interdictorcombatrefit",
