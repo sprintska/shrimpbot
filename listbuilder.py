@@ -131,6 +131,8 @@ listbuilder_nomenclature_errors = {
     "acclamatorii": "acclamatoriiclassassaultship",
     "acclamatoriclass": "acclamatoriclassassaultship",
     "acclamatoriiclass": "acclamatoriiclassassaultship",
+    "ahsokatanodelta": "ahsokatano",
+    "anakinskywalkeryrep": "anakinskywalker",
     "armedcruiser": "Consularclassarmedcruiser",
     "assaultfrigatemk2a": "assaultfrigatemarkiia",
     "assaultfrigatemk2b": "assaultfrigatemarkiib",
@@ -199,6 +201,8 @@ nomenclature_translation = {
 ambiguous_names = {
     ("admiralozzel", "20"): ("admiralozzel", "upgrade"),
     ("admiralozzel", "2"): ("admiralozzeloff", "upgrade"),
+    ("ahsokatano"), "23"): ("ahsokatano", "squadron"),
+    ("ahsokatano"), "2"): ("ahsokatano", "upgrade"),
     ("darthvader", "36"): ("darthvadercom", "upgrade"),
     ("darthvader", "3"): ("darthvaderwpn", "upgrade"),
     ("darthvader", "1"): ("darthvaderoff", "upgrade"),
@@ -919,7 +923,7 @@ def export_to_vlog(export_to, vlb_path, working_path=args.wd):
 
 def scrub_piecename(piecename):
 
-    scrub_these = " :!-'(),\"+.\t\r\n·" + "\u2022"
+    scrub_these = " :!-'(),\"+.\t\r\n·[]" + "\u2022"
 
     piecename = piecename.replace("\/", "").split("/")[0].split(";")[-1]
 
