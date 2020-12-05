@@ -124,17 +124,21 @@ vassal_nomenclature_errors = {
     # "zertikstromtieadvancedsquadron":"zetrikstrom"\
 }
 
-# "non-canon": "canon",
+# "non-canon": "vassal-canon",
 listbuilder_nomenclature_errors = {
     "7thfleetstardestroyer": "seventhfleetstardestroyer",
     "acclamatori": "acclamatoriclassassaultship",
     "acclamatorii": "acclamatoriiclassassaultship",
+    "acclamatoriclass": "acclamatoriclassassaultship",
+    "acclamatoriiclass": "acclamatoriiclassassaultship",
+    "armed cruiser": "Consularclassarmedcruiser",
     "assaultfrigatemk2a": "assaultfrigatemarkiia",
     "assaultfrigatemk2b": "assaultfrigatemarkiib",
     "assaultfrigatemkiia": "assaultfrigatemarkiia",
     "assaultfrigatemkiib": "assaultfrigatemarkiib",
     "battlerefit": "hardcellclassbattlerefit",
     "bltbywingsquadron": "btlbywingsquadron",
+    "chargerc70": "consularclasschargerc70retrofit",
     "commsfrigate": "munificentclasscommsfrigate",
     "consulararmedcruiser": "consularclassarmedcruiser",
     "cr90acorvette": "cr90corvettea",
