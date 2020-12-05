@@ -131,7 +131,7 @@ listbuilder_nomenclature_errors = {
     "acclamatorii": "acclamatoriiclassassaultship",
     "acclamatoriclass": "acclamatoriclassassaultship",
     "acclamatoriiclass": "acclamatoriiclassassaultship",
-    "armed cruiser": "Consularclassarmedcruiser",
+    "armedcruiser": "Consularclassarmedcruiser",
     "assaultfrigatemk2a": "assaultfrigatemarkiia",
     "assaultfrigatemk2b": "assaultfrigatemarkiib",
     "assaultfrigatemkiia": "assaultfrigatemarkiia",
