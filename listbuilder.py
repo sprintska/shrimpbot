@@ -67,6 +67,7 @@ g_conn = sqlite3.connect(g_database)
     correctness of the Vassal value.
 """
 
+# "canon": "non-canon",
 vassal_nomenclature_errors = {
     "arc170starfightersquadron": "arc170squadron",
     "arquitensclasscommandcruiser": "arquitenscommandcruiser",
@@ -86,6 +87,7 @@ vassal_nomenclature_errors = {
     "greensquadronawing": "greensquadron",
     "greensquadronawingsquadron": "greensquadron",
     "hwk290": "hwk290lightfreighter",
+    "hyenaclassdroidbombersquadron": "hyenabombersquadron",
     "imperialiclassstardestroyer": "imperiali",
     "imperialiiclassstardestroyer": "imperialii",
     "imperialstardestroyercymoon1refit": "cymoon1refit",
@@ -114,7 +116,7 @@ vassal_nomenclature_errors = {
     "vcx100freighter": "vcx100lightfreighter",
     "victoryiclassstardestroyer": "victoryi",
     "victoryiiclassstardestroyer": "victoryii",
-    "vulturedroidsquadron": "vultureclassdroidfightersquadron",
+    "vultureclassdroidfightersquadron": "vulturedroidsquadron",
     "yt1300": "yt1300lightfreighter",
     "yt2400": "yt2400lightfreighter",
     "yv666": "yv666lightfreighter",
@@ -122,6 +124,7 @@ vassal_nomenclature_errors = {
     # "zertikstromtieadvancedsquadron":"zetrikstrom"\
 }
 
+# "non-canon": "canon",
 listbuilder_nomenclature_errors = {
     "7thfleetstardestroyer": "seventhfleetstardestroyer",
     "acclamatori": "acclamatoriclassassaultship",
