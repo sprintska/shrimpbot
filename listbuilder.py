@@ -1432,7 +1432,6 @@ class Upgrade:
                 raise RuntimeError(f"Did not find upgrade {self.upgradename}")
         except RuntimeError as err:
             logging.exception(err)
-            raise err
         except Exception as err:
             logging.exception(err)
             raise err
