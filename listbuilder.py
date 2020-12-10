@@ -77,8 +77,6 @@ vassal_nomenclature_errors = {
     "coloneljendonlambdaclassshuttle": "coloneljendon",
     "consularclasschargerc70": "consularclasschargerc70retrofit",
     "dist81": "distb1",
-    # "doomedstation": "dommedstation",
-    # "exectuorclass": "executorclass",
     "executoriclassstardreadnought": "executoristardn",
     "executoriiclassstardreadnought": "executoriistardn",
     "gladiatoriclassstardestroyer": "gladiatori",
@@ -99,11 +97,9 @@ vassal_nomenclature_errors = {
     "kyrstaagatecom": "kyrstaagate",
     "landocalrissianoff": "landocalrissian",
     "lieutenantblountz95headhuntersquadron": "lieutenantblount",
-    # "magnitecrystaltractorbeamarray":"magnitecystaltractorbeamarray",\
     "mandaloriangauntletfighter": "mandogauntletfighter",
     "modifiedpeltaclassassaultship": "peltaclassassaultship",
     "modifiedpeltaclasscommandship": "peltaclasscommandship",
-    "nebulonbsupportrefit": "negulonbsupportrefit",
     "phlacarphoccprototypes": "phlaccarphoccprototypes",
     "quasarfireiclasscruisercarrier": "quasarfirei",
     "quasarfireiiclasscruisercarrier": "quasarfireii",
@@ -111,9 +107,6 @@ vassal_nomenclature_errors = {
     "raideriiclasscorvette": "raiderii",
     "stardreadnoughtassaultprototype": "stardnassaultprototype",
     "stardreadnoughtcommandprototype": "stardncommandprototype",
-    "tideofprogressxii": "tideofprogress",
-    "tseriestacticaldroid": "tseriestaticaldroid",
-    "vanguard": "vandguard",
     "vcx100freighter": "vcx100lightfreighter",
     "victoryiclassstardestroyer": "victoryi",
     "victoryiiclassstardestroyer": "victoryii",
@@ -121,8 +114,6 @@ vassal_nomenclature_errors = {
     "yt1300": "yt1300lightfreighter",
     "yt2400": "yt2400lightfreighter",
     "yv666": "yv666lightfreighter",
-    # "zertikstrom":"zetrikstrom",\
-    # "zertikstromtieadvancedsquadron":"zetrikstrom"\
 }
 
 # "non-canon": "vassal-canon",
@@ -135,7 +126,7 @@ listbuilder_nomenclature_errors = {
     "admiralozzelcom": "admiralozzel",
     "ahsokatanodelta": "ahsokatano",
     "anakinskywalkeryrep": "anakinskywalker",
-    "armedcruiser": "Consularclassarmedcruiser",
+    "armedcruiser": "consularclassarmedcruiser",
     "assaultfrigatemk2a": "assaultfrigatemarkiia",
     "assaultfrigatemk2b": "assaultfrigatemarkiib",
     "assaultfrigatemkiia": "assaultfrigatemarkiia",
@@ -145,6 +136,7 @@ listbuilder_nomenclature_errors = {
     "chargerc70": "consularclasschargerc70retrofit",
     "commsfrigate": "munificentclasscommsfrigate",
     "consulararmedcruiser": "consularclassarmedcruiser",
+    "consularchargerc70": "consularclasschargerc70retrofit",
     "cr90acorvette": "cr90corvettea",
     "cr90bcorvette": "cr90corvetteb",
     "cr90corelliancorvettea": "cr90corvettea",
