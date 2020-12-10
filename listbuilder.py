@@ -107,6 +107,7 @@ vassal_nomenclature_errors = {
     "raideriiclasscorvette": "raiderii",
     "stardreadnoughtassaultprototype": "stardnassaultprototype",
     "stardreadnoughtcommandprototype": "stardncommandprototype",
+    "tideofprogressxii": "tideofprogress"
     "vcx100freighter": "vcx100lightfreighter",
     "victoryiclassstardestroyer": "victoryi",
     "victoryiiclassstardestroyer": "victoryii",
@@ -1420,7 +1421,7 @@ class Upgrade:
                 """select content from pieces where piecetype='upgradecard' and piecename=?;""",
                 (self.upgradename,),
             ).fetchall()
-            logging.info("[*] No error on the query. The result is:\n - {}.".format(str(exact_match)))
+            logging.info("[*] Query executed. The result is:\n - {}.".format(str(exact_match)))
 
             self.content = False
             if len(exact_match) == 1:
