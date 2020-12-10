@@ -1420,7 +1420,7 @@ class Upgrade:
                 """select content from pieces where piecetype='upgradecard' and piecename=?;""",
                 (self.upgradename,),
             ).fetchall()
-            logging.info("[*] No error on the query. The result is:\n - {}.".format(str(exact_match))
+            logging.info("[*] No error on the query. The result is:\n - {}.".format(str(exact_match)))
             if len(exact_match) == 1:
                 logging.info("[*] Found one result, ensuring there is only one entry in it...")
                 if len(exact_match[0]) == 1:                
