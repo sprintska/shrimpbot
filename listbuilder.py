@@ -1421,6 +1421,8 @@ class Upgrade:
                 (self.upgradename,),
             ).fetchall()
             logging.info("[*] No error on the query. The result is:\n - {}.".format(str(exact_match)))
+
+            self.content = False
             if len(exact_match) == 1:
                 logging.info("[*] Found one result, ensuring there is only one entry in it...")
                 if len(exact_match[0]) == 1:                
