@@ -1421,7 +1421,9 @@ class Upgrade:
                 (self.upgradename,),
             ).fetchall()
             if len(exact_match) == 1:
-                if len(exact_match[0]) == 1:
+                logging.info("[*] Found one result, ensuring there is only one entry in it...")
+                if len(exact_match[0]) == 1:                
+                    logging.info("[*] Verified, populating it...")
                     self.content = exact_match[0][0]
             if not self.content:
                 raise RuntimeError(f"Did not find upgrade {self.upgradename}")
