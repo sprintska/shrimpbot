@@ -1432,7 +1432,7 @@ class Upgrade:
             logging.exception(err)
             raise err
         except Exception as err:
-            logging.debug(exc_info=err)
+            logging.exception(err)
             raise err
 
         self.guid = calc_guid()
