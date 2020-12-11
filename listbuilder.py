@@ -1421,18 +1421,19 @@ class Upgrade:
                 """select content from pieces where piecetype='upgradecard' and piecename=?;""",
                 (self.upgradename,),
             ).fetchall()
-            logging.info("[*] Query executed. The result is:\n - {}.".format(str(exact_match)))
+            # logging.info("[*] Query executed. The result is:\n - {}.".format(str(exact_match)))
 
             self.content = False
             if len(exact_match) == 1:
-                logging.info("[*] Found one result, ensuring there is only one entry in it...")
+                # logging.info("[*] Found one result, ensuring there is only one entry in it...")
                 if len(exact_match[0]) == 1:                
-                    logging.info("[*] Verified, populating it...")
+                    # logging.info("[*] Verified, populating it...")
                     self.content = exact_match[0][0]
             if not self.content:
                 raise RuntimeError(f"Did not find upgrade {self.upgradename}")
         except RuntimeError as err:
             logging.exception(err)
+            raise err
         except Exception as err:
             logging.exception(err)
             raise err
