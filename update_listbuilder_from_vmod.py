@@ -30,6 +30,7 @@ class VassalModule:
             "prototype;Objective card prototype": "objective",
             "Actual Obstacle": "obstacle",
             "prototype;Basic Ship": "ship",
+            "prototype;Huge Ship": "ship",
             "prototype;Ship card prototype": "shipcard",
             "prototype;Fighter Prototype": "squadron",
             "prototype;Squadron Card prototype": "squadroncard",
