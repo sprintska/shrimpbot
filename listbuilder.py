@@ -77,7 +77,7 @@ vassal_nomenclature_errors = {
     "coloneljendonlambdaclassshuttle": "coloneljendon",
     "consularclasschargerc70": "consularclasschargerc70retrofit",
     "dist81": "distb1",
-    "executorclass": "exectuorclass",
+    "exectuorclass": "executorclass",
     "executoriclassstardreadnought": "executoristardn",
     "executoriiclassstardreadnought": "executoriistardn",
     "gladiatoriclassstardestroyer": "gladiatori",
