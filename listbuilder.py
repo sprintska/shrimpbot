@@ -166,6 +166,7 @@ listbuilder_nomenclature_errors = {
     "moncalamariexodusfleet": "moncalexodusfleet",
     "munificentcommsfrigate": "munificentclasscommsfrigate",
     "munificentstarfrigate": "munificentclassstarfrigate",
+    "munitionsresuppy": "munitionsresupply",
     "onagerstardestroyer": "onagerclassstardestroyer",
     "onagertestbed": "onagerclasstestbed",
     "partsresuppy": "partsresupply",
