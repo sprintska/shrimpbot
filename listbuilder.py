@@ -65,6 +65,11 @@ g_conn = sqlite3.connect(g_database)
     corresponding incorrect Vassal values, while the listbuilder errors
     dict translates incorrect keys to Vassal values regardless of the
     correctness of the Vassal value.
+
+    "exectuorclass": "executorclass" is a special case because the
+    reference in the card itself to the ship token is wrong.  I have no 
+    idea why it is able to successfully spawn in-game, but this fixes 
+    it on my side soooo...
 """
 
 # "canon": "non-canon",

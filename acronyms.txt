@@ -74,6 +74,7 @@ LMC80;Liberty-type MC80 Cruiser. Contrast HMC80. See also MC80L.
 LMSU;Large MSU, referring to a fleet build. Several small ships plus a large with Strategic Advisor. See MSU.
 LOS;Line of sight.
 LTP;Learn To Play document summarising the basic rules of Armada.
+LTT;Linked Turbolaser Towers
 META;The current local or global strategic trends, such as predominant fleet archetypes.
 MC80L;Liberty-type MC80 Cruiser. See also LMC80 and HMC80.
 MM;Mon Mothma.
