@@ -1266,7 +1266,10 @@ class ShipCard:
 
         try:
             exact_match = conn.execute(
-                """select content,catchall from pieces where piecetype='shipcard' and piecename=?;""",
+                """select content,catchall 
+                   from pieces 
+                   where piecetype='shipcard' 
+                   and piecename=?;""",
                 (self.shipname,),
             ).fetchall()
             if len(exact_match) == 1:
@@ -1333,7 +1336,9 @@ class ShipToken:
 
         try:
             exact_match = conn.execute(
-                """select content from pieces where piecetype='ship' and piecename=?;""",
+                """select content 
+                   from pieces 
+                   where piecetype='ship' and piecename=?;""",
                 (self.shiptype,),
             ).fetchall()
             if len(exact_match) == 1:
@@ -1379,7 +1384,9 @@ class ShipCmdStack:
         )
         try:
             exact_match = conn.execute(
-                """select content from pieces where piecetype='other' and piecename=?;""",
+                """select content 
+                   from pieces 
+                   where piecetype='other' and piecename=?;""",
                 (self.cmdstack,),
             ).fetchall()
             if len(exact_match) == 1:
@@ -1427,16 +1434,15 @@ class Upgrade:
 
         try:
             exact_match = conn.execute(
-                """select content from pieces where piecetype='upgradecard' and piecename=?;""",
+                """select content 
+                   from pieces 
+                   where piecetype='upgradecard' and piecename=?;""",
                 (self.upgradename,),
             ).fetchall()
-            # logging.info("[*] Query executed. The result is:\n - {}.".format(str(exact_match)))
 
             self.content = False
             if len(exact_match) == 1:
-                # logging.info("[*] Found one result, ensuring there is only one entry in it...")
                 if len(exact_match[0]) == 1:
-                    # logging.info("[*] Verified, populating it...")
                     self.content = exact_match[0][0]
             if not self.content:
                 raise RuntimeError(f"Did not find upgrade {self.upgradename}")
@@ -1499,7 +1505,7 @@ class Squadron:
 
 class SquadronCard:
 
-    """A squadroncard of type str(squadronname) as defined in sqlitedb connection conn."""
+    """A squadroncard of type str(squadronname) as defined in sqlite connection conn."""
 
     def __init__(self, squadronname, conn=g_conn):
 
@@ -1515,14 +1521,18 @@ class SquadronCard:
 
         try:
             exact_match = conn.execute(
-                """select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;""",
+                """select content,catchall 
+                   from pieces 
+                   where piecetype='squadroncard' and piecename like ?;""",
                 (self.squadronname,),
             ).fetchall()
             if len(exact_match) == 1:
                 [(self.content, self.squadrontype)] = exact_match
             else:
                 [(self.content, self.squadrontype)] = conn.execute(
-                    """select content,catchall from pieces where piecetype='squadroncard' and piecename like ?;""",
+                    """select content,catchall 
+                       from pieces 
+                       where piecetype='squadroncard' and piecename like ?;""",
                     ("%" + self.squadronname + "%",),
                 ).fetchall()
         except ValueError as err:
@@ -1574,7 +1584,9 @@ class SquadronToken:
 
         try:
             exact_match = conn.execute(
-                """select content from pieces where piecetype='squadron' and piecename=?;""",
+                """select content 
+                   from pieces 
+                   where piecetype='squadron' and piecename=?;""",
                 (self.squadrontype,),
             ).fetchall()
             if len(exact_match) == 1:
@@ -1619,7 +1631,9 @@ class Objective:
 
         try:
             exact_match = self.conn.execute(
-                """select content from pieces where piecetype='objective' and piecename=?;""",
+                """select content 
+                   from pieces 
+                   where piecetype='objective' and piecename=?;""",
                 (self.objectivename,),
             ).fetchall()
             if len(exact_match) == 1:
