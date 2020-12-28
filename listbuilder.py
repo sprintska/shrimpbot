@@ -31,7 +31,8 @@ parser.add_argument("-vlb", help=".vlb filename", type=str, default="list.vlb")
 parser.add_argument("-aff", help=".aff filename", type=str, default="test.aff")
 parser.add_argument(
     "-flt",
-    help="fleet list location--VAL will attempt to identify and ingest the list in the given format",
+    help="fleet list location--VAL will attempt to identify and ingest the list in "
+    + "the given format",
     type=str,
     default="list.flt",
 )
@@ -198,7 +199,8 @@ nomenclature_translation = {
 }
 
 """ This dict pairs names of identically-named cards (Darth Vader, Leia Organa,
-    etc) with their costs in a tuple (the key) to reference their Vassal name and card type.
+    etc) with their costs in a tuple (the key) to reference their Vassal name and 
+    card type.
 """
 
 ambiguous_names = {
@@ -373,12 +375,12 @@ def import_from_list(import_from, output_to, working_path, conn, isvlog=False):
         with open(output_to, "w") as vlb:
             vlb.write("a1\r\nbegin_save{}\r\nend_save{}\r\n".format(chr(27), chr(27)))
             vlb.write(
-                "LOG\tCHAT<Listbuilder> - Fleet imported by Shrimpbot on the Armada Discord.{}\r\n".format(
+                "LOG\tCHAT<Listbuilder> - "
+                + "Fleet imported by Shrimpbot on the Armada Discord.{}\r\n".format(
                     chr(27)
                 )
-                + "LOG\tCHAT<Listbuilder> - https://discord.gg/jY4K4d6{}\r\n\r\n".format(
-                    chr(27)
-                )
+                + "LOG\tCHAT<Listbuilder> - "
+                + "https://discord.gg/jY4K4d6{}\r\n\r\n".format(chr(27))
             )
             for s in f.ships:
                 vlb.write(s.shipcard.content + chr(27))
@@ -417,8 +419,8 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                         )[:-1]
                     )
 
-                    # only ships and objs are broken up with " - ", and objs are labelled
-                    # otherwise, it's either a squadron or an unupgraded ship--indistinguishable
+                    # only ships & objs are broken up with " - ", and objs are labelled
+                    # otherwise, it's either sqd or upgradeless ship--indistinguishable
 
                     if " - " in this_line:
                         if this_line.startswith("Objective"):
@@ -661,7 +663,7 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                     card_name = scrub_piecename(str(card_name))
                     f.add_objective(obj_category, card_name)
 
-                    # this is the jankiest shit; I should just retool the objs not to care about categories... :/
+                    # TODO: retool the objs to not care about categories... :/
                     if obj_category == "assault":
                         obj_category = "defense"
                     else:
@@ -1136,7 +1138,7 @@ class Fleet:
         if objectivename in nomenclature_translation:
             ob = nomenclature_translation[objectivename]
             logging.info(
-                "[-] Translated {} to {} - in listbuilder.Fleet.add_objective().".format(
+                "[-] Translated {} to {} - in listbuilder.Fleet.add_objective()".format(
                     objectivename, ob
                 )
             )
