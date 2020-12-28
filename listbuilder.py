@@ -627,7 +627,7 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
                     + "supports Flagship only only insofar as it conforms to Warlords' "
                     + "format. *Usually* you can make it work by removing and manually "
                     + "spawning squadrons. \nSee "
-                    + "https://github.com/sprintska/shrimpbot/issues/45"
+                    + "https://github.com/sprintska/shrimpbot/issues/59"
                 )
             return (False, last_line)
 
