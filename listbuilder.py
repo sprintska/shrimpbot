@@ -508,10 +508,18 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
     f = Fleet("Food", conn=conn)
 
     shipnext = False
+    is_flagship = False
+
+    logging.info("Warlords")
+
+    # Set the flag if it looks like Flagship format to enable the custom error
+    flagship_regex = re.compile(r"\)\n= [\d]{1,3} points\n")
+    if flagship_regex.search(import_list):
+        logging.info("[!] FLAGSHIP LIST -- UNSUPPORTED!")
+        is_flagship = True
 
     # Make sure the cretinous user isn't just schwacking off all the garbage at
     # the top of a Warlords export.
-    logging.info("Warlords")
     ship_regex = re.compile(r".*\([\d]{1,3} points\)")
     squadron_regex = re.compile(r"^[\d]{1,2}.*\(.*[\d]{1,3} points\)")
 
@@ -519,7 +527,9 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
     if ship_regex.search(ship_check):
         logging.info("Ship check regex hit on: " + str(ship_regex.search(ship_check)))
         ship_check = ship_check.split()[0]
-        logging.info("SELECT piecetype FROM pieces where piecename LIKE %{}%")
+        logging.info("SELECT piecetype FROM pieces where piecename LIKE %{}%").format(
+            scrub_piecename(ship_check)
+        )
         ship_query = conn.execute(
             '''SELECT piecetype FROM pieces where piecename LIKE ?" "''',
             ("%" + scrub_piecename(ship_check) + "%",),
@@ -608,6 +618,15 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
                 shipnext = False
         except Exception as err:
             logging.exception(err)
+            if is_flagship:
+                last_line = (
+                    last_line
+                    + "\n"
+                    + "=" * 40
+                    + "\nThis appears to be a Flagship list.  Shrimpbot currently "
+                    + "supports Flagship only only insofar as it conforms to Warlords' "
+                    + "format."
+                )
             return (False, last_line)
 
     return (True, f)
