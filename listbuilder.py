@@ -67,8 +67,8 @@ g_conn = sqlite3.connect(g_database)
     correctness of the Vassal value.
 
     "exectuorclass": "executorclass" is a special case because the
-    reference in the card itself to the ship token is wrong.  I have no 
-    idea why it is able to successfully spawn in-game, but this fixes 
+    reference in the card itself to the ship token is wrong.  I have no
+    idea why it is able to successfully spawn in-game, but this fixes
     it on my side soooo...
 """
 
@@ -455,7 +455,7 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                 ("%" + scrub_piecename(this_line) + "%",),
                             ).fetchall()
                         except ValueError as err:
-                            pass
+                            logging.exception(err)
 
                         try:
                             isship = conn.execute(
@@ -465,7 +465,7 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                 ("%" + scrub_piecename(this_line),),
                             ).fetchall()
                         except ValueError as err:
-                            pass
+                            logging.exception(err)
 
                         try:
                             if this_line.lower()[-8::] == "squadron":
@@ -477,7 +477,7 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                                     ("%" + scrub_piecename(ltmp) + "%",),
                                 ).fetchall()
                         except ValueError as err:
-                            pass
+                            logging.exception(err)
 
                         if bool(issquadron):
                             # sq = f.add_squadron(l.strip())
@@ -703,7 +703,7 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                             ("%" + scrub_piecename(card_name) + "%",),
                         ).fetchall()
                     except ValueError as err:
-                        pass
+                        logging.exception(err)
 
                     try:
                         logging.info(
@@ -718,7 +718,7 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                             ("%" + card_name,),
                         ).fetchall()
                     except ValueError as err:
-                        pass
+                        logging.exception(err)
 
                     if bool(issquadron):
                         _ = f.add_squadron(card_name)
@@ -1433,7 +1433,7 @@ class Upgrade:
             self.content = False
             if len(exact_match) == 1:
                 # logging.info("[*] Found one result, ensuring there is only one entry in it...")
-                if len(exact_match[0]) == 1:                
+                if len(exact_match[0]) == 1:
                     # logging.info("[*] Verified, populating it...")
                     self.content = exact_match[0][0]
             if not self.content:

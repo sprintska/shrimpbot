@@ -142,8 +142,7 @@ async def cheat():
 async def on_message(message):
     await bot.process_commands(message)
 
-
-    if (message.channel.type is not discord.ChannelType.private):
+    if message.channel.type is not discord.ChannelType.private:
 
         # logging
         logging.info(
@@ -269,13 +268,11 @@ async def on_message(message):
 
         if out:
             if cheating and message.author.id == "236683961831653376":
-                await dicechannel.send(
-                    message.author.mention + " is a dirty cheater."
-                )
-                #await bot.send_message(dicechannel, out)
+                await dicechannel.send(message.author.mention + " is a dirty cheater.")
+                # await bot.send_message(dicechannel, out)
             else:
                 await dicechannel.send(message.author.mention)
-                #await bot.send_message(dicechannel, out)
+                # await bot.send_message(dicechannel, out)
 
     # don't read any bot's messages
 
@@ -384,7 +381,11 @@ async def on_message(message):
         if searchterm == "SURPRISEATTACK" and random.random() > 0.5:
             try:
                 filepath = os.path.join(CARD_IMG_PATH, "surprisemofo.png")
-                logging.info("Sending to channel {} - Surprise Motherfucker...".format(message.channel))
+                logging.info(
+                    "Sending to channel {} - Surprise Motherfucker...".format(
+                        message.channel
+                    )
+                )
                 await message.channel.send(file=discord.File(filepath))
                 sent = True
             except:
@@ -415,7 +416,9 @@ async def on_message(message):
                             )
                         )
 
-                logging.info("Sending to channel {} - {}".format(message.channel, tmp_img_path))
+                logging.info(
+                    "Sending to channel {} - {}".format(message.channel, tmp_img_path)
+                )
                 await message.channel.send(file=discord.File(tmp_img_path))
                 # await bot.send_message(message.author, "I didn't have that image in my database, so I tried finding it on the Wiki.  Was this the picture you wanted?")
                 # await bot.send_message(message.author, "[!yes/!no]")
@@ -437,19 +440,21 @@ async def on_message(message):
     #   listBuilder
 
     if findIn(["!listhelp"], message.content):
-        await message.author.send("To use a generated Vassal fleet:"+
-        "\n\t1. Click to download the .vlog file I just provided you."+
-        "\n\t2. Start a new game in Vassal as normal."+
-        "\n\t3. File > Load Continuation... > Select the downloaded .vlog file > Open"+
-        "\n\t4. Click the 'Step forward through logfile' (shown) in the upper left corner of the Star Wars Armada Controls dialog box until your whole list is visible.")
-        await message.author.send(file=discord.File("/home/ardaedhel/bin/shrimpbot/img/arrowed.png"))
-
+        await message.author.send(
+            "To use a generated Vassal fleet:"
+            + "\n\t1. Click to download the .vlog file I just provided you."
+            + "\n\t2. Start a new game in Vassal as normal."
+            + "\n\t3. File > Load Continuation... > Select the downloaded .vlog file > Open"
+            + "\n\t4. Click the 'Step forward through logfile' (shown) in the upper left corner of the Star Wars Armada Controls dialog box until your whole list is visible."
+        )
+        await message.author.send(
+            file=discord.File("/home/ardaedhel/bin/shrimpbot/img/arrowed.png")
+        )
 
     if len(message.content) >= 7:
         if findIn(["!VASSAL"], message.content):
             try:
-                await message.channel.send( "Generating a VASSAL list, hang on..."
-                )
+                await message.channel.send("Generating a VASSAL list, hang on...")
 
                 liststr = message.content.strip()[7::].strip()
                 if not liststr:
@@ -504,12 +509,14 @@ async def on_message(message):
                     await message.channel.send(
                         "Details - The error was in parsing this line: ",
                     )
-                    await message.channel.send( last_item)
+                    await message.channel.send(last_item)
 
                 else:
                     listbuilder.export_to_vlog(vlogfilepath, vlbfilepath, workingpath)
                     await message.channel.send(file=discord.File(vlogfilepath))
-                    await message.author.send("For usage instructions, pm me '!listhelp'.")
+                    await message.author.send(
+                        "For usage instructions, pm me '!listhelp'."
+                    )
                 del h
 
             except Exception as inst:
@@ -520,8 +527,8 @@ async def on_message(message):
                 await message.channel.send(
                     "Sorry, there was an error. I have reported it to Ardaedhel to fix it.",
                 )
-                await message.channel.send( "Details - Runtime Error:")
-                await message.channel.send( inst)
+                await message.channel.send("Details - Runtime Error:")
+                await message.channel.send(inst)
 
 
 bot.run(BOT_TOKEN)
