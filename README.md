@@ -1,7 +1,9 @@
 # shrimpbot
 Shrimpbot on Discord
 
-To use the bot, you'll need to request a bot token from Discord Developer Portal. 
+To add my instance of the bot to your server, follow this link and authorize the bot with the prompted roles:  https://discord.com/api/oauth2/authorize?client_id=418136901401182208&permissions=1409416416&scope=bot.
+
+To run your own instance, you'll need to request a bot token from Discord Developer Portal. 
  * link here: https://discordapp.com/developers/applications/
  * steps documented here: https://www.writebots.com/discord-bot-token/
  
