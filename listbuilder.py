@@ -116,6 +116,8 @@ vassal_nomenclature_errors = {
     "stardreadnoughtcommandprototype": "stardncommandprototype",
     # "tideofprogressxii": "tideofprogress",
     "vcx100freighter": "vcx100lightfreighter",
+    "venatoriclassstardestroyer": "venatori",
+    "venatoriiclassstardestroyer": "venatorii",
     "victoryiclassstardestroyer": "victoryi",
     "victoryiiclassstardestroyer": "victoryii",
     "vultureclassdroidfightersquadron": "vulturedroidsquadron",

@@ -101,7 +101,7 @@ class VassalModule:
 
         zipped_vmod = zipfile.ZipFile(self.vmod_path)
 
-        with zipped_vmod.open("buildFile") as build_xml_file:
+        with zipped_vmod.open("buildFile.xml") as build_xml_file:
             self.build_xml_raw = str(build_xml_file.read(), "utf-8")
 
         self.build_xml = ET.fromstring(self.build_xml_raw)
