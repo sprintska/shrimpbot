@@ -216,6 +216,8 @@ ambiguous_names = {
     ("darthvader", "21"): ("darthvader", "squadron"),
     ("emperorpalpatine", "35"): ("emperorpalpatinecom", "upgrade"),
     ("emperorpalpatine", "3"): ("emperorpalpatineoff", "upgrade"),
+    ("generalgrievous", "20"): ("generalgrievouscom", "upgrade"),
+    ("generalgrievous", "22"): ("generalgrievous", "squadron"),
     ("hondoohnaka", "24"): ("hondoohnaka", "squadron"),
     ("hondoohnaka", "2"): ("hondoohnaka", "upgrade"),
     ("kyrstaagate", "20"): ("kyrstaagate", "upgrade"),
