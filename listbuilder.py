@@ -108,6 +108,8 @@ vassal_nomenclature_errors = {
     "modifiedpeltaclassassaultship": "peltaclassassaultship",
     "modifiedpeltaclasscommandship": "peltaclasscommandship",
     # "phlacarphoccprototypes": "phlaccarphoccprototypes",
+    "providenceclasscarrier": "providencecarrier",
+    "providenceclassdreadnought": "providencedreadnought",
     "quasarfireiclasscruisercarrier": "quasarfirei",
     "quasarfireiiclasscruisercarrier": "quasarfireii",
     "raidericlasscorvette": "raideri",
