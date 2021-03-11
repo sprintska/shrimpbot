@@ -365,7 +365,7 @@ async def on_message(message):
                 )
 
     #   cardLookup(message.content,bot)
-    if findIn(["!LOOKUP", "!CARD"], message.content):
+    if findIn(["!LOOKUP", "!CARD"], message.content) and message.content.startswith("!"):
         sent = False
         searchterm = "".join(
             [x for x in message.content.split() if not x.startswith("!")]
