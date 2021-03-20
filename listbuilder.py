@@ -212,7 +212,7 @@ ambiguous_names = {
     ("admiralozzel", "2"): ("admiralozzeloff", "upgrade"),
     ("ahsokatano", "23"): ("ashokatano", "squadron"),
     ("ahsokatano", "2"): ("ahsokatano", "upgrade"),
-    ("ahsokatano", "6"): ("ahsokatanooff"), "upgrade"),
+    ("ahsokatano", "6"): ("ahsokatanooff", "upgrade"),
     ("darthvader", "36"): ("darthvadercom", "upgrade"),
     ("darthvader", "3"): ("darthvaderwpn", "upgrade"),
     ("darthvader", "1"): ("darthvaderoff", "upgrade"),
