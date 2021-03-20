@@ -210,8 +210,9 @@ nomenclature_translation = {
 ambiguous_names = {
     ("admiralozzel", "20"): ("admiralozzel", "upgrade"),
     ("admiralozzel", "2"): ("admiralozzeloff", "upgrade"),
-    ("ahsokatano", "23"): ("ahsokatano", "squadron"),
+    ("ahsokatano", "23"): ("ashokatano", "squadron"),
     ("ahsokatano", "2"): ("ahsokatano", "upgrade"),
+    ("ahsokatano", "6"): ("ahsokatanooff"), "upgrade"),
     ("darthvader", "36"): ("darthvadercom", "upgrade"),
     ("darthvader", "3"): ("darthvaderwpn", "upgrade"),
     ("darthvader", "1"): ("darthvaderoff", "upgrade"),
@@ -229,6 +230,8 @@ ambiguous_names = {
     ("leiaorgana", "28"): ("leiaorganacom", "upgrade"),
     ("leiaorgana", "3"): ("leiaorganaoff", "upgrade"),
     ("obiwankenobi", "28"): ("obiwankenobicom", "upgrade"),
+    ("plokoon", "26"): ("plokoon", "upgrade"),
+    ("plokoon", "24"): ("plokoon", "squadron"),
     ("wedgeantilles", "19"): ("wedgeantilles", "squadron"),
     ("wedgeantilles", "4"): ("wedgeantillesoff", "upgrade"),
 }
