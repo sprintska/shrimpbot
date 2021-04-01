@@ -1,5 +1,5 @@
-AA;Anti-aircraft, i.e. anti-squadron--as distinct from Anti-ship or AS.
-AAA;Anti-aircraft artillery, i.e. anti-squadron--as distinct from Anti-ship or AS.
+AA;Anti-aircraft, i.e. anti-squadron--as distinct from Anti-ship or ASh. See also AS.
+AAA;Anti-aircraft artillery, i.e. anti-squadron--as distinct from Anti-ship or ASh.  See also AS.
 ACKBARSLASH;A tactic: rushing through an opponent's battle line while firing both broadsides.
 ACEHOLES;A successful fleet build archetype relying on General Rieekan and numerous Rebel unique squadrons.
 ACM;Assault Concussion Missiles upgrade card.
@@ -12,7 +12,8 @@ AFFM;All Fighters, Follow Me! upgrade card.
 AP;Advanced Projectors upgrade card.
 APT;Assault Proton Torpedoes upgrade card.
 APTS;Assault Proton Torpedoes upgrade card.
-AS;Anti-squadron, generally referring to a ship's dice. See also AA.
+AS;Anti-squadron, generally referring to a ship's dice. Some people also use it to mean anti-ship (the opposite). See AA and ASh.
+ASH;Anti-ship, generally referring to a ship or squadron's dice, as distinct from AA. See also AS.
 BCC;Bomber Command Center upgrade card.
 BT;Boarding Troopers upgrade card.
 BTA;An Imperial-class Star Destroyer equipped with both the Boarding Troopers and Avenger upgrade cards.
