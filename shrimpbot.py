@@ -395,7 +395,7 @@ async def on_message(message):
         "!"
     ):
         sent = False
-        searchterm = "".join(
+        searchterm = " ".join(
             [x for x in message.content.split() if not x.startswith("!")]
         )
         for char in special_chars:
