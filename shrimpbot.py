@@ -89,6 +89,8 @@ def searchFor(search_term, search_set, match_threshold=100):
             )
         )
     )
+    logging.info(str("[*]  {}".format(str(matches[0:3]))))
+
     return False
 
 
