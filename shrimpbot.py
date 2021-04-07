@@ -64,7 +64,7 @@ def equalsAny(findUs, inMe):
     return False
 
 
-def searchFor(search_term, search_set, minimum_score_to_match=100):
+def searchFor(search_term, search_set, match_threshold=100):
     ratios = [
         (x, fuzz.token_set_ratio(search_term, x), fuzz.token_sort_ratio(search_term, x))
         for x in search_set
@@ -405,7 +405,7 @@ async def on_message(message):
         searchterm = searchterm.upper()
         logging.info("Looking for {}".format(searchterm))
 
-        card_matches = searchFor(searchterm, cardlookup)
+        card_matches = searchFor(searchterm, cardlookup, match_threshold=140)
 
         # maybe return SURPRISE MOTHERFUCKER instead of Surprise Attack
         if searchterm == "SURPRISE ATTACK" and random.random() > 0.5:
