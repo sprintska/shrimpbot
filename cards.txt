@@ -834,3 +834,9 @@ damage_targeter_disruption.jpg;TARGETER DISRUPTION
 damage_thrust_control_mal.jpg;THRUST CONTROL MALFUNCTION
 damage_thruster_fissure.jpg;THRUSTER FISSURE
 geeksrevenge.png;GEEKS REVENGE
+w10_flc_mercy-mission.png;MERCY MISSION
+w10_ttl_fb-88.png;FB 88
+w10_ttl_resolute.png;RESOLUTE
+w10_ttl_tb-73.png;TB 73
+w10_ttl_tranquility.png;TRANQUILITY
+w10_ttl_triumphant.png;TRIUMPHANT
