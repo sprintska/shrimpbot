@@ -16,7 +16,7 @@ import time
 
 from discord import emoji
 from discord.ext import commands
-
+from fuzzywuzzy import fuzz
 
 logging.basicConfig(filename="/var/log/shrimp.log", level=logging.INFO)
 
@@ -61,6 +61,34 @@ def equalsAny(findUs, inMe):
     for word in findUs:
         if word.upper() == inMe.upper():
             return True
+    return False
+
+
+def searchFor(search_term, search_set, minimum_score_to_match=100):
+    ratios = [
+        (x, fuzz.token_set_ratio(search_term, x), fuzz.token_sort_ratio(search_term, x))
+        for x in search_set
+    ]
+    matches = sorted(
+        [r for r in ratios], key=lambda ratio: ratio[1] + ratio[2], reverse=True
+    )
+    if (int(matches[0][1] + matches[0][2])) > minimum_score_to_match:
+        logging.info(
+            str(
+                "[+] Card lookup found potential matches for {}. Top 3:".format(
+                    search_term
+                )
+            )
+        )
+        logging.info(str("[+]   {}".format(str(matches[0:3]))))
+        return matches
+    logging.info(
+        str(
+            "[-] Card lookup failed to find matches for {} with fuzzy lookup.".format(
+                search_terms
+            )
+        )
+    )
     return False
 
 
@@ -319,8 +347,6 @@ async def on_message(message):
         await me.edit(nick="AcronymBot")
 
     if findIn(["DATA FOR THE DATA GOD"], message.content):
-        # if findIn(["FOR"],message.content):
-        # if findIn(["GOD"],message.content):
 
         await message.channel.send(
             "Statistics, likelihoods, and probabilities mean everything to men, nothing to Shrimpbot.",
@@ -365,20 +391,24 @@ async def on_message(message):
                 )
 
     #   cardLookup(message.content,bot)
-    if findIn(["!LOOKUP", "!CARD"], message.content) and message.content.startswith("!"):
+    if findIn(["!LOOKUP", "!CARD"], message.content) and message.content.startswith(
+        "!"
+    ):
         sent = False
         searchterm = "".join(
             [x for x in message.content.split() if not x.startswith("!")]
         )
         for char in special_chars:
             searchterm = searchterm.replace(
-                char, ""
+                char, " "
             )  # this is super hacky, lrn2regex, scrub
         searchterm = searchterm.upper()
         logging.info("Looking for {}".format(searchterm))
 
+        card_matches = searchFor(searchterm, cardlookup)
+
         # maybe return SURPRISE MOTHERFUCKER instead of Surprise Attack
-        if searchterm == "SURPRISEATTACK" and random.random() > 0.5:
+        if searchterm == "SURPRISE ATTACK" and random.random() > 0.5:
             try:
                 filepath = os.path.join(CARD_IMG_PATH, "surprisemofo.png")
                 logging.info(
@@ -390,9 +420,9 @@ async def on_message(message):
                 sent = True
             except:
                 logging.info("Surprise Motherfucker broke.")
-        elif searchterm in cardlookup:
+        elif card_matches:
             # Post the image to requested channel
-            filepath = os.path.join(CARD_IMG_PATH, str(cardlookup[searchterm]))
+            filepath = os.path.join(CARD_IMG_PATH, str(cardlookup[cardmatches[0][0]]))
             # logging.info("Looking in {}".format(filepath))
             logging.info("Sending to channel {} - {}".format(message.channel, filepath))
             await message.channel.send(file=discord.File(filepath))
