@@ -85,7 +85,7 @@ def searchFor(search_term, search_set, minimum_score_to_match=100):
     logging.info(
         str(
             "[-] Card lookup failed to find matches for {} with fuzzy lookup.".format(
-                search_terms
+                search_term
             )
         )
     )
@@ -422,7 +422,7 @@ async def on_message(message):
                 logging.info("Surprise Motherfucker broke.")
         elif card_matches:
             # Post the image to requested channel
-            filepath = os.path.join(CARD_IMG_PATH, str(cardlookup[cardmatches[0][0]]))
+            filepath = os.path.join(CARD_IMG_PATH, str(cardlookup[card_matches[0][0]]))
             # logging.info("Looking in {}".format(filepath))
             logging.info("Sending to channel {} - {}".format(message.channel, filepath))
             await message.channel.send(file=discord.File(filepath))
