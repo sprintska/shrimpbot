@@ -833,3 +833,4 @@ damage_structural_damage.jpg;STRUCTURAL DAMAGE
 damage_targeter_disruption.jpg;TARGETER DISRUPTION
 damage_thrust_control_mal.jpg;THRUST CONTROL MALFUNCTION
 damage_thruster_fissure.jpg;THRUSTER FISSURE
+geeksrevenge.png;GEEKS REVENGE
