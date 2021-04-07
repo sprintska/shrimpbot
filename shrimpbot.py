@@ -72,7 +72,7 @@ def searchFor(search_term, search_set, match_threshold=100):
     matches = sorted(
         [r for r in ratios], key=lambda ratio: ratio[1] + ratio[2], reverse=True
     )
-    if ((int(matches[0][1] + matches[0][2])) > match_threshold) or int(matches[0][0]) == 100:
+    if ((int(matches[0][1] + matches[0][2])) > match_threshold) or (int(matches[0][0]) == 100):
         logging.info(
             str(
                 "[+] Card lookup found potential matches for {}. Top 3:".format(
