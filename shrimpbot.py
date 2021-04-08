@@ -73,8 +73,9 @@ def searchFor(search_term, search_set, match_threshold=100):
         [r for r in ratios], key=lambda ratio: ratio[1] + ratio[2], reverse=True
     )
 #    if ((int(matches[0][1] + matches[0][2])) > match_threshold) or (int(matches[0][0]) == 100):
-    if ((int(matches[0][1] + matches[0][2])) > match_threshold) or (int(matches[0][0]) == 100):
-        logging.info("FOOD")
+    # logging.info(str(matches[0][1]),str(matches[0][2]))
+    if ((int(matches[0][1] + matches[0][2])) > match_threshold) or (int(matches[0][1]) == 100):
+        logging.info("FOUND MATCHES")
         logging.info(
             str(
                 "[+] Card lookup found potential matches for {}. Top 3:".format(
@@ -84,6 +85,7 @@ def searchFor(search_term, search_set, match_threshold=100):
         )
         logging.info(str("[+]   {}".format(str(matches[0:3]))))
         return matches
+    logging.info("NO MATCHES")
     logging.info(
         str(
             "[-] Card lookup failed to find matches for {} with fuzzy lookup.".format(
@@ -190,8 +192,8 @@ async def on_message(message):
     # don't read our own message or do anything if not enabled
     # ONLY the dice roller should respond to other bots
 
-    if message.author.id == bot.user.id:
-        return
+    # if ((message.author.id == bot.user.id) and ("card" not in message.content)):
+    #     return
     if not enabled:
         return
 
@@ -308,7 +310,7 @@ async def on_message(message):
 
     # don't read any bot's messages
 
-    if message.author.bot:
+    if message.author.bot and ("card" not in message.content):
         return
 
     #   shrimpBot(message.content,bot)
@@ -513,7 +515,7 @@ async def on_message(message):
                     ).fetchall()[0]
                 ):
                     logging.critical(
-                        "Database at {}, {}, is corrupted or nonexistent.".format(
+                        "Database at {}, {}, is corrupted or missing.".format(
                             databasepath, conn
                         )
                     )
@@ -538,10 +540,10 @@ async def on_message(message):
                         "List: \n{}".format(message.content)
                     )
                     await message.channel.send(
-                        "Sorry, there was an error. I have reported it to Ardaedhel to fix it.",
+                        "Sorry, there was a list parsing error. I have reported it to Ardaedhel to fix it.",
                     )
                     await message.channel.send(
-                        "Details - The error was in parsing this line: ",
+                        "Details - The error was in or near this line: ",
                     )
                     await message.channel.send(last_item)
 
@@ -558,11 +560,12 @@ async def on_message(message):
                 await bot.get_user(BOT_OWNER_ID).send(
                     "[!] LISTBUILDER ERROR | {}".format(inst)
                 )
+                await bot.get_user(BOT_OWNER_ID).send("Details - Runtime Error:")
+                await bot.get_user(BOT_OWNER_ID).send(inst)
+                
                 await message.channel.send(
-                    "Sorry, there was an error. I have reported it to Ardaedhel to fix it.",
+                    "Sorry, there was an application error. I have reported it to Ardaedhel to fix it.",
                 )
-                await message.channel.send("Details - Runtime Error:")
-                await message.channel.send(inst)
 
 
 bot.run(BOT_TOKEN)
