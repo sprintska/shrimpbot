@@ -495,9 +495,9 @@ async def on_message(message):
                 liststr = message.content.strip()[7::].strip()
                 if not liststr:
                     raise Exception("List not found. Did you forget the list?")
-                h = hashlib.new("md5")
-                h.update(str(time.time()).encode())
-                guid = h.hexdigest()[0:16]
+                guid_hash = hashlib.new("md5")
+                guid_hash.update(str(time.time()).encode())
+                guid = guid_hash.hexdigest()[0:16]
 
                 listbuilderpath = os.path.abspath("/home/ardaedhel/bin/shrimpbot/")
                 workingpath = os.path.join(listbuilderpath, "working/")
@@ -553,7 +553,7 @@ async def on_message(message):
                     await message.author.send(
                         "For usage instructions, pm me '!listhelp'."
                     )
-                del h
+                del guid_hash
 
             except Exception as inst:
                 logging.info(inst)

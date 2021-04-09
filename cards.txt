@@ -840,3 +840,25 @@ w10_ttl_resolute.png;RESOLUTE
 w10_ttl_tb-73.png;TB 73
 w10_ttl_tranquility.png;TRANQUILITY
 w10_ttl_triumphant.png;TRIUMPHANT
+w10_com_tf-1726.png;TF 1726
+w10_def_thermal-shields.png;THERMAL SHIELDS
+w10_flc_hot-landing.png;HOT LANDING
+w10_ion_point-defense-ion-cannons.png;POINT DEFENSE ION CANNONS PDIC
+w10_off_flak-guns.png;FLAK GUNS
+w10_off_rocket-troopers.png;B2 ROCKET TROOPERS
+w10_off_spha-t.png;SPHAT
+w10_trl_dby-827-heavy-turbolasers.png;DBY827 HEAVY TURBOLASERS
+w10_ttl_fb-88.png;FB 88 TITLE
+w10_ttl_resolute.png;RESOLUTE TITLE
+w10_ttl_tb-73.png;TB 73 TITLE
+w10_ttl_tranquility.png;TRANQUILITY TITLE
+w10_ttl_triumphant.png;TRIUMPHANT TITLE
+w10_com_tf-1726.png;TF 1726 COMMANDER
+w10_def_thermal-shields.png;THERMAL SHIELDS
+w10_flc_hot-landing.png;HOT LANDING
+w10_ion_point-defense-ion-cannons.png;POINT DEFENSE ION CANNONS PDIC
+w10_off_flak-guns.png;FLAK GUNS OFFENSIVE RETROFIT
+w10_off_rocket-troopers.png;B2 ROCKET TROOPERS OFFENSIVE RETROFIT
+w10_off_spha-t.png;SPHAT OFFENSIVE RETROFIT
+w10_trl_dby-827-heavy-turbolasers.png;DBY827 HEAVY TURBOLASERS
+w10_com_tf-1726.png;TF 1776
