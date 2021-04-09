@@ -151,6 +151,7 @@ listbuilder_nomenclature_errors = {
     "battlerefit": "hardcellclassbattlerefit",
     "bltbywingsquadron": "btlbywingsquadron",
     "chargerc70": "consularclasschargerc70retrofit",
+    "clonecmdrwolffe": "clonecommanderwolffe",
     "commsfrigate": "munificentclasscommsfrigate",
     "consulararmedcruiser": "consularclassarmedcruiser",
     "consularchargerc70": "consularclasschargerc70retrofit",
