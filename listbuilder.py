@@ -120,6 +120,7 @@ vassal_nomenclature_errors = {
     "raideriiclasscorvette": "raiderii",
     "stardreadnoughtassaultprototype": "stardnassaultprototype",
     "stardreadnoughtcommandprototype": "stardncommandprototype",
+    "b2rockettroopers": "superrockettroopers",
     # "tideofprogressxii": "tideofprogress",
     "vcx100freighter": "vcx100lightfreighter",
     "venatoriclassstardestroyer": "venatori",
