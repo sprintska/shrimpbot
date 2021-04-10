@@ -1316,7 +1316,6 @@ class ShipCard:
                 raise RuntimeError(f"Did not find ship card {self.shipname}")
         except RuntimeError as err:
             logging.exception(err)
-            raise err
         except Exception as err:
             logging.debug(exc_info=err)
             raise err
@@ -1479,7 +1478,6 @@ class Upgrade:
             ).fetchall()
 
             self.content = False
-            logging.info("Here we go searching again...")
             if len(exact_match) == 1:
                 if len(exact_match[0]) == 1:
                     self.content = exact_match[0][0]
