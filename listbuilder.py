@@ -1317,6 +1317,7 @@ class ShipCard:
         except RuntimeError as err:
             logging.exception(exc_info=err)
         except Exception as err:
+            logging.info("here")
             logging.debug(exc_info=err)
             raise err
 
