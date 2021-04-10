@@ -142,7 +142,7 @@ listbuilder_nomenclature_errors = {
     "acclamatoriiclass": "acclamatoriiclassassaultship",
     "admiralozzelcom": "admiralozzel",
     # "ahsokatanodelta": "ashokatano",
-    "ahsokatanorepoff": "ahsokatanooff",
+    # "ahsokatanorepoff": "ahsokatanooff",
     "anakinskywalkeryrep": "anakinskywalker",
     "armedcruiser": "consularclassarmedcruiser",
     "assaultfrigatemk2a": "assaultfrigatemarkiia",
