@@ -1323,10 +1323,10 @@ class ShipCard:
             logging.debug("7")
         except RuntimeError as err:
             logging.debug("5")
-            logging.exception(exc_info=err)
+            logging.exception(err,exc_info=err)
             logging.debug("6")
         except Exception as err:
-            logging.debug(exc_info=err)
+            logging.debug(err,exc_info=err)
             raise err
 
         logging.debug("8")
