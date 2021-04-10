@@ -1479,6 +1479,7 @@ class Upgrade:
             ).fetchall()
 
             self.content = False
+            logging.info("Here we go searching again...")
             if len(exact_match) == 1:
                 if len(exact_match[0]) == 1:
                     self.content = exact_match[0][0]
