@@ -1317,7 +1317,7 @@ class ShipCard:
                 logging.debug("2")
                 [(self.content, self.shiptype)] = exact_match
                 logging.debug("3")
-            if not hasattr(self, 'content') and hasattr(self, 'shiptype'):
+            if not (hasattr(self, 'content') and hasattr(self, 'shiptype')):
                 logging.debug("4")
                 raise RuntimeError(f"Did not find ship card {self.shipname}")
                 logging.debug("7")
