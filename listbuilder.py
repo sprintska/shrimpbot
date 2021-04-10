@@ -1323,7 +1323,7 @@ class ShipCard:
                 logging.debug("7")
         except RuntimeError as err:
             logging.debug("5")
-            logging.exception(err,exc_info=err)
+            logging.debug(err,exc_info=err)
             logging.debug("6")
         except Exception as err:
             logging.debug(err,exc_info=err)
@@ -1333,9 +1333,12 @@ class ShipCard:
         self.shiptoken = ShipToken(self.shiptype, self.conn)
 
         self.guid = calc_guid()
+        logging.debug("9")
         self.content = self.content.replace("vlb_GUID", self.guid)
         self.content = self.content.replace("vlb_x_axis", "0")
         self.content = self.content.replace("vlb_y_axis", "0")
+
+        logging.debug("10")
 
         self.command = self.content.split("/placemark;Spawn Command ")[-1][0]
         self.command = "commandstack" + self.command
