@@ -1310,25 +1310,26 @@ class ShipCard:
                    and piecename=?;""",
                 (self.shipname,),
             ).fetchall()
-            logging.info("1")
+            logging.debug("1")
             logging.info(str(exact_match))
             logging.info(str(len(exact_match)))
             if len(exact_match) == 1:
-                logging.info("2")
+                logging.debug("2")
                 [(self.content, self.shiptype)] = exact_match
-                logging.info("3")
+                logging.debug("3")
             if not self.content and self.shiptype:
-                logging.info("4")
+                logging.debug("4")
                 raise RuntimeError(f"Did not find ship card {self.shipname}")
-            logging.info("7")
+            logging.debug("7")
         except RuntimeError as err:
-            logging.info("5")
+            logging.debug("5")
             logging.exception(exc_info=err)
-            logging.info("6")
+            logging.debug("6")
         except Exception as err:
             logging.debug(exc_info=err)
             raise err
 
+        logging.debug("8")
         self.shiptoken = ShipToken(self.shiptype, self.conn)
 
         self.guid = calc_guid()
