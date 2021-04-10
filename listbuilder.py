@@ -75,7 +75,7 @@ g_conn = sqlite3.connect(g_database)
 
 # "canon": "non-canon",
 vassal_nomenclature_errors = {
-    "adigallia": "adiagallia",
+    # "adigallia": "adiagallia",
     "arc170starfightersquadron": "arc170squadron",
     "arquitensclasscommandcruiser": "arquitenscommandcruiser",
     "arquitensclasslightcruiser": "arquitenslightcruiser",
