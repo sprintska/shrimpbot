@@ -1318,6 +1318,7 @@ class ShipCard:
             if not self.content and self.shiptype:
                 logging.info("4")
                 raise RuntimeError(f"Did not find ship card {self.shipname}")
+            logging.info("7")
         except RuntimeError as err:
             logging.info("5")
             logging.exception(exc_info=err)
