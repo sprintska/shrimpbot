@@ -1313,6 +1313,7 @@ class ShipCard:
             if len(exact_match) == 1:
                 [(self.content, self.shiptype)] = exact_match
             if not self.content and self.shiptype:
+                logging.debug("Query result length for {} is {}.".format(self.shipname,str(len(exact_match))))
                 raise RuntimeError(f"Did not find ship card {self.shipname}")
         except RuntimeError as err:
             logging.exception(err)
