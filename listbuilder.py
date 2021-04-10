@@ -1310,14 +1310,19 @@ class ShipCard:
                    and piecename=?;""",
                 (self.shipname,),
             ).fetchall()
+            logging.info("1")
             if len(exact_match) == 1:
+                logging.info("2")
                 [(self.content, self.shiptype)] = exact_match
+                logging.info("3")
             if not self.content and self.shiptype:
+                logging.info("4")
                 raise RuntimeError(f"Did not find ship card {self.shipname}")
         except RuntimeError as err:
+            logging.info("5")
             logging.exception(exc_info=err)
+            logging.info("6")
         except Exception as err:
-            logging.info("here")
             logging.debug(exc_info=err)
             raise err
 
