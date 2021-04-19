@@ -223,10 +223,10 @@ class VassalModule:
 
         if isinstance(module_element, PrototypeDefinition):
             self.prototypes[module_element.name] = module_element
-        elif isinstance(module_element, PieceDefinition) and module_element.name in self.pieces:
+        elif isinstance(module_element, PieceDefinition) and module_element.name in self.pieces and "------------------------" not in module_element.name:
             print("[!] NOMENCLATURE UNIQUENESS CONFLICT! | {} was not added.".format(str(module_element.name)))
             print(" -> Traits: ")
-            [print("  -> {}".format(str(trait))) for trait in module_element.traits]
+            [print("  -> {}".format(str(trait[0])[0:80])) for trait in module_element.traits]
         elif isinstance(module_element, PieceDefinition):
             self.pieces[module_element.name] = module_element
         else:
@@ -393,6 +393,10 @@ class Trait:
 
         self.state = state
         self.state.trait = self
+
+    def __str__(self):
+
+        return self.trait_text
 
 
 class State:
