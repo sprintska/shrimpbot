@@ -239,8 +239,8 @@ ambiguous_names = {
     ("landocalrissian", "4"): ("landocalrissian", "upgrade"),
     ("leiaorgana", "28"): ("leiaorganacom", "upgrade"),
     ("leiaorgana", "3"): ("leiaorganaoff", "upgrade"),
-    ("luminaraundili", "23"): ("luminaraundili", "squadron"),
-    ("luminaraundili", "25"): ("luminaraundilicom", "upgrade"),
+    ("luminaraunduli", "23"): ("luminaraundili", "squadron"),
+    ("luminaraunduli", "25"): ("luminaraundilicom", "upgrade"),
     ("plokoon", "26"): ("plokooncom", "upgrade"),
     ("plokoon", "24"): ("plokoon", "squadron"),
     ("wedgeantilles", "19"): ("wedgeantilles", "squadron"),
@@ -1323,7 +1323,6 @@ class ShipCard:
             if not (hasattr(self, 'content') and hasattr(self, 'shiptype')):
                 logging.debug("4")
                 raise RuntimeError(f"Did not find ship card {self.shipname}")
-                logging.debug("7")
         except RuntimeError as err:
             logging.debug("5")
             logging.debug(err,exc_info=err)
