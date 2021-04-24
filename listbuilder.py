@@ -240,7 +240,7 @@ ambiguous_names = {
     ("leiaorgana", "28"): ("leiaorganacom", "upgrade"),
     ("leiaorgana", "3"): ("leiaorganaoff", "upgrade"),
     ("luminaraundili", "23"): ("luminaraundili", "squadron"),
-    ("luminaraundili", "25"): ("luminaraundilicom", "upgrade")
+    ("luminaraundili", "25"): ("luminaraundilicom", "upgrade"),
     ("plokoon", "26"): ("plokooncom", "upgrade"),
     ("plokoon", "24"): ("plokoon", "squadron"),
     ("wedgeantilles", "19"): ("wedgeantilles", "squadron"),
