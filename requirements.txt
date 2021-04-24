@@ -52,7 +52,7 @@ incremental==16.10.1
 isort==4.3.21
 itsdangerous==1.1.0
 jeepney==0.4.2
-Jinja2==2.11.1
+Jinja2==2.11.3
 joblib==0.14.1
 #josepy==1.1.0
 josepy
