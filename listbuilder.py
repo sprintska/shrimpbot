@@ -185,6 +185,8 @@ listbuilder_nomenclature_errors = {
     "partsresuppy": "partsresupply",
     "peltaassaultship": "peltaclassassaultship",
     "peltacommandship": "peltaclasscommandship",
+    "peltamedicalfrigate": "peltaclassmedicalfrigate",
+    "peltatransportfrigate": "peltaclasstransportfrigate",
     "rayantilles": "raymusantilles",
     "solorcorona": "solarcorona",
     "ssdexecutori": "executoristardn",
