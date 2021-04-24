@@ -3,6 +3,7 @@
 import argparse
 import difflib
 import os
+import random
 import re
 import datetime
 import sqlite3
@@ -224,7 +225,7 @@ class VassalModule:
         if isinstance(module_element, PrototypeDefinition):
             self.prototypes[module_element.name] = module_element
         elif isinstance(module_element, PieceDefinition) and module_element.name in self.pieces and "------------" not in module_element.name:
-            piece_name = str(module_element.name) + "__holding__"
+            piece_name = str(module_element.name) + "__" + str(int(random.random()*10000)) + "__"
             self.pieces[piece_name] = module_element
             print("[!] Duplicate: {}".format(str(module_element.name)))
         elif isinstance(module_element, PieceDefinition):
