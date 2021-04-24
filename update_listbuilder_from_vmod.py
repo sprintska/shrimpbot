@@ -223,10 +223,10 @@ class VassalModule:
 
         if isinstance(module_element, PrototypeDefinition):
             self.prototypes[module_element.name] = module_element
-        elif isinstance(module_element, PieceDefinition) and module_element.name in self.pieces and "------------------------" not in module_element.name:
-            print("[!] NOMENCLATURE UNIQUENESS CONFLICT! | {} was not added.".format(str(module_element.name)))
-            print(" -> Traits: ")
-            [print("  -> {}".format(str(trait[0])[0:80])) for trait in module_element.traits]
+        elif isinstance(module_element, PieceDefinition) and module_element.name in self.pieces and "------------" not in module_element.name:
+            piece_name = str(module_element.name) + "__holding__"
+            self.pieces[piece_name] = module_element
+            print("[!] Duplicate: {}".format(str(module_element.name)))
         elif isinstance(module_element, PieceDefinition):
             self.pieces[module_element.name] = module_element
         else:
