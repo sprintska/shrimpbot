@@ -82,7 +82,6 @@ vassal_nomenclature_errors = {
     # "ahsokatano": "ashokatano",
     "bailorgana": "bailorganacom",
     "belbullab22starfightersquadron": "belbullab22squadron",
-    "clonecaptainsilver": "clonecaptiansilver",
     "coloneljendonlambdaclassshuttle": "coloneljendon",
     "consularclasschargerc70": "consularclasschargerc70retrofit",
     "dist81": "distb1",
