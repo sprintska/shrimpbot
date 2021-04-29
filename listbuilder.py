@@ -1314,8 +1314,8 @@ class ShipCard:
                 (self.shipname,),
             ).fetchall()
             logging.debug("1")
-            logging.info(str(exact_match))
-            logging.info(str(len(exact_match)))
+            # logging.info(str(exact_match))
+            # logging.info(str(len(exact_match)))
             if len(exact_match) == 1:
                 logging.debug("2")
                 [(self.content, self.shiptype)] = exact_match
