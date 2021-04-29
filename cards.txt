@@ -862,3 +862,10 @@ w10_off_rocket-troopers.png;B2 ROCKET TROOPERS OFFENSIVE RETROFIT
 w10_off_spha-t.png;SPHAT OFFENSIVE RETROFIT
 w10_trl_dby-827-heavy-turbolasers.png;DBY827 HEAVY TURBOLASERS
 w10_com_tf-1726.png;TF 1776
+w8_wpn_off_shriv-suurgav.png; SHRIV SUURGAV BOARDING TEAM
+w7_wpn_off_darth-vader.png; DARTH VADER BOARDING TEAM
+w7_wpn_off_darth-vader.png; DARTH VADER HALLWAY MONITOR
+w7_wpn_off_jyn-erso.png; JYN ERSO BOARDING TEAM
+w6_wpn_off_boarding-troopers.png; BOARDING TROOPERS TEAM
+w6_wpn_off_cham-syndulla.png; CHAM SYNDULLA BOARDING TEAM
+w6_wpn_off_boarding-engineers.png; BOARDING ENGINEERS TEAM
