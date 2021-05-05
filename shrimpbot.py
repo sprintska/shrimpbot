@@ -6,6 +6,7 @@ import discord
 import hashlib
 import listbuilder
 import logging
+import logging.handlers
 import os
 import random
 import re
@@ -18,7 +19,8 @@ from discord import emoji
 from discord.ext import commands
 from fuzzywuzzy import fuzz
 
-logging.basicConfig(filename="/var/log/shrimp.log", level=logging.INFO)
+_handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
+logging.basicConfig(handler=[_handler], level=logging.INFO)
 
 TOKEN_PATH = "/home/ardaedhel/bin/shrimpbot/privatekey.dsc"
 CARD_IMG_PATH = "/home/ardaedhel/bin/shrimpbot/img/"
@@ -478,9 +480,10 @@ async def on_message(message):
     if findIn(["!listhelp"], message.content):
         await message.author.send(
             "To use a generated Vassal fleet:"
-            + "\n\t1. Click to download the .vlog file I just provided you."
+            + "\n\t1. Click to download the .vlog file I provided you."
             + "\n\t2. Start a new game in Vassal as normal."
-            + "\n\t3. File > Load Continuation... > Select the downloaded .vlog file > Open"
+            + "\n\t3. Tools > Load Continuation... > Select the downloaded .vlog file > Open"
+            + "\n\t\t*note: accept the warning in the popup"
             + "\n\t4. Click the 'Step forward through logfile' (shown) in the upper left corner of the Star Wars Armada Controls dialog box until your whole list is visible."
         )
         await message.author.send(
