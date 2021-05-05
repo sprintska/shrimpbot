@@ -9,12 +9,11 @@ import re
 import random
 import logging
 
-# import update_pieces
 
 PWD = os.getcwd()
-logging.basicConfig(filename="/var/log/shrimp.log")
-# VLOGFILENAME = "mtmtest2.vlog"
-# VLBFILENAME = "mtmtest2.vlb"
+
+_handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
+logging.basicConfig(handler=[_handler], level=logging.INFO)
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
