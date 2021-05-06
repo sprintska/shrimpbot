@@ -15,7 +15,7 @@ import logging.handlers
 PWD = os.getcwd()
 
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
-logging.basicConfig(handler=[_handler], level=logging.INFO)
+logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 parser = argparse.ArgumentParser()
 parser.add_argument(

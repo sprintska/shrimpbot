@@ -10,7 +10,7 @@ import shutil
 
 
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
-logging.basicConfig(handler=[_handler], level=logging.INFO)
+logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 def autoPopulateImage(subject):
 

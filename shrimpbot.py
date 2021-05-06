@@ -20,7 +20,7 @@ from discord.ext import commands
 from fuzzywuzzy import fuzz
 
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
-logging.basicConfig(handler=[_handler], level=logging.INFO)
+logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 TOKEN_PATH = "/home/ardaedhel/bin/shrimpbot/privatekey.dsc"
 CARD_IMG_PATH = "/home/ardaedhel/bin/shrimpbot/img/"
