@@ -160,6 +160,8 @@ async def on_ready():
         if guild.id == 697833083201650689:
             await guild.leave()
             logging.info(" [!] LEFT {}".format(str(guild)))
+        if guild.id != 669698762402299904: # Steel Strat Server are special snowflakes
+            await guild.me.edit(nick="Shrimpbot")
     logging.info("======")
 
     await bot.change_presence(status=discord.Status.online, activity=note)
@@ -333,14 +335,6 @@ async def on_message(message):
         await message.add_reaction("\U0001f990")
 
     if findIn(["HAIL SHRIMPBOT"], message.content):
-        me = None
-
-        for guild in bot.guilds:
-            for member in guild.members:
-                if member.name == bot.user.name:
-                    me = member
-        if me:
-            await me.edit(nick="ShrimpBot")
 
         # No ponies for Truthiness
         # if message.author.id == "264163431408467978":
@@ -352,7 +346,6 @@ async def on_message(message):
             + message.author.name
             + " a pony.  :racehorse:",
         )
-        await me.edit(nick="AcronymBot")
 
     if findIn(["DATA FOR THE DATA GOD"], message.content):
 
