@@ -54,10 +54,8 @@ g_working_path = os.path.abspath(args.wd)
 g_export_to = os.path.abspath(args.vlog)
 g_import_aff = os.path.abspath(args.aff)
 g_import_flt = os.path.abspath(args.flt)
-g_database = os.path.abspath(args.db)
+g_conn = os.path.abspath(args.db)
 g_import_vlog = args.impvlog
-
-g_conn = sqlite3.connect(g_database)
 
 
 """ These dicts translate between canonical names and non-canonical
@@ -471,34 +469,37 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                             )
                         )
                         try:
-                            issquadron = conn.execute(
-                                """SELECT * FROM pieces
-                                    WHERE piecetype='squadroncard'
-                                    AND piecename LIKE ?;""",
-                                ("%" + scrub_piecename(this_line) + "%",),
-                            ).fetchall()
+                            with sqlite3.connect(conn) as connection:
+                                issquadron = connection.execute(
+                                    """SELECT * FROM pieces
+                                        WHERE piecetype='squadroncard'
+                                        AND piecename LIKE ?;""",
+                                    ("%" + scrub_piecename(this_line) + "%",),
+                                ).fetchall()
                         except ValueError as err:
                             logging.exception(err)
 
                         try:
-                            isship = conn.execute(
-                                """SELECT * FROM pieces
-                                    WHERE piecetype='shipcard'
-                                    AND piecename LIKE ?;""",
-                                ("%" + scrub_piecename(this_line),),
-                            ).fetchall()
+                            with sqlite3.connect(conn) as connection:
+                                isship = connection.execute(
+                                    """SELECT * FROM pieces
+                                        WHERE piecetype='shipcard'
+                                        AND piecename LIKE ?;""",
+                                    ("%" + scrub_piecename(this_line),),
+                                ).fetchall()
                         except ValueError as err:
                             logging.exception(err)
 
                         try:
                             if this_line.lower()[-8::] == "squadron":
                                 ltmp = this_line[0:-8]
-                                issquadronfancy = conn.execute(
-                                    """SELECT * FROM pieces
-                                        WHERE piecetype='squadroncard'
-                                        AND piecename LIKE ?;""",
-                                    ("%" + scrub_piecename(ltmp) + "%",),
-                                ).fetchall()
+                                with sqlite3.connect(conn) as connection:
+                                    issquadronfancy = connection.execute(
+                                        """SELECT * FROM pieces
+                                            WHERE piecetype='squadroncard'
+                                            AND piecename LIKE ?;""",
+                                        ("%" + scrub_piecename(ltmp) + "%",),
+                                    ).fetchall()
                         except ValueError as err:
                             logging.exception(err)
 
@@ -551,10 +552,11 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
         logging.info("SELECT piecetype FROM pieces where piecename LIKE %{}%").format(
             scrub_piecename(ship_check)
         )
-        ship_query = conn.execute(
-            '''SELECT piecetype FROM pieces where piecename LIKE ?" "''',
-            ("%" + scrub_piecename(ship_check) + "%",),
-        ).fetchall()
+        with sqlite3.connect(conn) as connection:
+            ship_query = connection.execute(
+                '''SELECT piecetype FROM pieces where piecename LIKE ?" "''',
+                ("%" + scrub_piecename(ship_check) + "%",),
+            ).fetchall()
         if len(ship_query) > 0:
             if ("ship",) in ship_query or ("shipcard",) in ship_query:
                 shipnext = True
@@ -740,12 +742,13 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                                 scrub_piecename(card_name), str(conn)
                             )
                         )
-                        issquadron = conn.execute(
-                            """SELECT * FROM pieces
-                                WHERE piecetype='squadroncard'
-                                AND piecename LIKE ?;""",
-                            ("%" + scrub_piecename(card_name) + "%",),
-                        ).fetchall()
+                        with sqlite3.connect(conn) as connection:
+                            issquadron = connection.execute(
+                                """SELECT * FROM pieces
+                                    WHERE piecetype='squadroncard'
+                                    AND piecename LIKE ?;""",
+                                ("%" + scrub_piecename(card_name) + "%",),
+                            ).fetchall()
                     except ValueError as err:
                         logging.exception(err)
 
@@ -755,12 +758,13 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                                 card_name, str(conn)
                             )
                         )
-                        isship = conn.execute(
-                            """SELECT * FROM pieces
-                                WHERE piecetype='shipcard'
-                                AND piecename LIKE ?;""",
-                            ("%" + card_name,),
-                        ).fetchall()
+                        with sqlite3.connect(conn) as connection:
+                            isship = connection.execute(
+                                """SELECT * FROM pieces
+                                    WHERE piecetype='shipcard'
+                                    AND piecename LIKE ?;""",
+                                ("%" + card_name,),
+                            ).fetchall()
                     except ValueError as err:
                         logging.exception(err)
 
@@ -993,9 +997,10 @@ class Piece:
 
         self.banana = scrub_piecename(str(piecename))
         self.conn = conn
-        self.content = conn.execute(
-            """select content from pieces where piecename=?;""", (self.upgradename,)
-        ).fetchall()[0][0]
+        with sqlite3.connect(self.conn) as connection:
+            self.content = connection.execute(
+                """select content from pieces where piecename=?;""", (self.upgradename,)
+            ).fetchall()[0][0]
 
         self.guid = calc_guid()
         self.content = self.content.replace("vlb_GUID", self.guid)
@@ -1307,13 +1312,16 @@ class ShipCard:
         )
 
         try:
-            exact_match = conn.execute(
-                """select content,catchall 
-                   from pieces 
-                   where piecetype='shipcard' 
-                   and piecename=?;""",
-                (self.shipname,),
-            ).fetchall()
+            with sqlite3.connect(self.conn) as connection:
+                logging.debug("0")
+                exact_match = connection.execute(
+                    """select content,catchall 
+                    from pieces 
+                    where piecetype='shipcard' 
+                    and piecename=?;""",
+                    (self.shipname,),
+                ).fetchall()
+                logging.debug(".5")
             logging.debug("1")
             # logging.info(str(exact_match))
             # logging.info(str(len(exact_match)))
@@ -1329,6 +1337,7 @@ class ShipCard:
             logging.debug(err,exc_info=err)
             logging.debug("6")
         except Exception as err:
+            logging.debug("7")
             logging.debug(err,exc_info=err)
             raise err
 
@@ -1388,12 +1397,13 @@ class ShipToken:
         )
 
         try:
-            exact_match = conn.execute(
-                """select content 
-                   from pieces 
-                   where piecetype='ship' and piecename=?;""",
-                (self.shiptype,),
-            ).fetchall()
+            with sqlite3.connect(self.conn) as connection:
+                exact_match = connection.execute(
+                    """select content 
+                    from pieces 
+                    where piecetype='ship' and piecename=?;""",
+                    (self.shiptype,),
+                ).fetchall()
             if len(exact_match) == 1:
                 if len(exact_match[0]) == 1:
                     self.content = exact_match[0][0]
@@ -1436,12 +1446,13 @@ class ShipCmdStack:
             "Searching for command stack {} in {}".format(self.cmdstack, str(self.conn))
         )
         try:
-            exact_match = conn.execute(
-                """select content 
-                   from pieces 
-                   where piecetype='other' and piecename=?;""",
-                (self.cmdstack,),
-            ).fetchall()
+            with sqlite3.connect(self.conn) as connection:
+                exact_match = connection.execute(
+                    """select content 
+                    from pieces 
+                    where piecetype='other' and piecename=?;""",
+                    (self.cmdstack,),
+                ).fetchall()
             if len(exact_match) == 1:
                 if len(exact_match[0]) == 1:
                     self.content = exact_match[0][0]
@@ -1486,12 +1497,13 @@ class Upgrade:
         )
 
         try:
-            exact_match = conn.execute(
-                """select content 
-                   from pieces 
-                   where piecetype='upgradecard' and piecename=?;""",
-                (self.upgradename,),
-            ).fetchall()
+            with sqlite3.connect(self.conn) as connection:
+                exact_match = connection.execute(
+                    """select content 
+                    from pieces 
+                    where piecetype='upgradecard' and piecename=?;""",
+                    (self.upgradename,),
+                ).fetchall()
 
             self.content = False
             if len(exact_match) == 1:
@@ -1573,21 +1585,23 @@ class SquadronCard:
         )
 
         try:
-            exact_match = conn.execute(
-                """select content,catchall 
-                   from pieces 
-                   where piecetype='squadroncard' and piecename like ?;""",
-                (self.squadronname,),
-            ).fetchall()
+            with sqlite3.connect(self.conn) as connection:
+                exact_match = connection.execute(
+                    """select content,catchall 
+                    from pieces 
+                    where piecetype='squadroncard' and piecename like ?;""",
+                    (self.squadronname,),
+                ).fetchall()
             if len(exact_match) == 1:
                 [(self.content, self.squadrontype)] = exact_match
             else:
-                [(self.content, self.squadrontype)] = conn.execute(
-                    """select content,catchall 
-                       from pieces 
-                       where piecetype='squadroncard' and piecename like ?;""",
-                    ("%" + self.squadronname + "%",),
-                ).fetchall()
+                with sqlite3.connect(self.conn) as connection:
+                    [(self.content, self.squadrontype)] = connection.execute(
+                        """select content,catchall 
+                        from pieces 
+                        where piecetype='squadroncard' and piecename like ?;""",
+                        ("%" + self.squadronname + "%",),
+                    ).fetchall()
         except ValueError as err:
             logging.exception(f"Did not find squadron {self.squadronname}")
             raise err
@@ -1636,12 +1650,13 @@ class SquadronToken:
         )
 
         try:
-            exact_match = conn.execute(
-                """select content 
-                   from pieces 
-                   where piecetype='squadron' and piecename=?;""",
-                (self.squadrontype,),
-            ).fetchall()
+            with sqlite3.connect(self.conn) as connection:
+                exact_match = connection.execute(
+                    """select content 
+                    from pieces 
+                    where piecetype='squadron' and piecename=?;""",
+                    (self.squadrontype,),
+                ).fetchall()
             if len(exact_match) == 1:
                 if len(exact_match[0]) == 1:
                     self.content = exact_match[0][0]
@@ -1683,12 +1698,13 @@ class Objective:
         )
 
         try:
-            exact_match = self.conn.execute(
-                """select content 
-                   from pieces 
-                   where piecetype='objective' and piecename=?;""",
-                (self.objectivename,),
-            ).fetchall()
+            with sqlite3.connect(self.conn) as connection:
+                exact_match = self.connection.execute(
+                    """select content 
+                    from pieces 
+                    where piecetype='objective' and piecename=?;""",
+                    (self.objectivename,),
+                ).fetchall()
             if len(exact_match) == 1:
                 if len(exact_match[0]) == 1:
                     self.content = exact_match[0][0]

@@ -24,7 +24,7 @@ vlbfilepath = os.path.join(vlbdirpath, guid + ".vlb")
 vlogfilepath = os.path.join(outpath, guid + ".vlog")
 databasepath = os.path.join(ROOT_PATH, "vlb_pieces.vlo")
 
-conn = sqlite3.connect(databasepath)
+conn = databasepath
 
 app = flask.Flask(__name__)
 
@@ -33,12 +33,21 @@ app = flask.Flask(__name__)
 def home():
 
     out = "bananas\r\n"
+    [print(arg) for arg in request.args] 
     if "list" in request.args:
         out = "{}{}\r\n".format(out, str(request.args["list"]))
     if "help" in request.args:
         out = str(request.__dir__())
     if "gimme" in request.args:
-        liststr = request.data.decode("utf-8")
+        print("gimme was in there")
+        fleet_list_filestorage = request.files['upload_file']
+        liststr = fleet_list_filestorage.read().decode()
+            # liststr = list_file.readlines()
+            # liststr = "boooooop"
+
+        print("===========================================================================")
+        print(liststr)
+        print("---------------------------------------------------------------------------")
 
         success, last_item = listbuilder.import_from_list(
             liststr, vlbfilepath, workingpath, conn
