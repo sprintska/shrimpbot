@@ -1413,7 +1413,7 @@ class ShipToken:
             logging.exception(err)
             raise err
         except Exception as err:
-            logging.debug(exc_info=err)
+            logging.debug(err,exc_info=err)
             raise err
 
         self.guid = calc_guid()
@@ -1462,7 +1462,7 @@ class ShipCmdStack:
             logging.exception(err)
             raise err
         except Exception as err:
-            logging.debug(exc_info=err)
+            logging.debug(err,exc_info=err)
             raise err
 
         self.guid = calc_guid()
@@ -1606,7 +1606,7 @@ class SquadronCard:
             logging.exception(f"Did not find squadron {self.squadronname}")
             raise err
         except Exception as err:
-            logging.debug(exc_info=err)
+            logging.debug(err,exc_info=err)
             raise err
 
         self.squadrontoken = SquadronToken(self.squadrontype, self.conn)
@@ -1666,7 +1666,7 @@ class SquadronToken:
             logging.exception(err)
             raise err
         except Exception as err:
-            logging.debug(exc_info=err)
+            logging.debug(err,exc_info=err)
             raise err
 
         self.guid = calc_guid()
@@ -1699,7 +1699,7 @@ class Objective:
 
         try:
             with sqlite3.connect(self.conn) as connection:
-                exact_match = self.connection.execute(
+                exact_match = connection.execute(
                     """select content 
                     from pieces 
                     where piecetype='objective' and piecename=?;""",
@@ -1714,7 +1714,7 @@ class Objective:
             logging.exception(err)
             raise err
         except Exception as err:
-            logging.debug(exc_info=err)
+            logging.debug(err,exc_info=err)
             raise err
 
         self.guid = calc_guid()
