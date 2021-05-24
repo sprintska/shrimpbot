@@ -17,37 +17,6 @@ PWD = os.getcwd()
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "-db", help="VLO DB to reference for pieces", type=str, default="vlb_pieces.vlo"
-)
-parser.add_argument(
-    "-wd",
-    help="working directory to use with VLB",
-    type=str,
-    default=os.path.join(PWD, "working"),
-)
-parser.add_argument("-vlog", help=".vlog filename", type=str, default="vlb-out.vlog")
-parser.add_argument("-vlb", help=".vlb filename", type=str, default="list.vlb")
-parser.add_argument("-aff", help=".aff filename", type=str, default="test.aff")
-parser.add_argument(
-    "-flt",
-    help="fleet list location--VAL will attempt to identify and ingest the list in "
-    + "the given format",
-    type=str,
-    default="list.flt",
-)
-parser.add_argument(
-    "--imp", help="use VL to import a .vlog to a .vlb", action="store_true"
-)
-parser.add_argument(
-    "--exp", help="use VL to export a .vlb to a .vlog", action="store_true"
-)
-parser.add_argument(
-    "--impvlog", help="use this if importing a .vlog to .vlb.", action="store_true"
-)
-args = parser.parse_args()
-
 g_import_vlb = os.path.abspath(args.vlog)
 g_vlb_path = os.path.abspath(args.vlb)
 g_working_path = os.path.abspath(args.wd)
@@ -1750,6 +1719,46 @@ class Objective:
 
 if __name__ == "__main__":
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-db", help="VLO DB to reference for pieces", type=str, default="vlb_pieces.vlo"
+    )
+    parser.add_argument(
+        "-wd",
+        help="working directory to use with VLB",
+        type=str,
+        default=os.path.join(PWD, "working"),
+    )
+    parser.add_argument("-vlog", help=".vlog filename", type=str, default="vlb-out.vlog")
+    parser.add_argument("-vlb", help=".vlb filename", type=str, default="list.vlb")
+    parser.add_argument("-aff", help=".aff filename", type=str, default="test.aff")
+    parser.add_argument(
+        "-flt",
+        help="fleet list location--VAL will attempt to identify and ingest the list in "
+        + "the given format",
+        type=str,
+        default="list.flt",
+    )
+    parser.add_argument(
+        "--imp", help="use VL to import a .vlog to a .vlb", action="store_true"
+    )
+    parser.add_argument(
+        "--exp", help="use VL to export a .vlb to a .vlog", action="store_true"
+    )
+    parser.add_argument(
+        "--impvlog", help="use this if importing a .vlog to .vlb.", action="store_true"
+    )
+    args = parser.parse_args()
+
+    g_import_vlb = os.path.abspath("vlb-out.vlog")
+    g_vlb_path = os.path.abspath("list.vlb")
+    g_working_path = os.path.abspath(os.path.join(PWD, "working")))
+    g_export_to = os.path.abspath("vlb-out.vlog")
+    g_import_aff = os.path.abspath("test.aff")
+    g_import_flt = os.path.abspath("list.flt")
+    g_conn = os.path.abspath("vlb_pieces.vlo")
+    g_import_vlog = False
+    
     if args.imp:
         print(
             import_from_list(
