@@ -894,7 +894,7 @@ def import_from_vlog(import_from, vlb_path, working_path, conn):
         vlb.write(clear)
 
 
-def export_to_vlog(export_to, vlb_path, working_path=args.wd):
+def export_to_vlog(export_to, vlb_path, working_path=g_working_path):
 
     """Adds all the obfuscation and compression to turn a .vlb
     VASSAL listbuilder file (at vlb_path), along with boilerplate
@@ -1759,7 +1759,7 @@ if __name__ == "__main__":
     g_conn = os.path.abspath(args.db)
     g_import_vlog = args.impvlog
     
-    
+
     if args.imp:
         print(
             import_from_list(
