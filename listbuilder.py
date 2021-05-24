@@ -17,14 +17,14 @@ PWD = os.getcwd()
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
-g_import_vlb = os.path.abspath(args.vlog)
-g_vlb_path = os.path.abspath(args.vlb)
-g_working_path = os.path.abspath(args.wd)
-g_export_to = os.path.abspath(args.vlog)
-g_import_aff = os.path.abspath(args.aff)
-g_import_flt = os.path.abspath(args.flt)
-g_conn = os.path.abspath(args.db)
-g_import_vlog = args.impvlog
+g_import_vlb = os.path.abspath("vlb-out.vlog")
+g_vlb_path = os.path.abspath("list.vlb")
+g_working_path = os.path.abspath(os.path.join(PWD, "working"))
+g_export_to = os.path.abspath("vlb-out.vlog")
+g_import_aff = os.path.abspath("test.aff")
+g_import_flt = os.path.abspath("list.flt")
+g_conn = os.path.abspath("vlb_pieces.vlo")
+g_import_vlog = False
 
 
 """ These dicts translate between canonical names and non-canonical
@@ -1750,14 +1750,15 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    g_import_vlb = os.path.abspath("vlb-out.vlog")
-    g_vlb_path = os.path.abspath("list.vlb")
-    g_working_path = os.path.abspath(os.path.join(PWD, "working")))
-    g_export_to = os.path.abspath("vlb-out.vlog")
-    g_import_aff = os.path.abspath("test.aff")
-    g_import_flt = os.path.abspath("list.flt")
-    g_conn = os.path.abspath("vlb_pieces.vlo")
-    g_import_vlog = False
+    g_import_vlb = os.path.abspath(args.vlog)
+    g_vlb_path = os.path.abspath(args.vlb)
+    g_working_path = os.path.abspath(args.wd)
+    g_export_to = os.path.abspath(args.vlog)
+    g_import_aff = os.path.abspath(args.aff)
+    g_import_flt = os.path.abspath(args.flt)
+    g_conn = os.path.abspath(args.db)
+    g_import_vlog = args.impvlog
+    
     
     if args.imp:
         print(
