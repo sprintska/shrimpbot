@@ -2,13 +2,17 @@
 
 import argparse
 import flask
-from flask import request, jsonify
+from flask import request, jsonify, send_file
 import hashlib
 import listbuilder
+import logging
+import logging.handlers
 import os
 import sqlite3
 import time
 
+_handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
+logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 ROOT_PATH = "./"
 
@@ -29,11 +33,15 @@ conn = databasepath
 app = flask.Flask(__name__)
 
 
-@app.route("/api/v1/test/", methods=["POST"])
+@app.route("/api/v1/listbuilder/", methods=["POST"])
 def home():
 
-    out = "bananas\r\n"
-    [print(arg) for arg in request.args] 
+    out = "Sorry, looks like there was an error.\r\n"
+
+    logging.info(request.args)
+    logging.info(request.files)
+
+    [(arg) for arg in request.args] 
     if "list" in request.args:
         out = "{}{}\r\n".format(out, str(request.args["list"]))
     if "help" in request.args:
@@ -45,17 +53,13 @@ def home():
             # liststr = list_file.readlines()
             # liststr = "boooooop"
 
-        print("===========================================================================")
-        print(liststr)
-        print("---------------------------------------------------------------------------")
-
         success, last_item = listbuilder.import_from_list(
             liststr, vlbfilepath, workingpath, conn
         )
 
         if success:
             listbuilder.export_to_vlog(vlogfilepath, vlbfilepath, workingpath)
-            out = vlogfilepath
+            out = send_file(vlogfilepath)
         else:
             out = "BROKEN - {}".format(str(last_item))
 
