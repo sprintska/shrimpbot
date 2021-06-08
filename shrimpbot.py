@@ -162,6 +162,12 @@ async def on_ready():
             logging.info(" [!] LEFT {}".format(str(guild)))
         if guild.id != 669698762402299904: # Steel Strat Server are special snowflakes
             await guild.me.edit(nick="Shrimpbot")
+        
+        logentry = " - Intents:"
+        for intent in guild.intents:
+            logentry = logentry + "\n   {}".format(intent)
+        log.info(logentry)
+        
     logging.info("======")
 
     await bot.change_presence(status=discord.Status.online, activity=note)

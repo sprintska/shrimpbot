@@ -47,7 +47,6 @@ def home():
     if "help" in request.args:
         out = str(request.__dir__())
     if "gimme" in request.args:
-        print("gimme was in there")
         fleet_list_filestorage = request.files['upload_file']
         liststr = fleet_list_filestorage.read().decode()
             # liststr = list_file.readlines()
