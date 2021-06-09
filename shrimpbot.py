@@ -566,12 +566,12 @@ async def on_message(message):
 
     if findIn(["!testy"], message.content):
 
-    await message.channel.send(
-        "Bananas.",
-    )
-    await message.channel.send(
-        str(bot.guilds)
-    )
+        await message.channel.send(
+            "Bananas.",
+        )
+        await message.channel.send(
+            str(bot.guilds)
+        )
 
 
 bot.run(BOT_TOKEN)
