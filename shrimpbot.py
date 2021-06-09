@@ -162,12 +162,6 @@ async def on_ready():
             logging.info(" [!] LEFT {}".format(str(guild)))
         if guild.id != 669698762402299904: # Steel Strat Server are special snowflakes
             await guild.me.edit(nick="Shrimpbot")
-        
-        logentry = " - Intents:"
-        for intent in guild.intents:
-            logentry = logentry + "\n   {}".format(intent)
-        log.info(logentry)
-        
     logging.info("======")
 
     await bot.change_presence(status=discord.Status.online, activity=note)
@@ -569,6 +563,15 @@ async def on_message(message):
                 await message.channel.send(
                     "Sorry, there was an application error. I have reported it to Ardaedhel to fix it.",
                 )
+
+    if findIn(["!testy"], message.content):
+
+    await message.channel.send(
+        "Bananas.",
+    )
+    await message.channel.send(
+        str(bot.guilds)
+    )
 
 
 bot.run(BOT_TOKEN)
