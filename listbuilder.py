@@ -86,6 +86,8 @@ vassal_nomenclature_errors = {
     "quasarfireiiclasscruisercarrier": "quasarfireii",
     "raidericlasscorvette": "raideri",
     "raideriiclasscorvette": "raiderii",
+    "recusantclasslightdestroyer": "recusantlightdestroyer",
+    "recusantclasssupportdestroyer": "recusantsupportdestroyer",
     "stardreadnoughtassaultprototype": "stardnassaultprototype",
     "stardreadnoughtcommandprototype": "stardncommandprototype",
     "b2rockettroopers": "superrockettroopers",
