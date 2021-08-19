@@ -6,7 +6,7 @@ To add my instance of the bot to your server, follow this link and authorize the
 
 There are a few relatively minor functions that require server-owner level permissions.  Those are mostly for my own server, so if you don't feel comfortable granting those permissions, feel free to deny them--everything you actually want will still work fine.
 
-To run your own instance, you'll need to request a bot token from Discord Developer Portal. 
+Alternatively, you can run your own bot using this source code if you're comfortable doing that.  To do this, you'll need to request a bot token from Discord Developer Portal (essentially, you would create your own bot account with Discord, and power it with this code).
  * link here: https://discordapp.com/developers/applications/
  * steps documented here: https://www.writebots.com/discord-bot-token/
  
