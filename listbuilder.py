@@ -86,7 +86,6 @@ vassal_nomenclature_errors = {
     "recusantclasssupportdestroyer": "recusantsupportdestroyer",
     "stardreadnoughtassaultprototype": "stardnassaultprototype",
     "stardreadnoughtcommandprototype": "stardncommandprototype",
-    "b2rockettroopers": "superrockettroopers",
     "vcx100freighter": "vcx100lightfreighter",
     "venatoriclassstardestroyer": "venatori",
     "venatoriiclassstardestroyer": "venatorii",
