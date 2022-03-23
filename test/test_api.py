@@ -2,7 +2,7 @@
 
 import requests
 
-url_stem = 'http://yoda.advancedtransponder.net:80/'
+url_stem = 'http://yoda.advancedtransponder.net:5000/'
 path = 'api/v1/listbuilder/?gimme=yes'
 url = url_stem + path
 
