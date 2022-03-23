@@ -323,7 +323,7 @@ def ident_format(fleet_text):
     if fleet_text.startswith("squadron:"):
         formats["aff"] += 30
 
-    logging.info(formats)
+    logging.info("Format detection: {}".format(str(formats)))
     return max(formats.keys(), key=(lambda x: formats[x]))
 
 
