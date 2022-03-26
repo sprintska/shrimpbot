@@ -267,7 +267,7 @@ def ident_format(fleet_text):
     i = 0
     for line in fleet_text.split("\n"):
         try:
-            if " • " in line:
+            if " • " in line and line[0].isdigit():
                 if int(line[0]) == i + 1:
                     formats["fab"] += 1
                 i += int(line[0])
@@ -309,11 +309,8 @@ def ident_format(fleet_text):
     if "Commander: " in ft:
         formats["kingston"] += 2.0
     for line in ft.split("\n"):
-        # try:
         if line.strip().startswith("• ") or line.strip().startswith("\u2022"):
-            # ~ print(line.strip())
             formats["kingston"] += 1
-        # except: pass
 
     # AFF
     if fleet_text[0] == "{":
@@ -374,7 +371,6 @@ def import_from_list(import_from, output_to, working_path, conn, isvlog=False):
                 vlb.write(sq.squadroncard.content + chr(27))
                 vlb.write(sq.squadrontoken.content + chr(27))
             for o in f.objectives:
-                # ~ print(f.objectives[o])
                 vlb.write(f.objectives[o].content + chr(27))
 
         return (True, None)
@@ -407,8 +403,6 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
 
                     if " - " in this_line:
                         if this_line.startswith("Objective"):
-                            # print("=-"*25)
-                            # print("Objectives: {}".format(l))
                             pass
                         else:
                             working_line = this_line.split(" - ")
@@ -557,8 +551,9 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
                     "".join(card_name.split("(")[0].split()[1::])
                 )
                 cost = scrub_piecename(cost.split()[0])
-                if int(card_name.split()[0]) > 1:
-                    squadron = squadron[:-1]
+                if card_name.split()[0].isdigit:
+                    if int(card_name.split()[0]) > 1:
+                        squadron = squadron[:-1]
                 if (squadron, cost) in ambiguous_names:
                     squadron_new = ambiguous_names[(squadron, cost)][0]
                     logging.info(
@@ -869,9 +864,11 @@ def import_from_vlog(import_from, vlb_path, working_path, conn):
         b_vlog = vlog.read()
 
     xor_key_str = b_vlog[5:7]
-    # print(xor_key_str)
-    xor_key = int(xor_key_str, 16)
-    # print(xor_key)
+    if xor_key.isdigit():
+        xor_key = int(xor_key_str, 16)
+    else:
+        logging.info("VLOG {} is malformed: encountered an invalid XOR key.  Key {} is not a digit.".format(str(import_from),str(xor_key)))
+        xor_key = int("0", 16)
     obfuscated = b_vlog[6::]
     obf_pair = ""
     clear = ""
@@ -919,13 +916,9 @@ def export_to_vlog(export_to, vlb_path, working_path=g_working_path):
         in_vlb = vlb.read()
 
     in_vlb = in_vlb.replace("\r", "").replace("\n", "")
-    # print(in_vlb[0:2])
     xor_key = int(in_vlb[0:2], 16)
     clear = in_vlb[2::]
-    # print(in_vlb[0:2])
-    # print(in_vlb[2:10])
     obf_out = "!VCSK" + (in_vlb[0:2])
-    # print(obf_out)
     for char in clear:
         obfint = ord(char) ^ xor_key
         obf_out += hex(obfint)[2::]
@@ -1056,7 +1049,12 @@ class Fleet:
 
     def set_points(self, points):
 
-        self.points = int(points)
+        if points.isdigit():
+            self.points = int(points)
+            return
+        logging.info("Failed to set points: '{}' cannot be converted to an integer.")
+        self.points = int(0)
+        return
 
     def set_mode(self, mode):
 
@@ -1540,7 +1538,6 @@ class SquadronCard:
 
         self.squadronname = scrub_piecename(str(squadronname))
         self.conn = conn
-        # print("[*] Retrieving {}".format(self.squadronname))
 
         logging.info(
             "Searching for squadron card {} in {}".format(
@@ -1606,7 +1603,6 @@ class SquadronToken:
 
         self.squadrontype = scrub_piecename(str(squadrontype))
         self.conn = conn
-        # print(squadrontype)
         logging.info(
             "Searching for squadron token {} in {}".format(
                 scrub_piecename(squadrontype), str(conn)
@@ -1689,14 +1685,11 @@ class Objective:
         c = ""
         for line in self.content.split("\t"):
             if line.strip().startswith("piece;;;;"):
-                # ~ print("[!] Replaced on line:")
-                # ~ print(line)
                 this_line = line.replace("1", "2")
             else:
                 this_line = line
             c += this_line + "\t"
 
-        # ~ print(c)
         self.content = c
 
         self.coords = [0, 0]
