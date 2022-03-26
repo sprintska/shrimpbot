@@ -507,9 +507,7 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
     if ship_regex.search(ship_check):
         logging.info("Ship check regex hit on: " + str(ship_regex.search(ship_check)))
         ship_check = ship_check.split()[0]
-        logging.info("SELECT piecetype FROM pieces where piecename LIKE %{}%").format(
-            scrub_piecename(ship_check)
-        )
+        logging.info("SELECT piecetype FROM pieces where piecename LIKE %"+scrub_piecename(ship_check)+"%")
         with sqlite3.connect(conn) as connection:
             ship_query = connection.execute(
                 '''SELECT piecetype FROM pieces where piecename LIKE ?" "''',
