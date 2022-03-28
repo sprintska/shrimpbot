@@ -14,6 +14,8 @@ import time
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
+logging.info("API start...")
+
 ROOT_PATH = "./"
 
 
