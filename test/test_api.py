@@ -2,8 +2,9 @@
 
 import requests
 
-url_stem = 'http://yoda.advancedtransponder.net:5000/'
-path = 'api/v1/listbuilder/'
+# url_stem = 'http://yoda.ardaedhel.net:5000'
+url_stem = 'http://44.232.122.80:5000/api/v1/listbuilder/'
+# path = '/api/v1/listbuilder/'
 url = url_stem + path
 
 # args = {'gimme': 'yes'}
