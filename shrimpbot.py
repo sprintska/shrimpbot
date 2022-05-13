@@ -14,6 +14,7 @@ import requests
 import shutil
 import sqlite3
 import time
+import update_listbuilder
 
 from discord import emoji
 from discord.ext import commands
@@ -74,9 +75,11 @@ def searchFor(search_term, search_set, match_threshold=100):
     matches = sorted(
         [r for r in ratios], key=lambda ratio: ratio[1] + ratio[2], reverse=True
     )
-#    if ((int(matches[0][1] + matches[0][2])) > match_threshold) or (int(matches[0][0]) == 100):
+    #    if ((int(matches[0][1] + matches[0][2])) > match_threshold) or (int(matches[0][0]) == 100):
     # logging.info(str(matches[0][1]),str(matches[0][2]))
-    if ((int(matches[0][1] + matches[0][2])) > match_threshold) or (int(matches[0][1]) == 100):
+    if ((int(matches[0][1] + matches[0][2])) > match_threshold) or (
+        int(matches[0][1]) == 100
+    ):
         logging.info("FOUND MATCHES")
         logging.info(
             str(
@@ -160,7 +163,7 @@ async def on_ready():
         if guild.id == 697833083201650689:
             await guild.leave()
             logging.info(" [!] LEFT {}".format(str(guild)))
-        if guild.id != 669698762402299904: # Steel Strat Server are special snowflakes
+        if guild.id != 669698762402299904:  # Steel Strat Server are special snowflakes
             await guild.me.edit(nick="Shrimpbot")
     logging.info("======")
 
@@ -559,7 +562,7 @@ async def on_message(message):
                 )
                 await bot.get_user(BOT_OWNER_ID).send("Details - Runtime Error:")
                 await bot.get_user(BOT_OWNER_ID).send(inst)
-                
+
                 await message.channel.send(
                     "Sorry, there was an application error. I have reported it to Ardaedhel to fix it.",
                 )
@@ -569,9 +572,7 @@ async def on_message(message):
         await message.channel.send(
             "Bananas.",
         )
-        await message.channel.send(
-            str(bot.guilds)
-        )
+        await message.channel.send(str(bot.guilds))
 
 
 bot.run(BOT_TOKEN)
