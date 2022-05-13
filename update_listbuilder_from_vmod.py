@@ -21,8 +21,6 @@ class VassalModule:
 
         self.vmod_path = vmod_path
 
-
-
         _ = self.__get_vmod_metadata()
         _ = self.__get_build_xml()
 
@@ -228,8 +226,17 @@ class VassalModule:
 
         if isinstance(module_element, PrototypeDefinition):
             self.prototypes[module_element.name] = module_element
-        elif isinstance(module_element, PieceDefinition) and module_element.name in self.pieces and "------------" not in module_element.name:
-            piece_name = str(module_element.name) + "__" + str(int(random.random()*10000)) + "__"
+        elif (
+            isinstance(module_element, PieceDefinition)
+            and module_element.name in self.pieces
+            and "------------" not in module_element.name
+        ):
+            piece_name = (
+                str(module_element.name)
+                + "__"
+                + str(int(random.random() * 10000))
+                + "__"
+            )
             self.pieces[piece_name] = module_element
             print("[!] Duplicate: {}".format(str(module_element.name)))
         elif isinstance(module_element, PieceDefinition):
@@ -527,20 +534,36 @@ def associated_token(piece_name, piece_type, vlb_content):
     return ""
 
 
-def check_for_new_version(url,vmod_path):
+def most_recent_vmod_in_path(vmod_path):
+
+    """Finds the latest .vmod in the given path.
+
+    If it's a dir, it's just the first in an inverted sort of *.vmod;
+    if a file, it's just that file."""
 
     latest_local_vmod_path = pathlib.Path(vmod_path).absolute()
     if latest_local_vmod_path.is_dir():
-        local_vmod_dir = latest_local_vmod_path
         P = latest_local_vmod_path.glob(latest_local_vmod_path / "*.vmod")
         all_local_vmods = [module for module in P]
         latest_local_vmod_path = all_local_vmods.sort()[-1]
-    elif latest_local_vmod_path.is_file():
-        local_vmod_dir = latest_local_vmod_path.parent
-        
+
     if not latest_local_vmod_path.exists():
-        raise FileNotFoundError("Module file does not exist: " + str(latest_local_vmod_path))
-    
+        raise FileNotFoundError(
+            "Module file does not exist: " + str(latest_local_vmod_path)
+        )
+
+    return latest_local_vmod_path
+
+
+def check_for_new_version(url, latest_local_vmod_path):
+
+    if not latest_local_vmod_path.exists():
+        raise FileNotFoundError(
+            "Module file does not exist: " + str(latest_local_vmod_path)
+        )
+
+    local_vmod_dir = latest_local_vmod_path.parent
+
     r = requests.get(url)
 
     vmod_regex = re.compile(r'obj.vassalengine.org/images/\S+?.vmod"')
@@ -548,14 +571,14 @@ def check_for_new_version(url,vmod_path):
     latest_vmod_url = [hit.group(0).strip('"') for hit in available_vmod_urls][0]
 
     latest_vmod_filename = latest_vmod_url.split("/")[-1]
-    
+
     if latest_vmod_filename == latest_local_vmod_path.name:
         return False
 
     new_vmod_path = pathlib.Path(local_vmod_dir / latest_vmod_filename)
     r = requests.get(url)
-    open(new_vmod_path, 'wb').write(r.content)
-    
+    open(new_vmod_path, "wb").write(r.content)
+
     return new_vmod_path
 
 
@@ -574,21 +597,22 @@ if __name__ == "__main__":
     parser.add_argument(
         "--auto",
         help="Check automatically for a new version.  References the top version posted on https://vassalengine.org/wiki/Module:Star_Wars:_Armada.",
-        action="store_true"
+        action="store_true",
     )
     args = parser.parse_args()
 
-    vmod_path = os.path.abspath(args.m)
+    vmod_path = most_recent_vmod_in_path(args.m)
     database_path = os.path.abspath(args.db)
 
     if args.auto:
         print("DEWIT")
 
-        url='https://vassalengine.org/wiki/Module:Star_Wars:_Armada'
-        vmod_path = check_for_new_version(url,vmod_path)
+        url = "https://vassalengine.org/wiki/Module:Star_Wars:_Armada"
+        vmod_path = check_for_new_version(url, vmod_path)
         if not vmod_path:
-            exit("Auto-update found no new module version available.\n\n To manually update, use: \n\n\tupdate_listbuilder_from_vmod.py -m ./path/to/new_version.vmod")
-        
+            exit(
+                "Auto-update found no new module version available.\n\n To manually update, use: \n\n\tupdate_listbuilder_from_vmod.py -m ./path/to/new_version.vmod"
+            )
 
     armada_module = VassalModule(vmod_path)
 
