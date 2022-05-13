@@ -21,7 +21,7 @@ import xml.etree.ElementTree as ET
 
 
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
-logging.basicConfig(handlers=[_handler], level=logging.info)
+logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 
 class VassalModule:
