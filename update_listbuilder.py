@@ -126,7 +126,7 @@ class VassalModule:
         the piece."""
 
         if "dice" in element.name.lower():
-            print(f"\n\t [!] Not adding | {element.name}")
+            print("\n\t [!] Not adding | {}".format(element.name))
             return False
 
         error_regex = re.compile(r"(?<!^)(\+.*?)(\{.*?\}.*?|[^\{\}])(?<!\\);")
@@ -134,7 +134,7 @@ class VassalModule:
         ex = False
 
         for error_match in error_matches:
-            print(f"\n\t [*] Amending embedded reference in | {element.name}")
+            print("\n\t [*] Amending embedded reference in | {}".format(element.name))
             full_error_match = error_match.group(0)
             full_error_match = full_error_match.replace("\\;", ";").replace("\\/", "/")
             full_error_match = re.sub(r"\\+\t", "\t", full_error_match)
@@ -595,11 +595,13 @@ def check_for_new_version(
         return False
 
     logging.INFO(
-        f"[+] New VMOD version found: {latest_vmod_filename}.\n\tDownloading from {latest_vmod_url}..."
+        "[+] New VMOD version found: {}.\n\tDownloading from {}...".format(
+            latest_vmod_filename, latest_vmod_url
+        )
     )
     new_vmod_path = pathlib.Path(local_vmod_dir / latest_vmod_filename)
     r = requests.get(latest_vmod_url)
-    logging.INFO(f"[+] Writing to {new_vmod_path}...")
+    logging.INFO("[+] Writing to {}...".format(new_vmod_path))
     open(new_vmod_path, "wb").write(r.content)
 
     return new_vmod_path
