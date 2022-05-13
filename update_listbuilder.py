@@ -21,7 +21,7 @@ import xml.etree.ElementTree as ET
 
 
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
-logging.basicConfig(handlers=[_handler], level=logging.INFO)
+logging.basicConfig(handlers=[_handler], level=logging.info)
 
 
 class VassalModule:
@@ -126,7 +126,7 @@ class VassalModule:
         the piece."""
 
         if "dice" in element.name.lower():
-            print("\n\t [!] Not adding | {}".format(element.name))
+            print(f"\n\t [!] Not adding | {element.name}")
             return False
 
         error_regex = re.compile(r"(?<!^)(\+.*?)(\{.*?\}.*?|[^\{\}])(?<!\\);")
@@ -134,7 +134,7 @@ class VassalModule:
         ex = False
 
         for error_match in error_matches:
-            print("\n\t [*] Amending embedded reference in | {}".format(element.name))
+            print(f"\n\t [*] Amending embedded reference in | {element.name}")
             full_error_match = error_match.group(0)
             full_error_match = full_error_match.replace("\\;", ";").replace("\\/", "/")
             full_error_match = re.sub(r"\\+\t", "\t", full_error_match)
@@ -589,19 +589,17 @@ def check_for_new_version(
     latest_vmod_filename = latest_vmod_url.split("/")[-1]
 
     if latest_vmod_filename == latest_local_vmod_path.name:
-        logging.INFO(
+        logging.info(
             f"[*] Checked for new module version.  Locally installed VMOD matches latest version at {latest_vmod_filename}."
         )
         return False
 
-    logging.INFO(
-        "[+] New VMOD version found: {}.\n\tDownloading from {}...".format(
-            latest_vmod_filename, latest_vmod_url
-        )
+    logging.info(
+        f"[+] New VMOD version found: {latest_vmod_filename}.\n\tDownloading from {latest_vmod_url}..."
     )
     new_vmod_path = pathlib.Path(local_vmod_dir / latest_vmod_filename)
     r = requests.get(latest_vmod_url)
-    logging.INFO("[+] Writing to {}...".format(new_vmod_path))
+    logging.info(f"[+] Writing to {new_vmod_path}...")
     open(new_vmod_path, "wb").write(r.content)
 
     return new_vmod_path
