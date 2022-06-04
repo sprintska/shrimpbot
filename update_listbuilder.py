@@ -631,7 +631,7 @@ if __name__ == "__main__":
         vmod_path = check_for_new_version(vmod_path)
         if not vmod_path:
             exit(
-                "Auto-update found no new module version available.\n\n To manually update, use: \n\n\tupdate_listbuilder_from_vmod.py -m ./path/to/new_version.vmod"
+                "Auto-update found no new module version available.\n\n To manually update, use: \n\n\tupdate_listbuilder.py -m ./path/to/new_version.vmod"
             )
 
     armada_module = VassalModule(vmod_path)
