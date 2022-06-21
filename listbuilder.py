@@ -11,7 +11,6 @@ import logging
 import logging.handlers
 
 
-
 PWD = os.getcwd()
 
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
@@ -507,7 +506,11 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
     if ship_regex.search(ship_check):
         logging.info("Ship check regex hit on: " + str(ship_regex.search(ship_check)))
         ship_check = ship_check.split()[0]
-        logging.info("SELECT piecetype FROM pieces where piecename LIKE %"+scrub_piecename(ship_check)+"%")
+        logging.info(
+            "SELECT piecetype FROM pieces where piecename LIKE %"
+            + scrub_piecename(ship_check)
+            + "%"
+        )
         with sqlite3.connect(conn) as connection:
             ship_query = connection.execute(
                 '''SELECT piecetype FROM pieces where piecename LIKE ?" "''',
@@ -568,7 +571,8 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
                 shipnext = True
 
             elif shipnext:
-                ship, cost = card_name.split("]")[-1].split("(")
+                ship = "(".join(card_name.split("]")[-1].split("(")[0:-1])
+                cost = card_name.split("]")[-1].split("(")[-1]
                 ship = scrub_piecename(ship.strip(" -\t"))
                 cost = scrub_piecename(cost.split()[0])
                 if (ship, cost) in ambiguous_names:
@@ -865,7 +869,11 @@ def import_from_vlog(import_from, vlb_path, working_path, conn):
     if xor_key.isdigit():
         xor_key = int(xor_key_str, 16)
     else:
-        logging.info("VLOG {} is malformed: encountered an invalid XOR key.  Key {} is not a digit.".format(str(import_from),str(xor_key)))
+        logging.info(
+            "VLOG {} is malformed: encountered an invalid XOR key.  Key {} is not a digit.".format(
+                str(import_from), str(xor_key)
+            )
+        )
         xor_key = int("0", 16)
     obfuscated = b_vlog[6::]
     obf_pair = ""
@@ -941,7 +949,7 @@ def scrub_piecename(piecename):
 
 def calc_guid():
 
-    return str(round(random.random() * 10 ** 13))
+    return str(round(random.random() * 10**13))
 
 
 class Piece:
@@ -1289,16 +1297,16 @@ class ShipCard:
                 logging.debug("2")
                 [(self.content, self.shiptype)] = exact_match
                 logging.debug("3")
-            if not (hasattr(self, 'content') and hasattr(self, 'shiptype')):
+            if not (hasattr(self, "content") and hasattr(self, "shiptype")):
                 logging.debug("4")
                 raise RuntimeError(f"Did not find ship card {self.shipname}")
         except RuntimeError as err:
             logging.debug("5")
-            logging.debug(err,exc_info=err)
+            logging.debug(err, exc_info=err)
             logging.debug("6")
         except Exception as err:
             logging.debug("7")
-            logging.debug(err,exc_info=err)
+            logging.debug(err, exc_info=err)
             raise err
 
         logging.debug("8")
@@ -1373,7 +1381,7 @@ class ShipToken:
             logging.exception(err)
             raise err
         except Exception as err:
-            logging.debug(err,exc_info=err)
+            logging.debug(err, exc_info=err)
             raise err
 
         self.guid = calc_guid()
@@ -1422,7 +1430,7 @@ class ShipCmdStack:
             logging.exception(err)
             raise err
         except Exception as err:
-            logging.debug(err,exc_info=err)
+            logging.debug(err, exc_info=err)
             raise err
 
         self.guid = calc_guid()
@@ -1565,7 +1573,7 @@ class SquadronCard:
             logging.exception(f"Did not find squadron {self.squadronname}")
             raise err
         except Exception as err:
-            logging.debug(err,exc_info=err)
+            logging.debug(err, exc_info=err)
             raise err
 
         self.squadrontoken = SquadronToken(self.squadrontype, self.conn)
@@ -1624,7 +1632,7 @@ class SquadronToken:
             logging.exception(err)
             raise err
         except Exception as err:
-            logging.debug(err,exc_info=err)
+            logging.debug(err, exc_info=err)
             raise err
 
         self.guid = calc_guid()
@@ -1672,7 +1680,7 @@ class Objective:
             logging.exception(err)
             raise err
         except Exception as err:
-            logging.debug(err,exc_info=err)
+            logging.debug(err, exc_info=err)
             raise err
 
         self.guid = calc_guid()
@@ -1715,7 +1723,9 @@ if __name__ == "__main__":
         type=str,
         default=os.path.join(PWD, "working"),
     )
-    parser.add_argument("-vlog", help=".vlog filename", type=str, default="vlb-out.vlog")
+    parser.add_argument(
+        "-vlog", help=".vlog filename", type=str, default="vlb-out.vlog"
+    )
     parser.add_argument("-vlb", help=".vlb filename", type=str, default="list.vlb")
     parser.add_argument("-aff", help=".aff filename", type=str, default="test.aff")
     parser.add_argument(
@@ -1744,7 +1754,6 @@ if __name__ == "__main__":
     g_import_flt = os.path.abspath(args.flt)
     g_conn = os.path.abspath(args.db)
     g_import_vlog = args.impvlog
-    
 
     if args.imp:
         print(
