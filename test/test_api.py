@@ -3,8 +3,8 @@
 import pathlib
 import requests
 
-# url_stem = 'http://yoda.advancedtransponder.net:5000/'
-url_stem = "http://0.0.0.0:5000/"
+url_stem = "http://yoda.advancedtransponder.net:5000/"
+# url_stem = "http://0.0.0.0:5000/"
 path = "api/v1/listbuilder/?gimme=yes"
 url = url_stem + path
 
@@ -31,8 +31,6 @@ def get_list(list_path, url, args):
         out_path.write(r.content)
 
 
-P = pathlib.Path(
-    "/mnt/g/home/ardaedhel/Documents/Development/shrimpbot/shrimpbot/test/testlists"
-)
+P = pathlib.Path("./testlists")
 for x in P.iterdir():
     get_list(x, url, args)

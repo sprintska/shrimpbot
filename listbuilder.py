@@ -882,9 +882,10 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                         s = f.add_ship(card_name.split(" (", 1)[0].strip())
 
                 elif "\u2022" in card_name and card_name[0] != "=":
-                    card_name, cost = card_name.split(" x ")[-1].split(" (", 1)
-                    card_name = scrub_piecename(card_name)
+                    cost = card_name.split(" (")[-1]
                     cost = cost.split(")")[0]
+                    card_name = "".join(card_name.split(" x ")[-1].split(" (")[0:-1])
+                    card_name = scrub_piecename(card_name)
 
                     if (card_name, cost) in ambiguous_names:
                         card_name_new = ambiguous_names[(card_name, cost)][0]
