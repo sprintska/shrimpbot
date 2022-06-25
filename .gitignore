@@ -18,3 +18,7 @@ vlb_pieces.vlo
 img/Thumbs.db
 vmods/*
 venv/*
+test/test_vlogs/*
+test/test_vmod/*
+test/testlists/*
+test/archived_tests/*

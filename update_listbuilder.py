@@ -235,6 +235,8 @@ class VassalModule:
         if not module_element:
             return False
 
+        if "/" in module_element.name:
+            print(module_element.name)
         if isinstance(module_element, PrototypeDefinition):
             self.prototypes[module_element.name] = module_element
         elif (
@@ -497,10 +499,12 @@ def update_piece(conn, piecetype, piecename, content):
 
 
 def scrub_piecename(piecename):
+    # print("\nPiecename in: {}".format(piecename))
     piecename = (
         piecename.replace("\/", "")
-        .split("/")[0]
+        # .split("/")[0]
         .split(";")[-1]
+        .replace("/", "")
         .replace(" ", "")
         .replace(":", "")
         .replace("!", "")
@@ -510,6 +514,7 @@ def scrub_piecename(piecename):
         .replace(")", "")
         .lower()
     )
+    # print("Piecename out: {}".format(piecename))
     return piecename
 
 
