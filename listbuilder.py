@@ -894,13 +894,12 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                         pass
 
                     else:
-                        logging.info("[Debug] Ship card name is {}".format(card_name))
                         # Can't disambiguate Venator-II on cost because both variants are identical *sigh*
-                        if card_name == "venatorii" and faction == "Imperial":
+                        if card_name == "Venator II (100)" and faction == "Imperial":
                             logging.info(
                                 "[Debug] Found Imperial Venator.  Setting card name."
                             )
-                            card_name == "venatoriiimp"
+                            card_name == "Venator II Imp"
 
                         s = f.add_ship(card_name.split(" (", 1)[0].strip())
 
