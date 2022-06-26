@@ -837,6 +837,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
     logging.info("Fleet created with database {}.".format(str(conn)))
 
     shipnext = True
+    faction = None
 
     for line in import_list.split("\n"):
 
@@ -849,11 +850,14 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
 
                 if card_name.split(":")[0].strip() in [
                     "Name",
-                    "Faction",
                     "Commander",
                     "Author",
                 ]:
                     pass
+
+                # Track faction to disambiguate Venator-II variants later
+                elif card_name.split(":")[0].strip() == "Faction":
+                    faction = card_name.split(":")[-1].strip()
 
                 elif card_name.split(":")[0] in ["Assault", "Defense", "Navigation"]:
                     if card_name.strip()[-1] != ":":
@@ -882,6 +886,10 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                                 )
                             )
                             card_name = card_name_new
+
+                        # Can't disambiguate Venator-II on cost because both variants are identical *sigh*
+                        if card_name == "venatorii" and faction == "Imperial":
+                            card_name == "venatoriiimp"
 
                         _ = s.add_upgrade(card_name)
 
