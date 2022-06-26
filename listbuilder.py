@@ -858,6 +858,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                 # Track faction to disambiguate Venator-II variants later
                 elif card_name.split(":")[0].strip() == "Faction":
                     faction = card_name.split(":")[-1].strip()
+                    logging.info("Faction identified: {}".format(faction))
 
                 elif card_name.split(":")[0] in ["Assault", "Defense", "Navigation"]:
                     if card_name.strip()[-1] != ":":
@@ -895,6 +896,9 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                     else:
                         # Can't disambiguate Venator-II on cost because both variants are identical *sigh*
                         if card_name == "venatorii" and faction == "Imperial":
+                            logging.info(
+                                "[Debug] Found Imperial Venator.  Setting card name."
+                            )
                             card_name == "venatoriiimp"
 
                         s = f.add_ship(card_name.split(" (", 1)[0].strip())
