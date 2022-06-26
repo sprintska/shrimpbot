@@ -887,16 +887,16 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                             )
                             card_name = card_name_new
 
-                        # Can't disambiguate Venator-II on cost because both variants are identical *sigh*
-                        if card_name == "venatorii" and faction == "Imperial":
-                            card_name == "venatoriiimp"
-
                         _ = s.add_upgrade(card_name)
 
                     elif card_name[0] == "=":
                         pass
 
                     else:
+                        # Can't disambiguate Venator-II on cost because both variants are identical *sigh*
+                        if card_name == "venatorii" and faction == "Imperial":
+                            card_name == "venatoriiimp"
+
                         s = f.add_ship(card_name.split(" (", 1)[0].strip())
 
                 elif "\u2022" in card_name and card_name[0] != "=":
