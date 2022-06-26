@@ -899,7 +899,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                             logging.info(
                                 "[Debug] Found Imperial Venator.  Setting card name."
                             )
-                            card_name == "Venator II Imp"
+                            card_name = "Venator II Imp"
 
                         s = f.add_ship(card_name.split(" (", 1)[0].strip())
 
