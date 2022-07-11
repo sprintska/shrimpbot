@@ -91,6 +91,7 @@ vassal_nomenclature_errors = {
     "venatoriclassstardestroyer": "venatori",
     "venatoriiclassstardestroyer": "venatorii",
     "venatoriiclassstardestroyerimp": "venatoriiimp",
+    "venatoriiclassstardestroyerimperial": "venatoriiimp",
     "victoryiclassstardestroyer": "victoryi",
     "victoryiclassstardestroyergar": "victoryigar",
     "victoryiiclassstardestroyer": "victoryii",
