@@ -363,6 +363,10 @@ async def on_message(message):
         await message.add_reaction("\U0001f535")
         await message.add_reaction("\U0001f525")
 
+    #   foxBot
+    if findIn(["DOOKU"], message.content):
+        await message.add_reaction("\U0001f98a")
+
     #   acronymExplain(message.content,bot)
     if findIn(["!ACRONYM", "!ACRO", "!DEFINE"], message.content):
         sent = False
