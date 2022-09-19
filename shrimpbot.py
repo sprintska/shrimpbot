@@ -335,6 +335,7 @@ async def on_message(message):
         ],
         message.content,
     ):
+        time.sleep(1)
         await message.add_reaction("\U0001f990")
 
     if findIn(["HAIL SHRIMPBOT"], message.content):
@@ -358,6 +359,7 @@ async def on_message(message):
 
     #   garmBot(message.content,bot)
     if findIn(["GARM"], message.content):
+        time.sleep(1)
         await message.add_reaction("\U000026ab")
         await message.add_reaction("\U0001f534")
         await message.add_reaction("\U0001f535")
@@ -417,7 +419,7 @@ async def on_message(message):
         card_matches = searchFor(searchterm, cardlookup, match_threshold=140)
 
         # maybe return SURPRISE MOTHERFUCKER instead of Surprise Attack
-        if searchterm == "SURPRISE ATTACK" and random.random() > 0.5:
+        if searchterm == "SURPRISE ATTACK" and random.random() > 0.1:
             try:
                 filepath = os.path.join(CARD_IMG_PATH, "surprisemofo.png")
                 logging.info(
