@@ -419,7 +419,7 @@ async def on_message(message):
         card_matches = searchFor(searchterm, cardlookup, match_threshold=140)
 
         # maybe return SURPRISE MOTHERFUCKER instead of Surprise Attack
-        if searchterm == "SURPRISE ATTACK" and random.random() > 0.1:
+        if searchterm == "SURPRISE ATTACK" and random.random() > 0.9:
             try:
                 filepath = os.path.join(CARD_IMG_PATH, "surprisemofo.png")
                 logging.info(

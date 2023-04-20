@@ -255,6 +255,7 @@ ambiguous_names = {
     ("ahsokatano", "23"): ("ahsokatanodelta7", "squadron"),
     ("anakinskywalker", "19"): ("anakinskywalkerbtlbywing", "squadron"),
     ("anakinskywalker", "24"): ("anakinskywalkerdelta7", "squadron"),
+    ("anakinskywalker", "29"): ("anakinskywalkercom", "upgrade"),
     ("darthvader", "36"): ("darthvadercom", "upgrade"),
     ("darthvader", "3"): ("darthvaderwpn", "upgrade"),
     ("darthvader", "1"): ("darthvaderoff", "upgrade"),
@@ -262,6 +263,8 @@ ambiguous_names = {
     ("darthvader", "25"): ("darthvadertiedefender", "squadron"),
     ("emperorpalpatine", "35"): ("emperorpalpatinecom", "upgrade"),
     ("emperorpalpatine", "3"): ("emperorpalpatineoff", "upgrade"),
+    ("generaldraven", "28"): ("generaldravencom", "upgrade"),
+    ("generaldraven", "3"): ("generaldraven", "upgrade"),
     ("generalgrievous", "20"): ("generalgrievouscom", "upgrade"),
     ("generalgrievous", "22"): ("generalgrievousbelbullab22", "squadron"),
     ("gozanticruisers", "27"): ("gozanticruiserscis", "shipcard"),
@@ -286,13 +289,14 @@ ambiguous_names = {
     # ("venatoriiclassstardestroyer", "100"): ("venatorii", "shipcard"),
     ("victoryiclassstardestroyer", "73"): ("victoryi", "shipcard"),
     ("victoryiclassstardestroyer", "75"): ("victoryigar", "shipcard"),
+    ("wattambor", "5"): ("wattambor", "upgrade"),
+    ("wattambor", "20"): ("wattamborbelbullab22", "squadron"),
     ("wedgeantilles", "19"): ("wedgeantillesxwing", "squadron"),
     ("wedgeantilles", "4"): ("wedgeantillesoff", "upgrade"),
 }
 
 
 def unzipall(zip_file_path, tar_path):
-
     """Unzips all of the files in the zip file at zip_file_path and
     dumps all those files into directory tar_path.
 
@@ -305,7 +309,6 @@ def unzipall(zip_file_path, tar_path):
 
 
 def zipall(tar_path, zip_file_path):
-
     """Creates a new zip file at zip_file_path and populates it with
     the zipped contents of tar_path.
 
@@ -317,7 +320,6 @@ def zipall(tar_path, zip_file_path):
 
 
 def ident_format(fleet_text):
-
     formats = {
         "fab": 0.0,
         "warlord": 0.0,
@@ -405,7 +407,6 @@ def ident_format(fleet_text):
 
 
 def import_from_list(import_from, output_to, working_path, conn, isvlog=False):
-
     ingest_format = {
         "fab": import_from_fabs,
         "warlord": import_from_warlords,
@@ -457,14 +458,12 @@ def import_from_list(import_from, output_to, working_path, conn, isvlog=False):
 
 
 def import_from_fabs(import_list, vlb_path, working_path, conn):
-
     """Imports a Fab's Fleet Builder list into a Fleet object"""
 
     f = Fleet("Food", conn=conn)
     last_line = ""
 
     for line in import_list.split("\n"):
-
         logging.info(line)
         last_line = line
 
@@ -562,7 +561,6 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
 
 
 def import_from_warlords(import_list, vlb_path, working_path, conn):
-
     """Imports an Armada Warlords list into a Fleet object"""
 
     f = Fleet("Food", conn=conn)
@@ -602,7 +600,6 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
                 shipnext = True
 
     for line in import_list.split("\n"):
-
         card_name = line.strip()
         last_line = card_name
 
@@ -702,7 +699,6 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
 
 
 def import_from_afd(import_list, vlb_path, working_path, conn):
-
     """Imports an Armada Fleets Designer list into a Fleet object"""
 
     f = Fleet("Food", conn=conn)
@@ -712,7 +708,6 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
     # shipnext = False
 
     for line in import_list.strip().split("\n"):
-
         try:
             last_line = line.strip()
             card_name = line.strip().split(" x ", 1)[-1]
@@ -722,7 +717,6 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                 start = True
 
             elif start and len(card_name) > 0:
-
                 if card_name[0] == "·":
                     upgrade, cost = card_name.split("(")
                     upgrade = scrub_piecename(upgrade)
@@ -830,7 +824,6 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
 
 
 def import_from_kingston(import_list, vlb_path, working_path, conn):
-
     """Imports an Ryan Kingston list into a Fleet object"""
 
     f = Fleet("Food", conn=conn)
@@ -841,14 +834,12 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
     faction = None
 
     for line in import_list.split("\n"):
-
         try:
             card_name = line.replace("â€¢", "\u2022").strip()
             logging.info(card_name)
             last_line = card_name
 
             if card_name:
-
                 if card_name.split(":")[0].strip() in [
                     "Name",
                     "Commander",
@@ -870,7 +861,6 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                         )
 
                 elif shipnext:
-
                     if card_name.lower().strip() == "squadrons:":
                         logging.info("Squadrons next")
                         shipnext = False
@@ -928,7 +918,6 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
 
 
 def import_from_aff(import_list, vlb_path, working_path, conn):
-
     """Imports a .aff (Armada Fleet Format) file into a Fleet object"""
 
     f = Fleet("Food", conn=conn)
@@ -951,7 +940,6 @@ def import_from_aff(import_list, vlb_path, working_path, conn):
 
 
 def import_from_vlog(import_from, vlb_path, working_path, conn):
-
     """Strips out all the compression and obfuscation from a VASSAL
     log/continution .vlog file at path import_from and creates an
     unobfuscated .vlb text file at path vlb_path."""
@@ -989,7 +977,6 @@ def import_from_vlog(import_from, vlb_path, working_path, conn):
 
 
 def export_to_vlog(export_to, vlb_path, working_path=g_working_path):
-
     """Adds all the obfuscation and compression to turn a .vlb
     VASSAL listbuilder file (at vlb_path), along with boilerplate
     savedata and moduledata XML files in working_path, into a VASSAL-
@@ -1032,7 +1019,6 @@ def export_to_vlog(export_to, vlb_path, working_path=g_working_path):
 
 
 def scrub_piecename(piecename):
-
     scrub_these = " :!-'(),\"+.\t\r\n·[]" + "\u2022"
 
     piecename = piecename.replace("\/", "").split("/")[0].split(";")[-1]
@@ -1044,7 +1030,6 @@ def scrub_piecename(piecename):
 
 
 def calc_guid():
-
     return str(round(random.random() * 10**13))
 
 
@@ -1053,7 +1038,6 @@ class Piece:
     """Meant to be a prototype for the other pieces, not really to be used on its own"""
 
     def __init__(self, piecename, conn=g_conn):
-
         self.banana = scrub_piecename(str(piecename))
         self.conn = conn
         with sqlite3.connect(self.conn) as connection:
@@ -1068,7 +1052,6 @@ class Piece:
         self.coords = [0, 0]
 
     def set_coords(self, coords):
-
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
                 "Table;\d{1,4};\d{1,4}",
@@ -1093,7 +1076,6 @@ class Fleet:
         author="",
         conn=g_conn,
     ):
-
         self.name = str(name)
         self.faction = str(faction)
         self.points = int(points)
@@ -1142,15 +1124,12 @@ class Fleet:
         self.sq_row = 1
 
     def set_name(self, name):
-
         self.name = str(name)
 
     def set_faction(self, faction):
-
         self.faction = str(faction)
 
     def set_points(self, points):
-
         if points.isdigit():
             self.points = int(points)
             return
@@ -1159,23 +1138,18 @@ class Fleet:
         return
 
     def set_mode(self, mode):
-
         self.mode = str(mode)
 
     def set_fleet_version(self, fleet_version):
-
         self.fleet_version = str(fleet_version)
 
     def set_description(self, description):
-
         self.description = str(description)
 
     def set_objectives(self, objectives):
-
         self.objectives = dict(objectives)
 
     def add_ship(self, shipclass):
-
         shipclass = scrub_piecename(shipclass)
         if shipclass in nomenclature_translation:
             sc = nomenclature_translation[shipclass]
@@ -1207,11 +1181,9 @@ class Fleet:
         return s
 
     def remove_ship(self, ship):
-
         self.ships.remove(ship)
 
     def add_squadron(self, squadronclass):
-
         squadronclass = scrub_piecename(squadronclass)
         if squadronclass in nomenclature_translation:
             sc = nomenclature_translation[squadronclass]
@@ -1238,11 +1210,9 @@ class Fleet:
         return sq
 
     def remove_squadron(self, squadron):
-
         self.squadrons.remove(squadron)
 
     def add_objective(self, category, objectivename):
-
         category = scrub_piecename(category)
         objectivename = scrub_piecename(objectivename)
 
@@ -1272,23 +1242,19 @@ class Fleet:
         self.obj_y = self.obj_y + self.obj_to_obj_y_offset
 
     def remove_objective(self, category, objective):
-
         if category in self.objectives.keys():
             if self.objectives[category] == objective:
                 del self.objectives[category]
 
     def __add__(self, ship):
-
         self.add_ship(ship)
 
     def __sub__(self, ship):
-
         self.remove_ship(ship)
 
 
 class Ship:
     def __init__(self, shipclass, ownfleet, conn=g_conn):
-
         self.shipclass = scrub_piecename(str(shipclass))  # "name" in .AFF
         self.conn = conn
         self.content = ""
@@ -1306,27 +1272,21 @@ class Ship:
         self.ownfleet = ownfleet
 
     def set_content(self, content):
-
         self.content = str(content)
 
     def set_coords(self, coords):
-
         self.coords = list(coords)
 
     def set_shipcard(self, shipcard):
-
         self.shipcard = shipcard
 
     def set_shiptoken(self, shiptoken):
-
         self.shiptoken = shiptoken
 
     def set_upgrades(self, upgrades):
-
         self.upgrades = list(upgrades)
 
     def add_upgrade(self, upgradename):
-
         upgradename = scrub_piecename(upgradename)
         if upgradename in nomenclature_translation:
             sc = nomenclature_translation[upgradename]
@@ -1350,15 +1310,12 @@ class Ship:
         return u
 
     def remove_upgrade(self, upgrade):
-
         self.upgrades.remove(upgrade)
 
     def __add__(self, upgrade):
-
         self.add_upgrade(upgrade)
 
     def __sub__(self, upgrade):
-
         self.remove_upgrade(upgrade)
 
 
@@ -1367,7 +1324,6 @@ class ShipCard:
     """A shipcard of type str(shipname) as defined in sqlitedb connection conn."""
 
     def __init__(self, shipname, conn=g_conn):
-
         self.shipname = scrub_piecename(str(shipname))
         self.conn = conn
 
@@ -1423,7 +1379,6 @@ class ShipCard:
         self.coords = [0, 0]
 
     def set_coords(self, coords):
-
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
                 "Table;\d{1,4};\d{1,4}",
@@ -1433,17 +1388,14 @@ class ShipCard:
             self.coords = coords
 
     def set_guid(self, guid):
-
         self.content = self.content.replace("vlb_GUID", self.guid)
 
     def set_shiptoken(self, shiptype):
-
         self.shiptoken = ShipToken(shiptype, self.conn)
 
 
 class ShipToken:
     def __init__(self, shiptype, conn=g_conn):
-
         self.shiptype = scrub_piecename(str(shiptype))
         self.conn = conn
 
@@ -1487,7 +1439,6 @@ class ShipToken:
         self.coords = [0, 0]
 
     def set_coords(self, coords):
-
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
                 "Table;\d{1,4};\d{1,4}",
@@ -1502,7 +1453,6 @@ class ShipCmdStack:
     """A command stack as defined in sqlitedb connection conn."""
 
     def __init__(self, cmdstack, conn=g_conn):
-
         self.cmdstack = scrub_piecename(str(cmdstack))
         self.conn = conn
 
@@ -1536,7 +1486,6 @@ class ShipCmdStack:
         self.coords = [0, 0]
 
     def set_coords(self, coords):
-
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
                 "Table;\d{1,4};\d{1,4}",
@@ -1546,13 +1495,11 @@ class ShipCmdStack:
             self.coords = coords
 
     def set_guid(self, guid):
-
         self.content = self.content.replace("vlb_GUID", self.guid)
 
 
 class Upgrade:
     def __init__(self, upgradename, ownship, conn=g_conn):
-
         self.upgradename = scrub_piecename(str(upgradename))
         self.conn = conn
 
@@ -1591,7 +1538,6 @@ class Upgrade:
         self.ownship = ownship
 
     def set_coords(self, coords):
-
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
                 "Table;\d{1,4};\d{1,4}",
@@ -1603,7 +1549,6 @@ class Upgrade:
 
 class Squadron:
     def __init__(self, squadronclass, ownfleet, conn=g_conn):
-
         self.squadronclass = scrub_piecename(str(squadronclass))  # "name" in .AFF
         self.conn = conn
         self.content = ""
@@ -1616,19 +1561,15 @@ class Squadron:
         self.ownfleet = ownfleet
 
     def set_content(self, content):
-
         self.content = str(content)
 
     def set_coords(self, coords):
-
         self.coords = list(coords)
 
     def set_squadroncard(self, squadroncard):
-
         self.squadroncard = squadroncard
 
     def set_squadrontoken(self, squadrontoken):
-
         self.squadrontoken = squadrontoken
 
 
@@ -1637,7 +1578,6 @@ class SquadronCard:
     """A squadroncard of type str(squadronname) as defined in sqlite connection conn."""
 
     def __init__(self, squadronname, conn=g_conn):
-
         self.squadronname = scrub_piecename(str(squadronname))
         self.conn = conn
 
@@ -1682,7 +1622,6 @@ class SquadronCard:
         self.coords = [0, 0]
 
     def set_coords(self, coords):
-
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
                 "Table;\d{1,4};\d{1,4}",
@@ -1692,17 +1631,14 @@ class SquadronCard:
             self.coords = coords
 
     def set_guid(self, guid):
-
         self.content = self.content.replace("vlb_GUID", self.guid)
 
     def set_squadrontoken(self, squadrontype):
-
         self.squadrontoken = SquadronToken(squadrontype, self.conn)
 
 
 class SquadronToken:
     def __init__(self, squadrontype, conn=g_conn):
-
         self.squadrontype = scrub_piecename(str(squadrontype))
         self.conn = conn
         logging.info(
@@ -1738,7 +1674,6 @@ class SquadronToken:
         self.coords = [0, 0]
 
     def set_coords(self, coords):
-
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
                 "Table;\d{1,4};\d{1,4}",
@@ -1750,7 +1685,6 @@ class SquadronToken:
 
 class Objective:
     def __init__(self, objectivename, conn=g_conn):
-
         self.objectivename = scrub_piecename(str(objectivename))
         self.conn = conn
         logging.info(
@@ -1797,7 +1731,6 @@ class Objective:
         self.coords = [0, 0]
 
     def set_coords(self, coords):
-
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
                 "Table;\d{1,4};\d{1,4}",
@@ -1808,7 +1741,6 @@ class Objective:
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-db", help="VLO DB to reference for pieces", type=str, default="vlb_pieces.vlo"
