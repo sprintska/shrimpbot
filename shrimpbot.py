@@ -46,7 +46,7 @@ with open(CARD_LOOKUP) as cardslist:
 acronym_dict = {}
 with open(ACRO_LOOKUP) as acros:
     for line in acros.readlines():
-        acronym, definition = line.split(";")
+        acronym, definition = line.split(";", 1)
         acronym_dict[acronym.strip()] = definition.strip()
 
 bot = commands.Bot(command_prefix="&")
