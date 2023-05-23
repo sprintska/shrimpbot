@@ -12,7 +12,7 @@ w10_com_admiral-yularen.png;ADMIRAL YULAREN
 w9_com_bail-organa.png;BAIL ORGANA REPUBLIC
 w5_com_commander-sato.png;COMMANDER SATO
 w9_com_count-dooku.png;COUNT DOOKU
-w2_com_darth-vader.png;DARTH VADER
+w2_com_darth-vader.png;COMMANDER DARTH VADER
 w_ssd_com_emperor-palpatine.png;EMPEROR PALPATINE
 w1_com_garm-bel-iblis.png;GARM BEL IBLIS
 w3_com_general-cracken.png;GENERAL CRACKEN
@@ -111,8 +111,7 @@ w_ssd_cpt_emperor-palpatiner.png;EMPEROR PALPATINE OFFICER
 w2_cpt_engineering-captain.png;ENGINEERING CAPTAIN
 w_rim_cpt_expert-shield-tech.png;EXPERT SHIELD TECH
 w_rim_cpt_ezra-bridger.png;EZRA BRIDGER
-w7_cpt_general-draven.png;GENERAL DRAVEN
-w7_cpt_governor-pryce.png;GOVERNOR PRYCE
+w7_cpt_general-draven.png;OFFICER GENERAL DRAVEN
 w6_cpt_hondo-ohnaka.png;HONDO OHNAKA
 w_rim_cpt_iden-versio.png;IDEN VERSIO
 w7_cpt_instructor-goran.png;INSTRUCTOR GORAN
@@ -125,7 +124,7 @@ w5_cpt_major-derlin.png;MAJOR DERLIN
 w5_cpt_minister-tua.png;MINISTER TUA
 w2_cpt_navigation-officer.png;NAVIGATION OFFICER
 w10_cpt_passel-argente.png;PASSEL ARGENTE
-w8_cpt_wedge-antilles.png;RAYMUS ANTILLES
+w8_cpt_wedge-antilles.png;OFFICER WEDGE ANTILLES
 w8_cpt_reeva-demesne.png;REEVA DEMESNE
 w9_cpt_rune-haako.png;RUNE HAAKO
 w_rim_cpt_sabine-wren.png;SABINE WREN
@@ -145,7 +144,6 @@ w1_cpt_veteran-captain.png;VETERAN CAPTAIN
 w2_cpt_walex-blissex.png;WALEX BLISSEX
 w9_cpt_wat-tambor.png;WAT TAMBOR
 w0_cpt_weapons-liaison.png;WEAPONS LIAISON
-w8_cpt_wedge-antilles.png;WEDGE ANTILLES
 w2_cpt_wing-commander.png;WING COMMANDER
 w0_cpt_wulff-yularen.png;WULFF YULAREN
 w0_ord_assault-concussion-missiles.png;ASSAULT CONCUSSION MISSILES
@@ -215,7 +213,7 @@ w8_ttl_rakehell.png;RAKEHELL
 w_ssd_ttl_ravager.png;RAVAGER
 w0_ttl_redemption.png;REDEMPTION
 w2_ttl_relentless.png;RELENTLESS
-w4_trl_spinal-armament.png;SA NALAOR
+w4_trl_spinal-armament.png;SPINAL ARMAMENT
 w1_ttl_salvation.png;SALVATION
 w7_ttl_seventh-fleet-star-destroyer.png;SEVENTH FLEET STAR DESTROYER
 w7_ttl_sovereign.png;SOVEREIGN
@@ -821,7 +819,7 @@ damage_damaged_controls.jpg;DAMAGED CONTROLS
 damage_damaged_munitions.jpg;DAMAGED MUNITIONS
 damage_depowered_armament.jpg;DEPOWERED ARMAMENT
 damage_disengaged_fc.jpg;DISENGAGED FIRE CONTROL
-damage_faulty_countermeasures.jpg;FAULTYC OUNTERMEASURES
+damage_faulty_countermeasures.jpg;FAULTY COUNTERMEASURES
 damage_injured_crew.jpg;INJURED CREW
 damage_life_support_failure.jpg;LIFE SUPPORT FAILURE
 damage_point_defense_failure.jpg;POINT DEFENSE FAILURE
@@ -869,3 +867,18 @@ w7_wpn_off_jyn-erso.png; JYN ERSO BOARDING TEAM
 w6_wpn_off_boarding-troopers.png; BOARDING TROOPERS TEAM
 w6_wpn_off_cham-syndulla.png; CHAM SYNDULLA BOARDING TEAM
 w6_wpn_off_boarding-engineers.png; BOARDING ENGINEERS TEAM
+rr2_com_anakin-skywalker.png; COMMANDER ANAKIN SKYWALKER
+rr2_com_general-draven.png; COMMANDER GENERAL DRAVEN
+rr2_cpt_asajj-ventress.png; ASAJJ VENTRESS
+rr2_cpt_governor-pryce.png; GOVERNOR PRYCE
+squadcard_vult-skerris.png; VULT SKERRIS TIE INTERCEPTOR SQUADRON
+shipcard_cis-gozanti.png; SEPARATIST CIS GOZANTI CLASS CRUISERS
+shipcard_rebel-providence.png; REBEL PROVIDENCE CLASS CARRIER
+shipcard_imperial-venator.png; IMPERIAL VENATOR II CLASS STAR DESTROYER
+shipcard_gar-victory.png; REPUBLIC GAR VICTORY I CLASS STAR DESTROYER
+squadcard_anakin-skywalker-delta-7.png; ANAKIN SKYWALKER DELTA 7 AETHERSPRITE SQUADRON
+squadcard_hera-syndulla-x-wing.png; HERA SYNDULLA X WING SQUADRON 
+squadcard_darth-vader-defender.png; DARTH VADER TIE DEFENDER SQUADRON
+squadcard_matchstick.png; MATCHSTICK BTL B Y WING SQUADRON
+squadcard_wat-tambor.png; WAT TAMBOR BELBULLAB 22 STARFIGHTER SQUADRON
+squadcard_fenn-rau.png; FENN RAU MANDALORIAN GAUNTLET FIGHTER
