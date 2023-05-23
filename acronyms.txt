@@ -86,6 +86,7 @@ MSU;Multiple (or Many) Small Units, referring to a fleet build. See also DeMSU.
 NAKED;A ship with no upgrades.
 NEB;Nebulon-B Frigate.
 NEBB;Nebulon-B Frigate.
+NPE;Negative Play(er) Experience.  A game that really sucks to play; usually implies lack of agency or no viable win condition.
 OE;Ordnance Experts upgrade card.
 OP;May refer to: a thread's original post(er), an overpowered card or ability, FFG's Organized Play program, or the Overload Pulse upgrade.
 OS;Opening Salvo objective card.
