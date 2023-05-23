@@ -145,7 +145,6 @@ async def toggle():
 
 @bot.event
 async def on_ready():
-
     BOT_OWNER = bot.get_user(BOT_OWNER_ID)
 
     logging.info("Logged in as")
@@ -183,18 +182,16 @@ async def cheat():
 async def on_message(message):
     await bot.process_commands(message)
 
-    if message.channel.type is not discord.ChannelType.private:
-
-        # logging
-        logging.info(
-            "[{} | {} | {} | {}] {}".format(
-                time.ctime(),
-                message.guild,
-                message.channel.name,
-                message.author.name,
-                message.content,
-            )
+    # logging
+    logging.info(
+        "[{} | {} | {} | {}] {}".format(
+            time.ctime(),
+            message.guild,
+            message.channel.name,
+            message.author.name,
+            message.content,
         )
+    )
 
     # don't read our own message or do anything if not enabled
     # ONLY the dice roller should respond to other bots
@@ -339,12 +336,6 @@ async def on_message(message):
         await message.add_reaction("\U0001f990")
 
     if findIn(["HAIL SHRIMPBOT"], message.content):
-
-        # No ponies for Truthiness
-        # if message.author.id == "264163431408467978":
-        #    await bot.send_message(message.channel, "No more ponies for "+message.author.name+".  Heretic!")
-        #    await bot.change_nickname(me,nickname="AcronymBot")
-        # else:
         await message.channel.send(
             "His chitinous appendages reach down and grant "
             + message.author.name
@@ -352,7 +343,6 @@ async def on_message(message):
         )
 
     if findIn(["DATA FOR THE DATA GOD"], message.content):
-
         await message.channel.send(
             "Statistics, likelihoods, and probabilities mean everything to men, nothing to Shrimpbot.",
         )
@@ -575,7 +565,6 @@ async def on_message(message):
                 )
 
     if findIn(["!testy"], message.content):
-
         await message.channel.send(
             "Bananas.",
         )
