@@ -25,7 +25,6 @@ logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 
 class VassalModule:
-
     """Contains all the elements of the module as defined in the VMOD."""
 
     def __init__(self, vmod_path):
@@ -275,7 +274,6 @@ class VassalModule:
 
 
 class ModuleElement:
-
     """Prototype for the different element types."""
 
     def __init__(self, element_obj):
@@ -325,7 +323,6 @@ class ModuleElement:
 
 
 class PrototypeDefinition(ModuleElement):
-
     """VASSAL.build.module.PrototypeDefinition."""
 
     def __init__(self, element_obj):
@@ -355,7 +352,6 @@ class PrototypeDefinition(ModuleElement):
 
 
 class PieceDefinition(ModuleElement):
-
     """VASSAL.build.widget.PieceSlot"""
 
     def __init__(self, element_obj):
@@ -403,7 +399,6 @@ class PieceDefinition(ModuleElement):
 
 
 class Trait:
-
     """A trait--a member of the third segment of a Vassal piece or prototype definition.
     A trait belongs to an object of the ModuleElement class (or a subclass like
     PrototypeDefinition or Piece), and has a 1:1 relationship to a State object which
@@ -425,7 +420,6 @@ class Trait:
 
 
 class State:
-
     """A state--a member of the fourth segment of a Vassal piece or prototype definition.
     A state belongs to an object of the ModuleElement class (or a subclass like
     PrototypeDefinition or Piece), and and has a 1:1 relationship to a Trait object which
@@ -442,7 +436,6 @@ class State:
 
 
 def create_db(db_path):
-
     """Create the db at the path if it doesn't exist"""
 
     if not os.path.exists(db_path):
@@ -458,7 +451,6 @@ def create_db(db_path):
 
 
 def exists_piece(conn, piecetype, piecename):
-
     """checks for existence of piece name/type."""
 
     return bool(
@@ -472,7 +464,6 @@ def exists_piece(conn, piecetype, piecename):
 
 
 def update_piece(conn, piecetype, piecename, content):
-
     """updates the content of an existing entry, or creates a new one."""
 
     catchall = associated_token(piecename, piecetype, content)
@@ -551,7 +542,6 @@ def associated_token(piece_name, piece_type, vlb_content):
 
 
 def most_recent_vmod_in_path(vmod_path):
-
     """Finds the latest .vmod in the given path.
 
     If it's a dir, it's just the first in an inverted sort of *.vmod;
@@ -573,7 +563,7 @@ def most_recent_vmod_in_path(vmod_path):
 
 def check_for_new_version(
     latest_local_vmod_path,
-    vassal_url="https://vassalengine.org/wiki/Module:Star_Wars:_Armada",
+    vassal_url="https://vassalengine.org/library/projects/Star_Wars:_Armada",
 ):
 
     if not latest_local_vmod_path.exists():

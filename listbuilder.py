@@ -10,6 +10,10 @@ import random
 import logging
 import logging.handlers
 
+from definitions import (
+    nomenclature_translation,
+    ambiguous_names,
+)
 
 PWD = os.getcwd()
 
@@ -26,276 +30,6 @@ g_conn = os.path.abspath("vlb_pieces.vlo")
 g_import_vlog = False
 
 
-""" These dicts translate between canonical names and non-canonical
-    (some misspelled, mostly just shorthand).  Because they all have
-    to match the Vassal name (as that's what the db is generated
-    from), the Vassal errors dict translates correct keys to the
-    corresponding incorrect Vassal values, while the listbuilder errors
-    dict translates incorrect keys to Vassal values regardless of the
-    correctness of the Vassal value.
-
-    "exectuorclass": "executorclass" is a special case because the
-    reference in the card itself to the ship token is wrong.  I have no
-    idea why it is able to successfully spawn in-game, but this fixes
-    it on my side soooo...
-"""
-
-# "canon": "non-canon",
-vassal_nomenclature_errors = {
-    "arc170starfightersquadron": "arc170squadron",
-    "arquitensclasscommandcruiser": "arquitenscommandcruiser",
-    "arquitensclasslightcruiser": "arquitenslightcruiser",
-    "bailorgana": "bailorganacom",
-    "belbullab22starfightersquadron": "belbullab22squadron",
-    "coloneljendonlambdaclassshuttle": "coloneljendon",
-    "consularclasschargerc70": "consularclasschargerc70retrofit",
-    "dist81": "distb1",
-    "exectuorclass": "executorclass",
-    "executoriclassstardreadnought": "executoristardn",
-    "executoriiclassstardreadnought": "executoriistardn",
-    "gladiatoriclassstardestroyer": "gladiatori",
-    "gladiatoriiclassstardestroyer": "gladiatorii",
-    "gozanticlassassaultcarriers": "gozantiassaultcarriers",
-    "gozanticlasscruisers": "gozanticruisers",
-    "gozanticlasscruiserscis": "gozanticruiserscis",
-    "greensquadronawing": "greensquadron",
-    "greensquadronawingsquadron": "greensquadron",
-    "hwk290": "hwk290lightfreighter",
-    "hyenaclassdroidbombersquadron": "hyenabombersquadron",
-    "imperialiclassstardestroyer": "imperiali",
-    "imperialiiclassstardestroyer": "imperialii",
-    "imperialstardestroyercymoon1refit": "cymoon1refit",
-    "imperialstardestroyerkuatrefit": "kuatrefit",
-    "independence": "independance",
-    "isdcymoon1refit": "cymoon1refit",
-    "isdkuatrefit": "kuatrefit",
-    "kyrstaagatecom": "kyrstaagate",
-    "landocalrissianoff": "landocalrissian",
-    "lieutenantblountz95headhuntersquadron": "lieutenantblount",
-    "mandaloriangauntletfighter": "mandogauntletfighter",
-    "modifiedpeltaclassassaultship": "peltaclassassaultship",
-    "modifiedpeltaclasscommandship": "peltaclasscommandship",
-    "obiwankenobi": "obiwankenobicom",
-    "providenceclasscarrier": "providencecarrier",
-    "providenceclasscarrierreb": "providencecarrierreb",
-    "providenceclassdreadnought": "providencedreadnought",
-    "quasarfireiclasscruisercarrier": "quasarfirei",
-    "quasarfireiiclasscruisercarrier": "quasarfireii",
-    "raidericlasscorvette": "raideri",
-    "raideriiclasscorvette": "raiderii",
-    "recusantclasslightdestroyer": "recusantlightdestroyer",
-    "recusantclasssupportdestroyer": "recusantsupportdestroyer",
-    "stardreadnoughtassaultprototype": "stardnassaultprototype",
-    "stardreadnoughtcommandprototype": "stardncommandprototype",
-    "vcx100freighter": "vcx100lightfreighter",
-    "venatoriclassstardestroyer": "venatori",
-    "venatoriiclassstardestroyer": "venatorii",
-    "venatoriiclassstardestroyerimp": "venatoriiimp",
-    "venatoriiclassstardestroyerimperial": "venatoriiimp",
-    "victoryiclassstardestroyer": "victoryi",
-    "victoryiclassstardestroyergar": "victoryigar",
-    "victoryiiclassstardestroyer": "victoryii",
-    "vultureclassdroidfightersquadron": "vulturedroidsquadron",
-    "yt1300": "yt1300lightfreighter",
-    "yt2400": "yt2400lightfreighter",
-    "yv666": "yv666lightfreighter",
-}
-
-# "non-canon": "vassal-canon",
-listbuilder_nomenclature_errors = {
-    "7thfleetstardestroyer": "seventhfleetstardestroyer",
-    "acclamatori": "acclamatoriclassassaultship",
-    "acclamatorii": "acclamatoriiclassassaultship",
-    "acclamatoriclass": "acclamatoriclassassaultship",
-    "acclamatoriiclass": "acclamatoriiclassassaultship",
-    "admiralozzelcom": "admiralozzel",
-    "ahsokatanooff": "ahsokatano",
-    "anakinskywalkerbtlb": "anakinskywalkerbtlbywing",
-    "anakinskywalkerdelta": "anakinskywalkerdelta7",
-    "anakinskywalkeryrep": "anakinskywalkerbtlbywing",
-    "armedcruiser": "consularclassarmedcruiser",
-    "assaultfrigatemk2a": "assaultfrigatemarkiia",
-    "assaultfrigatemk2b": "assaultfrigatemarkiib",
-    "assaultfrigatemkiia": "assaultfrigatemarkiia",
-    "assaultfrigatemkiib": "assaultfrigatemarkiib",
-    "battlerefit": "hardcellclassbattlerefit",
-    "bltbywingsquadron": "btlbywingsquadron",
-    "chargerc70": "consularclasschargerc70retrofit",
-    "clonecmdrwolffe": "clonecommanderwolffe",
-    "commsfrigate": "munificentclasscommsfrigate",
-    "consulararmedcruiser": "consularclassarmedcruiser",
-    "consularchargerc70": "consularclasschargerc70retrofit",
-    "cr90acorvette": "cr90corvettea",
-    "cr90bcorvette": "cr90corvetteb",
-    "cr90corelliancorvettea": "cr90corvettea",
-    "cr90corelliancorvetteb": "cr90corvetteb",
-    "darthvaderdefender": "darthvadertiedefender",
-    "dby827heavyturbolaser": "dby827heavyturbolasers",
-    "genericritrcommander": "admiralkonstantine",
-    "hardcellbattlerefit": "hardcellclassbattlerefit",
-    "hardcelltransport": "hardcellclasstransport",
-    "hardendbulkheads": "hardenedbulkheads",
-    "hyenadroidbombersquadron": "hyenabombersquadron",
-    # "ig88ig2000": "ig88",
-    "interdictorclasssuppressionrefit": "interdictorsuppressionrefit",
-    "interdictorclasscombatrefit": "interdictorcombatrefit",
-    "lambdashuttle": "lambdaclassshuttle",
-    "lancerpursuitcraft": "lancerclasspursuitcraft",
-    "landocarissian": "landocalrissian",
-    "lietenantblount": "lieutenantblount",
-    "linkedturbolaserturrets": "linkedturbolasertowers",
-    "locationfirecontrol": "localfirecontrol",
-    "maareksteele": "maarekstele",
-    "moncalamariexodusfleet": "moncalexodusfleet",
-    "munificentcommsfrigate": "munificentclasscommsfrigate",
-    "munificentstarfrigate": "munificentclassstarfrigate",
-    "munitionsresuppy": "munitionsresupply",
-    "onagerstardestroyer": "onagerclassstardestroyer",
-    "onagertestbed": "onagerclasstestbed",
-    "partsresuppy": "partsresupply",
-    "peltaassaultship": "peltaclassassaultship",
-    "peltacommandship": "peltaclasscommandship",
-    "peltamedicalfrigate": "peltaclassmedicalfrigate",
-    "peltatransportfrigate": "peltaclasstransportfrigate",
-    "rayantilles": "raymusantilles",
-    "solorcorona": "solarcorona",
-    "ssdexecutori": "executoristardn",
-    "ssdexecutorii": "executoriistardn",
-    "ssdcommandprototype": "stardncommandprototype",
-    "ssdassaultprototype": "stardnassaultprototype",
-    "starfrigate": "munificentclassstarfrigate",
-    "starhawkclassmki": "starhawkmarki",
-    "starhawkclassmkii": "starhawkmarkii",
-    "starhawkbattleshipmarki": "starhawkmarki",
-    "starhawkbattleshipmarkii": "starhawkmarkii",
-    "starhawkclassbattleshipmarki": "starhawkmarki",
-    "starhawkclassbattleshipmarkii": "starhawkmarkii",
-    "supriseattack": "surpriseattack",
-    "transport": "hardcellclasstransport",
-    "vulturedroidfightersquadron": "vulturedroidsquadron",
-    "xcustomcommander": "admiralkonstantine",
-    "x17turbolasers": "xi7turbolasers",
-    # SQUADRON EXTENDED NOMENCLATURE TRANSLATION
-    "axe": "axev19torrent",
-    "baktoidprototypes": "baktoidprototypeshyenabomber",
-    "biggsdarklighter": "biggsdarklighterxwing",
-    "blacksquadron": "blacksquadrontiefighter",
-    "bobafett": "bobafettslave1",
-    "bossk": "bosskhoundstooth",
-    "captainjonus": "captainjonustiebomber",
-    "cienaree": "cienareetieinterceptor",
-    "coloneljendon": "coloneljendonlambdaclass",
-    "corranhorn": "corranhornewing",
-    "daggersquadron": "daggersquadronbwing",
-    "dashrendar": "dashrendaroutrider",
-    "dbs404": "dbs404hyenabomber",
-    "dengar": "dengarpunishingone",
-    "dfs311": "dfs311vulturedroid",
-    "distb1": "distb1droidtrifighter",
-    "dutchvander": "dutchvanderywing",
-    "gammasquadron": "gammasquadrontiebomber",
-    "garsaxon": "garsaxongauntletfighter",
-    "generalgrievous": "generalgrievousbelbullab22",
-    "goldsquadron": "goldsquadronywing",
-    "greensquadron": "greensquadronawing",
-    "hansolo": "hansolomillenniumfalcon",
-    "haorchallprototypes": "haorchallprototypesvulturedroid",
-    "howlrunner": "howlrunnertiefighter",
-    "ig88b": "ig88big2000b",
-    "ig88": "ig88ig2000",
-    "janors": "janorsmoldycrow",
-    "kananjarrus": "kananjarrushwk290",
-    "ketsuonyo": "ketsuonyoshadowcaster",
-    "keyanfarlander": "keyanfarlanderbwing",
-    "kickback": "kickbackv19torrent",
-    "kitfisto": "kitfistodelta7",
-    "lieutenantblount": "lieutenantblountz95",
-    "lukeskywalker": "lukeskywalkerxwing",
-    "maarekstele": "maareksteletiedefender",
-    "majorrhymer": "majorrhymertiebomber",
-    "maleehurra": "maleehurrascurrgh6",
-    "martmattin": "martmattinsatoshammer",
-    "maulermithel": "maulermitheltiefighter",
-    "moraloeval": "moraloevalyv666",
-    "mornakee": "mornakeevt49decimator",
-    "norrawexley": "norrawexleyywing",
-    "nym": "nymhavoc",
-    "oddball": "oddballarc170",
-    "phlacarphoccprototypes": "phlacarphoccprototypesdroidtrifighter",
-    "plokoon": "plokoondelta7",
-    "roguesquadron": "roguesquadronxwing",
-    "sabersquadron": "sabersquadrontieinterceptor",
-    "sharabey": "sharabeyawing",
-    "soontirfel": "soontirfeltieinterceptor",
-    "teltrevura": "teltrevurajumpmaster",
-    "tempestsquadron": "tempestsquadrontieadvanced",
-    "tennumb": "tennumbbwing",
-    "tychocelchu": "tychocelchuawing",
-    "valenrudor": "valenrudortiefighter",
-    "whisper": "whispertiephantom",
-    "zertikstrom": "zertikstromtieadvanced",
-}
-
-nomenclature_translation = {
-    **vassal_nomenclature_errors,
-    **listbuilder_nomenclature_errors,
-}
-
-""" This dict pairs names of identically-named cards (Darth Vader, Leia Organa,
-    etc) with their costs in a tuple (the key) to reference their Vassal name and 
-    card type.
-"""
-
-ambiguous_names = {
-    ("admiralozzel", "20"): ("admiralozzel", "upgrade"),
-    ("admiralozzel", "2"): ("admiralozzeloff", "upgrade"),
-    ("ahsokatano", "23"): ("ahsokatanodelta7", "squadron"),
-    ("ahsokatano", "2"): ("ahsokatano", "upgrade"),
-    ("ahsokatano", "6"): ("ahsokatanorepoff", "upgrade"),
-    ("ahsokatano", "23"): ("ahsokatanodelta7", "squadron"),
-    ("anakinskywalker", "19"): ("anakinskywalkerbtlbywing", "squadron"),
-    ("anakinskywalker", "24"): ("anakinskywalkerdelta7", "squadron"),
-    ("anakinskywalker", "29"): ("anakinskywalkercom", "upgrade"),
-    ("darthvader", "36"): ("darthvadercom", "upgrade"),
-    ("darthvader", "3"): ("darthvaderwpn", "upgrade"),
-    ("darthvader", "1"): ("darthvaderoff", "upgrade"),
-    ("darthvader", "21"): ("darthvadertieadvanced", "squadron"),
-    ("darthvader", "25"): ("darthvadertiedefender", "squadron"),
-    ("emperorpalpatine", "35"): ("emperorpalpatinecom", "upgrade"),
-    ("emperorpalpatine", "3"): ("emperorpalpatineoff", "upgrade"),
-    ("generaldraven", "28"): ("generaldravencom", "upgrade"),
-    ("generaldraven", "3"): ("generaldraven", "upgrade"),
-    ("generalgrievous", "20"): ("generalgrievouscom", "upgrade"),
-    ("generalgrievous", "22"): ("generalgrievousbelbullab22", "squadron"),
-    ("gozanticruisers", "27"): ("gozanticruiserscis", "shipcard"),
-    ("gozanticruisers", "23"): ("gozanticruiser", "shipcard"),
-    ("herasyndulla", "28"): ("herasyndullaghost", "squadron"),
-    ("herasyndulla", "23"): ("herasyndullaxwing", "squadron"),
-    ("hondoohnaka", "24"): ("hondoohnakaslave1", "squadron"),
-    ("hondoohnaka", "2"): ("hondoohnaka", "upgrade"),
-    ("kyrstaagate", "20"): ("kyrstaagate", "upgrade"),
-    ("kyrstaagate", "5"): ("kyrstaagateoff", "upgrade"),
-    ("landocalrissian", "23"): ("landocalrissianmillenniumfalcon", "squadron"),
-    ("landocalrissian", "4"): ("landocalrissian", "upgrade"),
-    ("leiaorgana", "28"): ("leiaorganacom", "upgrade"),
-    ("leiaorgana", "3"): ("leiaorganaoff", "upgrade"),
-    ("luminaraunduli", "23"): ("luminaraundulidelta7", "squadron"),
-    ("luminaraunduli", "25"): ("luminaraundulicom", "upgrade"),
-    ("plokoon", "26"): ("plokooncom", "upgrade"),
-    ("plokoon", "24"): ("plokoondelta7", "squadron"),
-    ("providenceclasscarrier", "95"): ("providencecarrierreb", "shipcard"),
-    ("providenceclasscarrier", "105"): ("providencecarrier", "shipcard"),
-    # ("venatoriiclassstardestroyer", "100"): ("venatoriiimp", "shipcard"),
-    # ("venatoriiclassstardestroyer", "100"): ("venatorii", "shipcard"),
-    ("victoryiclassstardestroyer", "73"): ("victoryi", "shipcard"),
-    ("victoryiclassstardestroyer", "75"): ("victoryigar", "shipcard"),
-    ("wattambor", "5"): ("wattambor", "upgrade"),
-    ("wattambor", "20"): ("wattamborbelbullab22", "squadron"),
-    ("wedgeantilles", "19"): ("wedgeantillesxwing", "squadron"),
-    ("wedgeantilles", "4"): ("wedgeantillesoff", "upgrade"),
-}
-
-
 def unzipall(zip_file_path, tar_path):
     """Unzips all of the files in the zip file at zip_file_path and
     dumps all those files into directory tar_path.
@@ -308,15 +42,15 @@ def unzipall(zip_file_path, tar_path):
     zip_ref.close()
 
 
-def zipall(tar_path, zip_file_path):
+def zipall(src_dir, dest_zip):
     """Creates a new zip file at zip_file_path and populates it with
     the zipped contents of tar_path.
 
     I'm pretty sure this duplicates a built-in function, but, I mean...
     it works."""
 
-    shittyname = shutil.make_archive(zip_file_path, "zip", tar_path)
-    shutil.move(shittyname, zip_file_path)
+    archive_path = shutil.make_archive(dest_zip, "zip", src_dir)
+    shutil.move(archive_path, dest_zip)
 
 
 def ident_format(fleet_text):
@@ -1034,7 +768,6 @@ def calc_guid():
 
 
 class Piece:
-
     """Meant to be a prototype for the other pieces, not really to be used on its own"""
 
     def __init__(self, piecename, conn=g_conn):
@@ -1320,7 +1053,6 @@ class Ship:
 
 
 class ShipCard:
-
     """A shipcard of type str(shipname) as defined in sqlitedb connection conn."""
 
     def __init__(self, shipname, conn=g_conn):
@@ -1449,7 +1181,6 @@ class ShipToken:
 
 
 class ShipCmdStack:
-
     """A command stack as defined in sqlitedb connection conn."""
 
     def __init__(self, cmdstack, conn=g_conn):
@@ -1574,7 +1305,6 @@ class Squadron:
 
 
 class SquadronCard:
-
     """A squadroncard of type str(squadronname) as defined in sqlite connection conn."""
 
     def __init__(self, squadronname, conn=g_conn):
