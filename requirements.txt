@@ -46,7 +46,7 @@ netifaces==0.10.4
 pip
 python-Levenshtein==0.12.2
 regex==2020.11.13
-requests==2.24.0
+requests==2.32.4
 requests-unixsocket==0.1.5
 six==1.15.0
 urllib3==1.26.5
