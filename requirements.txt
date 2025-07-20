@@ -21,7 +21,7 @@ docutils==0.16
 EasyProcess==0.2.10
 entrypoint2==0.2
 flake8==3.8.4
-Flask==2.0.1
+Flask==2.3.2
 future==0.15.2
 fuzzywuzzy==0.18.0
 h11<0.13
@@ -50,7 +50,7 @@ requests==2.24.0
 requests-unixsocket==0.1.5
 six==1.15.0
 urllib3==1.26.5
-Werkzeug==2.0.1
+Werkzeug==2.2.3
 wheel
 wrapt==1.11.*
 yarl==1.5.1
