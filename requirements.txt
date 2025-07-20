@@ -54,5 +54,5 @@ Werkzeug==2.2.3
 wheel
 wrapt==1.11.*
 yarl==1.5.1
-zipp==3.4.1
+zipp==3.19.1
 zope.interface==4.3.2
