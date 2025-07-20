@@ -20,13 +20,14 @@ from discord import emoji
 from discord.ext import commands
 from fuzzywuzzy import fuzz
 
-_handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
+_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
-TOKEN_PATH = "/home/ardaedhel/bin/shrimpbot/privatekey.dsc"
-CARD_IMG_PATH = "/home/ardaedhel/bin/shrimpbot/img/"
-CARD_LOOKUP = "/home/ardaedhel/bin/shrimpbot/cards.txt"
-ACRO_LOOKUP = "/home/ardaedhel/bin/shrimpbot/acronyms.txt"
+PWD = os.path.dirname(__file__)
+TOKEN_PATH = PWD + "/privatekey.dsc"
+CARD_IMG_PATH = PWD + "/img/"
+CARD_LOOKUP = PWD + "/cards.txt"
+ACRO_LOOKUP = PWD + "/acronyms.txt"
 BOT_OWNER_ID = 236683961831653376
 
 

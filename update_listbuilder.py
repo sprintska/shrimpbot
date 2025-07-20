@@ -20,7 +20,7 @@ import xml.etree.ElementTree as ET
 """
 
 
-_handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
+_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 

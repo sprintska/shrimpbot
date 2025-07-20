@@ -11,7 +11,7 @@ import os
 import sqlite3
 import time
 
-_handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
+_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 logging.info("API start...")
@@ -43,16 +43,16 @@ def home():
     logging.info(request.args)
     logging.info(request.files)
 
-    [(arg) for arg in request.args] 
+    [(arg) for arg in request.args]
     if "list" in request.args:
         out = "{}{}\r\n".format(out, str(request.args["list"]))
     if "help" in request.args:
         out = str(request.__dir__())
     if "gimme" in request.args:
-        fleet_list_filestorage = request.files['upload_file']
+        fleet_list_filestorage = request.files["upload_file"]
         liststr = fleet_list_filestorage.read().decode()
-            # liststr = list_file.readlines()
-            # liststr = "boooooop"
+        # liststr = list_file.readlines()
+        # liststr = "boooooop"
 
         success, last_item = listbuilder.import_from_list(
             liststr, vlbfilepath, workingpath, conn
@@ -77,4 +77,4 @@ if __name__ == "__main__":
 
     app.config["DEBUG"] = True
 
-    app.run(host='0.0.0.0')
+    app.run(host="0.0.0.0")
