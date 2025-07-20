@@ -50,7 +50,7 @@ with open(ACRO_LOOKUP) as acros:
         acronym, definition = line.split(";", 1)
         acronym_dict[acronym.strip()] = definition.strip()
 
-bot = commands.Bot(command_prefix="&")
+bot = commands.Bot(command_prefix="&", intents=discord.Intents.all())
 note = discord.Game(name="'!acro' for definitions")
 
 
