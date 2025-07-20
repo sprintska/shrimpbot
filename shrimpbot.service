@@ -1,0 +1,17 @@
+[Unit]
+Description=Shrimpbot Discord bot
+After=syslog.target
+
+[Service]
+User=ardaedhel
+Group=ardaedhel
+Type=simple
+WorkingDirectory=/opt/shrimpbot/
+ExecStart=/usr/bin/env python3 /opt/shrimpbot.py
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target
