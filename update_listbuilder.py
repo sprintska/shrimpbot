@@ -169,8 +169,8 @@ class VassalModule:
                 )
                 ex = True
 
-            except Exception as err:
-                pass
+            except IndexError as err:
+                print("Whoops, maybe no misformed reference in this piece after all?")
 
         if ex:
 
