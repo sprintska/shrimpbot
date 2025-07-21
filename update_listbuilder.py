@@ -135,11 +135,7 @@ class VassalModule:
         ex = False
 
         for error_match in error_matches:
-            if "movement template" in element.name:
-                print(
-                    f"\n\t [!] Not adding | {element.name} - Movement templates are not supported."
-                )
-                return False
+
             print(f"\n\t [*] Amending embedded reference in | {element.name}")
             full_error_match = error_match.group(0)
             full_error_match = full_error_match.replace("\\;", ";").replace("\\/", "/")
@@ -164,16 +160,17 @@ class VassalModule:
                     for ele in self.build_xml.iter()
                     if ele.text == fuzzy_matched_xml[0]
                 ][0]
+
+                target_absolute_reference = (
+                    f"{self.__get_parent_path(matching_xml_element)};"
+                )
+                element.vassal_data_raw = element.vassal_data_raw.replace(
+                    error_match.group(0), target_absolute_reference, 1
+                )
+                ex = True
+
             except Exception as err:
                 raise err
-
-            target_absolute_reference = (
-                f"{self.__get_parent_path(matching_xml_element)};"
-            )
-            element.vassal_data_raw = element.vassal_data_raw.replace(
-                error_match.group(0), target_absolute_reference, 1
-            )
-            ex = True
 
         if ex:
 
