@@ -10,8 +10,8 @@ WorkingDirectory=/opt/shrimpbot/
 ExecStart=/opt/shrimpbot/.venv/shrimpbot/bin/python3 /opt/shrimpbot/shrimpbot.py
 Restart=always
 RestartSec=10
-StandardOutput=syslog
-StandardError=syslog
+#StandardOutput=syslog
+#StandardError=syslog
 
 [Install]
 WantedBy=multi-user.target
