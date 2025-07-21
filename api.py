@@ -51,8 +51,6 @@ def home():
     if "gimme" in request.args:
         fleet_list_filestorage = request.files["upload_file"]
         liststr = fleet_list_filestorage.read().decode()
-        # liststr = list_file.readlines()
-        # liststr = "boooooop"
 
         success, last_item = listbuilder.import_from_list(
             liststr, vlbfilepath, workingpath, conn

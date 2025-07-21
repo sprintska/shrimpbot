@@ -162,7 +162,9 @@ def import_from_list(import_from, output_to, working_path, conn, isvlog=False):
 
         fmt = ident_format(fleet_text)
         success, f = ingest_format[fmt](fleet_text, output_to, working_path, conn)
-        logging.info(success, f)
+        print("success: {}".format(success))
+        print("fleet: {}".format(f))
+        logging.info("{} - {}".format(str(success), str(f)))
 
         if not success:
             return (success, f)
@@ -755,7 +757,7 @@ def export_to_vlog(export_to, vlb_path, working_path=g_working_path):
 def scrub_piecename(piecename):
     scrub_these = " :!-'(),\"+.\t\r\n·[]" + "\u2022"
 
-    piecename = piecename.replace("\/", "").split("/")[0].split(";")[-1]
+    piecename = piecename.replace("\\/", "").split("/")[0].split(";")[-1]
 
     for char in scrub_these:
         piecename = piecename.replace(char, "")
@@ -787,7 +789,7 @@ class Piece:
     def set_coords(self, coords):
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
-                "Table;\d{1,4};\d{1,4}",
+                r"Table;\d{1,4};\d{1,4}",
                 "Table;{};{}".format(str(coords[0]), str(coords[1])),
                 self.content,
             )
@@ -1113,7 +1115,7 @@ class ShipCard:
     def set_coords(self, coords):
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
-                "Table;\d{1,4};\d{1,4}",
+                r"Table;\d{1,4};\d{1,4}",
                 "Table;{};{}".format(str(coords[0]), str(coords[1])),
                 self.content,
             )
@@ -1173,7 +1175,7 @@ class ShipToken:
     def set_coords(self, coords):
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
-                "Table;\d{1,4};\d{1,4}",
+                r"Table;\d{1,4};\d{1,4}",
                 "Table;{};{}".format(str(coords[0]), str(coords[1])),
                 self.content,
             )
@@ -1219,7 +1221,7 @@ class ShipCmdStack:
     def set_coords(self, coords):
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
-                "Table;\d{1,4};\d{1,4}",
+                r"Table;\d{1,4};\d{1,4}",
                 "Table;{};{}".format(str(coords[0]), str(coords[1])),
                 self.content,
             )
@@ -1271,7 +1273,7 @@ class Upgrade:
     def set_coords(self, coords):
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
-                "Table;\d{1,4};\d{1,4}",
+                r"Table;\d{1,4};\d{1,4}",
                 "Table;{};{}".format(str(coords[0]), str(coords[1])),
                 self.content,
             )
@@ -1354,7 +1356,7 @@ class SquadronCard:
     def set_coords(self, coords):
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
-                "Table;\d{1,4};\d{1,4}",
+                r"Table;\d{1,4};\d{1,4}",
                 "Table;{};{}".format(str(coords[0]), str(coords[1])),
                 self.content,
             )
@@ -1406,7 +1408,7 @@ class SquadronToken:
     def set_coords(self, coords):
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
-                "Table;\d{1,4};\d{1,4}",
+                r"Table;\d{1,4};\d{1,4}",
                 "Table;{};{}".format(str(coords[0]), str(coords[1])),
                 self.content,
             )
@@ -1463,7 +1465,7 @@ class Objective:
     def set_coords(self, coords):
         if type(coords) == list and len(coords) == 2:
             self.content = re.sub(
-                "Table;\d{1,4};\d{1,4}",
+                r"Table;\d{1,4};\d{1,4}",
                 "Table;{};{}".format(str(coords[0]), str(coords[1])),
                 self.content,
             )

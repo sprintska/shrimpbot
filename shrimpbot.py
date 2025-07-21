@@ -50,7 +50,7 @@ with open(ACRO_LOOKUP) as acros:
         acronym, definition = line.split(";", 1)
         acronym_dict[acronym.strip()] = definition.strip()
 
-bot = commands.Bot(command_prefix="&")
+bot = commands.Bot(command_prefix="&", intents=discord.Intents.all())
 note = discord.Game(name="'!acro' for definitions")
 
 
@@ -105,43 +105,43 @@ def searchFor(search_term, search_set, match_threshold=100):
 
 
 @bot.command()
-async def list():
+async def list(ctx):
     """Lists every word the bot can explain."""
     i = 0
     msg = ""
     for word in acronym_dict:
         if i > 30:
-            await bot.say(msg)
+            await ctx.send(msg)
             i = 0
             msg = ""
         msg += "\n" + word.upper() + ": " + acronym_dict.get(word.upper(), "ERROR!")
         i += 1
-    await bot.say(msg)
-    await bot.say("------------------")
-    await bot.say(str(len(acronym_dict)) + " words")
+    await ctx.send(msg)
+    await ctx.send("------------------")
+    await ctx.send(str(len(acronym_dict)) + " words")
 
 
 @bot.command()
-async def status():
+async def status(ctx):
     """Checks the status of the bot."""
-    await bot.say("Shrimpbot info:")
-    await bot.say("Bot name: " + bot.user.name)
-    await bot.say("Bot ID: " + str(bot.user.id))
+    await ctx.send("Shrimpbot info:")
+    await ctx.send("Bot name: " + bot.user.name)
+    await ctx.send("Bot ID: " + str(bot.user.id))
     if enabled:
-        await bot.say("The bot is enabled.")
+        await ctx.send("The bot is enabled.")
     else:
-        await bot.say("The bot is disabled.")
+        await ctx.send("The bot is disabled.")
 
 
 @bot.command()
-async def toggle():
+async def toggle(ctx):
     """Toggles if the bot is allowed to explain the stuff."""
     global enabled
     enabled = not enabled
     if enabled:
-        await bot.say("The bot is now enabled.")
+        await ctx.send("The bot is now enabled.")
     else:
-        await bot.say("The bot is now disabled.")
+        await ctx.send("The bot is now disabled.")
 
 
 @bot.event
@@ -158,13 +158,18 @@ async def on_ready():
     logging.info("------")
     logging.info("Servers using Shrimpbot")
     for guild in bot.guilds:
+        print("Checking guild {}".format(str(guild)))
         logging.info(" {}".format(str(guild)))
         logging.info(" - ID: {}".format(str(guild.id)))
         if guild.id == 697833083201650689:
+            print("leaving that one guild")
             await guild.leave()
             logging.info(" [!] LEFT {}".format(str(guild)))
         if guild.id != 669698762402299904:  # Steel Strat Server are special snowflakes
+            print("Fixing nick in {}".format(str(guild)))
             await guild.me.edit(nick="Shrimpbot")
+        time.sleep(1)
+        print("\n")
     logging.info("======")
 
     await bot.change_presence(status=discord.Status.online, activity=note)
@@ -173,7 +178,7 @@ async def on_ready():
 
 
 @bot.command()
-async def cheat():
+async def cheat(ctx):
     """Flag to set all of Ard's blacks to hit/crit."""
     global cheating
     cheating = not cheating

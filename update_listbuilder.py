@@ -51,7 +51,9 @@ class VassalModule:
             "prototype;Nonrecurring upgrade card prototype": "upgradecard",
         }
 
+        print("parsing prototypes")
         _ = self.__parse_prototypes()
+        print("parsing pieces")
         _ = self.__parse_pieces()
 
     def __preprocess_build_xml(self):
@@ -133,6 +135,7 @@ class VassalModule:
         ex = False
 
         for error_match in error_matches:
+
             print(f"\n\t [*] Amending embedded reference in | {element.name}")
             full_error_match = error_match.group(0)
             full_error_match = full_error_match.replace("\\;", ";").replace("\\/", "/")
@@ -151,21 +154,23 @@ class VassalModule:
                         cutoff=0.7,
                     )
                 ]
+
                 matching_xml_element = [
                     ele
                     for ele in self.build_xml.iter()
                     if ele.text == fuzzy_matched_xml[0]
                 ][0]
-            except Exception as err:
-                raise err
 
-            target_absolute_reference = (
-                f"{self.__get_parent_path(matching_xml_element)};"
-            )
-            element.vassal_data_raw = element.vassal_data_raw.replace(
-                error_match.group(0), target_absolute_reference, 1
-            )
-            ex = True
+                target_absolute_reference = (
+                    f"{self.__get_parent_path(matching_xml_element)};"
+                )
+                element.vassal_data_raw = element.vassal_data_raw.replace(
+                    error_match.group(0), target_absolute_reference, 1
+                )
+                ex = True
+
+            except IndexError as err:
+                print("Whoops, maybe no misformed reference in this piece after all?")
 
         if ex:
 
@@ -228,6 +233,8 @@ class VassalModule:
 
     def add_element(self, module_element):
         """Add element to the right list."""
+
+        print(f"\n\t [*] Adding element | {module_element.name}")
 
         module_element = self.__resolve_embedded_references(module_element)
 
@@ -492,7 +499,7 @@ def update_piece(conn, piecetype, piecename, content):
 def scrub_piecename(piecename):
     # print("\nPiecename in: {}".format(piecename))
     piecename = (
-        piecename.replace("\/", "")
+        piecename.replace("\\/", "")
         # .split("/")[0]
         .split(";")[-1]
         .replace("/", "")
