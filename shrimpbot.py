@@ -166,9 +166,10 @@ async def on_ready():
             await guild.leave()
             logging.info(" [!] LEFT {}".format(str(guild)))
         if guild.id != 669698762402299904:  # Steel Strat Server are special snowflakes
-            print("Fixing nick in Steel Strat Server")
+            print("Fixing nick in {}".format(str(guild)))
             await guild.me.edit(nick="Shrimpbot")
         time.sleep(1)
+        print("\n")
     logging.info("======")
 
     await bot.change_presence(status=discord.Status.online, activity=note)
