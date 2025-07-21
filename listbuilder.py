@@ -15,7 +15,7 @@ from definitions import (
     ambiguous_names,
 )
 
-PWD = os.getcwd()
+PWD = os.path.dirname(__file__)
 
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
