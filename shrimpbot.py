@@ -145,7 +145,7 @@ async def toggle(ctx):
 
 
 @bot.event
-async def on_ready(ctx):
+async def on_ready():
     BOT_OWNER = bot.get_user(BOT_OWNER_ID)
 
     logging.info("Logged in as")
@@ -158,13 +158,17 @@ async def on_ready(ctx):
     logging.info("------")
     logging.info("Servers using Shrimpbot")
     for guild in bot.guilds:
+        print("Checking guild {}".format(str(guild)))
         logging.info(" {}".format(str(guild)))
         logging.info(" - ID: {}".format(str(guild.id)))
         if guild.id == 697833083201650689:
+            print("leaving that one guild")
             await guild.leave()
             logging.info(" [!] LEFT {}".format(str(guild)))
         if guild.id != 669698762402299904:  # Steel Strat Server are special snowflakes
+            print("Fixing nick in Steel Strat Server")
             await guild.me.edit(nick="Shrimpbot")
+        time.sleep(1)
     logging.info("======")
 
     await bot.change_presence(status=discord.Status.online, activity=note)
