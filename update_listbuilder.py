@@ -170,7 +170,7 @@ class VassalModule:
                 ex = True
 
             except Exception as err:
-                raise err
+                pass
 
         if ex:
 
