@@ -135,9 +135,9 @@ class VassalModule:
         ex = False
 
         for error_match in error_matches:
-            if "Small capital ship" in element.name:
+            if "movement template" in element.name:
                 print(
-                    f"\n\t [!] Not adding | {element.name} - Small capital ship has a malformed trait."
+                    f"\n\t [!] Not adding | {element.name} - Movement templates are not supported."
                 )
                 return False
             print(f"\n\t [*] Amending embedded reference in | {element.name}")
