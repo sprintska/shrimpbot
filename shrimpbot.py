@@ -545,7 +545,7 @@ async def on_message(message):
                         "Sorry, there was a list parsing error. I have reported it to Ardaedhel to fix it.",
                     )
                     await message.channel.send(
-                        "Details - The error was in or near this line: ",
+                        "Details - My best guess is, the error was in or near this line: ",
                     )
                     await message.channel.send(last_item)
 

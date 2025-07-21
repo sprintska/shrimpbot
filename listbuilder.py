@@ -169,6 +169,7 @@ def import_from_list(import_from, output_to, working_path, conn, isvlog=False):
         if not success:
             return (success, f)
 
+        os.makedirs(os.path.dirname(output_to), exist_ok=True)
         with open(output_to, "w") as vlb:
             vlb.write("a1\r\nbegin_save{}\r\nend_save{}\r\n".format(chr(27), chr(27)))
             vlb.write(
