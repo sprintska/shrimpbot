@@ -51,7 +51,9 @@ class VassalModule:
             "prototype;Nonrecurring upgrade card prototype": "upgradecard",
         }
 
+        print("parsing prototypes")
         _ = self.__parse_prototypes()
+        print("parsing pieces")
         _ = self.__parse_pieces()
 
     def __preprocess_build_xml(self):
@@ -151,6 +153,12 @@ class VassalModule:
                         cutoff=0.7,
                     )
                 ]
+
+                print("full_error_match:", repr(full_error_match))
+                all_texts = [ele.text for ele in self.build_xml.iter() if ele.text]
+                print("Sample of all_texts:", all_texts[:10])
+                print("Total texts:", len(all_texts))
+
                 matching_xml_element = [
                     ele
                     for ele in self.build_xml.iter()
@@ -228,6 +236,8 @@ class VassalModule:
 
     def add_element(self, module_element):
         """Add element to the right list."""
+
+        print(f"\n\t [*] Adding element | {module_element.name}")
 
         module_element = self.__resolve_embedded_references(module_element)
 
