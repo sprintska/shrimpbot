@@ -708,6 +708,7 @@ def import_from_vlog(import_from, vlb_path, working_path, conn):
 
     clear = clear[1::].replace("\t", "\t\r\n").replace(chr(27), chr(27) + "\r\n\r\n")
 
+    os.makedirs(os.path.dirname(vlb_path), exist_ok=True)
     with open(vlb_path, "w") as vlb:
         vlb.write(xor_key_str + "\r\n")
         vlb.write(clear)
@@ -738,6 +739,7 @@ def export_to_vlog(export_to, vlb_path, working_path=g_working_path):
         os.path.join(working_path, "savedata"), os.path.join(out_path, "savedata")
     )
 
+    os.makedirs(os.path.dirname(vlb_path), exist_ok=True)
     with open(vlb_path, "r") as vlb:
         in_vlb = vlb.read()
 
@@ -749,6 +751,7 @@ def export_to_vlog(export_to, vlb_path, working_path=g_working_path):
         obfint = ord(char) ^ xor_key
         obf_out += hex(obfint)[2::]
 
+    os.makedirs(os.path.dirname(working_path), exist_ok=True)
     with open(os.path.join(working_path, "savedGame"), "w") as savedgame_out:
         savedgame_out.write(obf_out)
 
