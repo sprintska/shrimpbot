@@ -20,13 +20,13 @@ PWD = os.path.dirname(__file__)
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
-g_import_vlb = os.path.abspath("vlb-out.vlog")
-g_vlb_path = os.path.abspath("list.vlb")
+g_import_vlb = os.path.abspath(os.path.join(PWD, "vlb-out.vlog"))
+g_vlb_path = os.path.abspath(os.path.join(PWD, "list.vlb"))
 g_working_path = os.path.abspath(os.path.join(PWD, "working"))
-g_export_to = os.path.abspath("vlb-out.vlog")
-g_import_aff = os.path.abspath("test.aff")
-g_import_flt = os.path.abspath("list.flt")
-g_conn = os.path.abspath("vlb_pieces.vlo")
+g_export_to = os.path.abspath(os.path.join(PWD, "vlb-out.vlog"))
+g_import_aff = os.path.abspath(os.path.join(PWD, "test.aff"))
+g_import_flt = os.path.abspath(os.path.join(PWD, "list.flt"))
+g_conn = os.path.abspath(os.path.join(PWD, "vlb_pieces.vlo"))
 g_import_vlog = False
 
 

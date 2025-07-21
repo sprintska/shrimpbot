@@ -486,9 +486,7 @@ async def on_message(message):
             + "\n\t\t*note: accept the warning in the popup"
             + "\n\t4. Click the 'Step forward through logfile' (shown) in the upper left corner of the Star Wars Armada Controls dialog box until your whole list is visible."
         )
-        await message.author.send(
-            file=discord.File("/home/ardaedhel/bin/shrimpbot/img/arrowed.png")
-        )
+        await message.author.send(file=discord.File(PWD + "/img/arrowed.png"))
 
     if len(message.content) >= 7:
         if findIn(["!VASSAL"], message.content):
@@ -502,7 +500,7 @@ async def on_message(message):
                 guid_hash.update(str(time.time()).encode())
                 guid = guid_hash.hexdigest()[0:16]
 
-                listbuilderpath = os.path.abspath("/home/ardaedhel/bin/shrimpbot/")
+                listbuilderpath = os.path.dirname(__file__)
                 workingpath = os.path.join(listbuilderpath, "working/")
                 outpath = os.path.join(listbuilderpath, "out/")
                 vlbdirpath = os.path.join(listbuilderpath, "vlb/")
