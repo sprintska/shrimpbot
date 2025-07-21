@@ -135,6 +135,11 @@ class VassalModule:
         ex = False
 
         for error_match in error_matches:
+            if "Small capital ship" in element.name:
+                print(
+                    f"\n\t [!] Not adding | {element.name} - Small capital ship has a malformed trait."
+                )
+                return False
             print(f"\n\t [*] Amending embedded reference in | {element.name}")
             full_error_match = error_match.group(0)
             full_error_match = full_error_match.replace("\\;", ";").replace("\\/", "/")
@@ -153,11 +158,6 @@ class VassalModule:
                         cutoff=0.7,
                     )
                 ]
-
-                print("full_error_match:", repr(full_error_match))
-                all_texts = [ele.text for ele in self.build_xml.iter() if ele.text]
-                print("Sample of all_texts:", all_texts[:10])
-                print("Total texts:", len(all_texts))
 
                 matching_xml_element = [
                     ele
