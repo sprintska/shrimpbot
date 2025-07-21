@@ -499,7 +499,7 @@ def update_piece(conn, piecetype, piecename, content):
 def scrub_piecename(piecename):
     # print("\nPiecename in: {}".format(piecename))
     piecename = (
-        piecename.replace("\/", "")
+        piecename.replace("\\/", "")
         # .split("/")[0]
         .split(";")[-1]
         .replace("/", "")
