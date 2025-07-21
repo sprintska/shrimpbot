@@ -15,15 +15,15 @@ colorama==0.3.7
 configobj==5.0.6
 constantly==15.1.0
 decorator==4.4.1
-discord
-discord.py
+discord>=2.0.0
+discord.py>=2.0.0
 docutils==0.16
 EasyProcess==0.2.10
 entrypoint2==0.2
 flake8==3.8.4
 Flask==2.0.1
 future==0.15.2
-fuzzywuzzy==0.18.0
+fuzzywuzzy
 h11<0.13
 h2==3.2.0
 hpack==3.0.0
@@ -44,7 +44,7 @@ lazy-object-proxy==1.4.3
 MarkupSafe==2.0.1
 netifaces>=0.10.4
 pip
-python-Levenshtein==0.12.2
+python-Levenshtein
 regex==2020.11.13
 requests>=2.24.0
 requests-unixsocket>=0.1.5
