@@ -155,18 +155,19 @@ class VassalModule:
                     )
                 ]
 
-                matching_xml_element = [
+                matching_xml_elements = [
                     ele
                     for ele in self.build_xml.iter()
                     if ele.text == fuzzy_matched_xml[0]
-                ][0]
+                ]
 
-                target_absolute_reference = (
-                    f"{self.__get_parent_path(matching_xml_element)};"
-                )
-                element.vassal_data_raw = element.vassal_data_raw.replace(
-                    error_match.group(0), target_absolute_reference, 1
-                )
+                if len(matching_xml_elements) >= 1:
+                    target_absolute_reference = (
+                        f"{self.__get_parent_path(matching_xml_elements[0])};"
+                    )
+                    element.vassal_data_raw = element.vassal_data_raw.replace(
+                        error_match.group(0), target_absolute_reference, 1
+                    )
                 ex = True
 
             except IndexError as err:
