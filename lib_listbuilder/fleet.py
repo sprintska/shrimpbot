@@ -232,7 +232,7 @@ class Piece:
         Returns a tuple of fields or raises RuntimeError if not found.
         """
         piecename = scrub_piecename(piecename)
-        query = f"select {select_fields} from pieces where piecetype=? and piecename{' like' if like else ''} ?;"
+        query = f"select {select_fields} from pieces where piecetype=? and piecename{' like ' if like else '='}?;"
         param = (piecetype, f"%{piecename}%" if like else piecename)
         try:
             with sqlite3.connect(self.conn) as connection:
