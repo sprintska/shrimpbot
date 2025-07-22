@@ -4,7 +4,6 @@ import asyncio
 import cardpop
 import discord
 import hashlib
-import listbuilder
 import logging
 import logging.handlers
 import os
@@ -19,6 +18,8 @@ import update_listbuilder
 from discord import emoji
 from discord.ext import commands
 from fuzzywuzzy import fuzz
+
+from listbuilder import get_default_config, import_from_list
 
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
@@ -475,8 +476,8 @@ async def on_message(message):
 
     if findIn(["!NO"], message.content):
         pass
-    #   listBuilder
 
+    #   listBuilder
     if findIn(["!listhelp"], message.content):
         await message.author.send(
             "To use a generated Vassal fleet:"
@@ -510,7 +511,7 @@ async def on_message(message):
 
                 conn = databasepath
 
-                listbuilder_config = listbuilder.get_default_config()
+                listbuilder_config = get_default_config()
                 listbuilder_config.pwd = os.path.dirname(__file__)
                 listbuilder_config.vlog_path = vlogfilepath
                 listbuilder_config.vlb_path = vlbfilepath
@@ -518,7 +519,7 @@ async def on_message(message):
                 listbuilder_config.db_path = databasepath
                 listbuilder_config.fleet = liststr
 
-                success, last_item = listbuilder.import_from_list(listbuilder_config)
+                success, last_item = import_from_list(listbuilder_config)
 
                 if not success:
                     logging.info("[!] LISTBUILDER ERROR | {}".format(last_item))
