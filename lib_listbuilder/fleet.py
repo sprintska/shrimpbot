@@ -323,7 +323,6 @@ class ShipCard(Piece):
         )
 
         [(self.content, self.shiptype)] = self._fetch_content(
-            self,
             piecetype="shipcard",
             piecename=self.shipname,
             select_fields="content,catchall",
