@@ -292,10 +292,10 @@ class Ship(Piece):
         u = Upgrade(upgradename, self, self.config)
 
         if self.ownfleet.u_row % 2:
-            self.ownfleet.x += self.ownfleet.u_to_u_x_padding
-            u.set_coords([str(self.ownfleet.x), str(self.ownfleet.upgd_upper_y)])
+            self.ownfleet.x += self.ownfleet.upgrade_to_upgrade_x_padding
+            u.set_coords([str(self.ownfleet.x), str(self.ownfleet.upgrade_upper_y)])
         else:
-            u.set_coords([str(self.ownfleet.x), str(self.ownfleet.upgd_lower_y)])
+            u.set_coords([str(self.ownfleet.x), str(self.ownfleet.upgrade_lower_y)])
         self.ownfleet.u_row += 1
 
         self.upgrades.append(u)
@@ -322,7 +322,7 @@ class ShipCard(Piece):
             "Searching for ship {} in {}".format(self.shipname, str(self.conn))
         )
 
-        [(self.content, self.shiptype)] = self._fetch_content(
+        (self.content, self.shiptype) = self._fetch_content(
             piecetype="shipcard",
             piecename=self.shipname,
             select_fields="content,catchall",
@@ -501,7 +501,7 @@ class Squadron(Piece):
         self.squadronclass = scrub_piecename(str(squadronclass))  # "name" in .AFF
         self.conn = self.config.db_path
         self.content = ""
-        self.squadroncard = SquadronCard(self.squadronclass, self.conn)
+        self.squadroncard = SquadronCard(self.squadronclass, self.config)
         self.squadrontoken = self.squadroncard.squadrontoken
         self.upgrades = []
         self.ownfleet = ownfleet
@@ -569,7 +569,7 @@ class SquadronCard(Piece):
         self.content = self.content.replace("vlb_GUID", self.guid)
 
     def set_squadrontoken(self, squadrontype):
-        self.squadrontoken = SquadronToken(squadrontype, self.conn)
+        self.squadrontoken = SquadronToken(squadrontype, self.config)
 
 
 class SquadronToken(Piece):
