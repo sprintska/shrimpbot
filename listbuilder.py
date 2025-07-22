@@ -561,9 +561,9 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
 
 
 def import_from_kingston(import_list, vlb_path, working_path, conn):
-    """Imports an Ryan Kingston list into a Fleet object"""
+    """Imports a Ryan Kingston list into a Fleet object"""
 
-    f = Fleet("Food", conn=conn)
+    fleet = Fleet("Food", conn=conn)
 
     logging.info("Fleet created with database {}.".format(str(conn)))
 
@@ -592,7 +592,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                 elif card_name.split(":")[0] in ["Assault", "Defense", "Navigation"]:
                     if card_name.strip()[-1] != ":":
                         logging.info("{}".format(card_name))
-                        _ = f.add_objective(
+                        _ = fleet.add_objective(
                             card_name.split(":")[0].lower().strip(),
                             card_name.split(":")[1].lower().strip(),
                         )
@@ -629,7 +629,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                             )
                             card_name = "Venator II Imp"
 
-                        s = f.add_ship(card_name.split(" (", 1)[0].strip())
+                        s = fleet.add_ship(card_name.split(" (", 1)[0].strip())
 
                 elif "\u2022" in card_name and card_name[0] != "=":
                     cost = card_name.split(" (")[-1]
@@ -646,12 +646,12 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                         )
                         card_name = card_name_new
 
-                    _ = f.add_squadron(card_name)
+                    _ = fleet.add_squadron(card_name)
         except Exception as err:
             logging.exception(err)
             return (False, last_line)
 
-    return (True, f)
+    return (True, fleet)
 
 
 def import_from_aff(import_list, vlb_path, working_path, conn):
@@ -933,7 +933,12 @@ class Fleet:
             )
             squadronclass = sc
 
-        sq = Squadron(squadronclass, self, self.conn)
+        try:
+            sq = Squadron(squadronclass, self, self.conn)
+        except ValueError as err:
+            """If the squadron is not found in the database, try scrubbing the word "squadron" and retrying."""
+            squadronclass = scrub_piecename(squadronclass.replace("squadron", ""))
+            sq = Squadron(squadronclass, self, self.conn)
         if self.sq_row % 2:
             self.x += self.sq_to_sq_x_padding
             sq.set_coords([str(self.x), str(self.sq_upper_y)])

@@ -509,22 +509,6 @@ async def on_message(message):
                 databasepath = os.path.join(listbuilderpath, "vlb_pieces.vlo")
 
                 conn = databasepath
-                # conn = sqlite3.connect(databasepath)
-                # if (
-                #     "pieces"
-                #     not in conn.execute(
-                #         "select name from sqlite_master where type='table'"
-                #     ).fetchall()[0]
-                # ):
-                #     logging.critical(
-                #         "Database at {}, {}, is corrupted or missing.".format(
-                #             databasepath, conn
-                #         )
-                #     )
-                # else:
-                #     logging.info(
-                #         "Database at {}, {}, found...".format(databasepath, conn)
-                #     )
 
                 success, last_item = listbuilder.import_from_list(
                     liststr, vlbfilepath, workingpath, conn
