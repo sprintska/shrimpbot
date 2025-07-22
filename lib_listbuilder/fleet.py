@@ -249,7 +249,7 @@ class Ship(Piece):
     """A ship of type str(shipclass) as defined in sqlitedb connection conn."""
 
     def __init__(self, shipclass, ownfleet, config):
-        super().__init__(self, config)
+        super().__init__(config)
         self.shipclass = scrub_piecename(str(shipclass))  # "name" in .AFF
         self.content = ""
         self.physicalsize = [
@@ -315,7 +315,7 @@ class ShipCard(Piece):
     """A shipcard of type str(shipname) as defined in sqlitedb connection conn."""
 
     def __init__(self, shipname, config):
-        super().__init__(self, config)
+        super().__init__(config)
         self.shipname = scrub_piecename(str(shipname))
 
         logging.info(
@@ -374,7 +374,7 @@ class ShipToken(Piece):
     """A ship token of type str(shiptype) as defined in sqlitedb connection conn."""
 
     def __init__(self, shiptype, config):
-        super().__init__(self, config)
+        super().__init__(config)
 
         self.shiptype = scrub_piecename(str(shiptype))
 
@@ -417,7 +417,7 @@ class ShipCmdStack(Piece):
     """A command stack as defined in sqlitedb connection conn."""
 
     def __init__(self, cmdstack, config):
-        super().__init__(self, config)
+        super().__init__(config)
 
         self.cmdstack = scrub_piecename(str(cmdstack))
 
@@ -456,7 +456,7 @@ class Upgrade(Piece):
     """An upgrade of type str(upgradename) as defined in sqlitedb connection conn."""
 
     def __init__(self, upgradename, ownship, config):
-        super().__init__(self, config)
+        super().__init__(config)
 
         self.upgradename = scrub_piecename(str(upgradename))
 
@@ -497,7 +497,7 @@ class Squadron(Piece):
     """A squadron of type str(squadronclass) as defined in sqlitedb connection conn."""
 
     def __init__(self, squadronclass, ownfleet, config):
-        super().__init__(self, config)
+        super().__init__(config)
 
         self.squadronclass = scrub_piecename(str(squadronclass))  # "name" in .AFF
         self.conn = self.config.db_path
@@ -524,7 +524,7 @@ class SquadronCard(Piece):
     """A squadroncard of type str(squadronname) as defined in the sqlite db."""
 
     def __init__(self, squadronname, config):
-        super().__init__(self, config)
+        super().__init__(config)
 
         self.squadronname = scrub_piecename(str(squadronname))
         self.conn = self.config.db_path
@@ -577,7 +577,7 @@ class SquadronToken(Piece):
     """A squadron token of type str(squadrontype) as defined in sqlitedb connection conn."""
 
     def __init__(self, squadrontype, config):
-        super().__init__(self, config)
+        super().__init__(config)
 
         self.squadrontype = scrub_piecename(str(squadrontype))
         self.conn = self.config.db_path
@@ -616,7 +616,7 @@ class Objective(Piece):
     """An objective of type str(objectivename) as defined in sqlitedb connection conn."""
 
     def __init__(self, objectivename, config):
-        super().__init__(self, config)
+        super().__init__(config)
 
         self.objectivename = scrub_piecename(str(objectivename))
         self.conn = self.config.db_path
