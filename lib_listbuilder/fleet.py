@@ -229,6 +229,11 @@ class Piece:
         Fetches content from the database for a given piece type and name.
         Returns a tuple of fields or raises RuntimeError if not found.
         """
+
+        logging.info(
+            'Searching for {} "{}" in {}'.format(piecetype, piecename, str(self.conn))
+        )
+
         piecename = scrub_piecename(piecename)
         query = f"select {select_fields} from pieces where piecetype=? and piecename{' like ' if like else '='}?;"
         param = (piecetype, f"%{piecename}%" if like else piecename)
@@ -250,7 +255,7 @@ class Piece:
 
 
 class Ship(Piece):
-    """A ship of type str(shipclass) as defined in sqlitedb connection conn."""
+    """A ship of type str(shipclass) as defined in sqlite db."""
 
     def __init__(self, shipclass, ownfleet, config):
         super().__init__(config)
@@ -316,15 +321,11 @@ class Ship(Piece):
 
 
 class ShipCard(Piece):
-    """A shipcard of type str(shipname) as defined in sqlitedb connection conn."""
+    """A shipcard of type str(shipname) as defined in sqlite db."""
 
     def __init__(self, shipname, config):
         super().__init__(config)
         self.shipname = scrub_piecename(str(shipname))
-
-        logging.info(
-            "Searching for ship {} in {}".format(self.shipname, str(self.conn))
-        )
 
         (self.content, self.shiptype) = self._fetch_content(
             piecetype="shipcard",
@@ -346,7 +347,7 @@ class ShipCard(Piece):
 
 
 class ShipToken(Piece):
-    """A ship token of type str(shiptype) as defined in sqlitedb connection conn."""
+    """A ship token of type str(shiptype) as defined in sqlite db."""
 
     def __init__(self, shiptype, config):
         super().__init__(config)
@@ -362,10 +363,6 @@ class ShipToken(Piece):
             )
             self.shiptype = translated_shiptype
 
-        logging.info(
-            "Searching for ship token {} in {}".format(self.shiptype, str(self.conn))
-        )
-
         self.content = self._fetch_content(
             piecetype="ship",
             piecename=self.shiptype,
@@ -377,16 +374,12 @@ class ShipToken(Piece):
 
 
 class ShipCmdStack(Piece):
-    """A command stack as defined in sqlitedb connection conn."""
+    """A command stack as defined in sqlite db."""
 
     def __init__(self, cmdstack, config):
         super().__init__(config)
 
         self.cmdstack = scrub_piecename(str(cmdstack))
-
-        logging.info(
-            "Searching for command stack {} in {}".format(self.cmdstack, str(self.conn))
-        )
 
         self.content = self._fetch_content(
             piecetype="other",
@@ -402,16 +395,12 @@ class ShipCmdStack(Piece):
 
 
 class Upgrade(Piece):
-    """An upgrade of type str(upgradename) as defined in sqlitedb connection conn."""
+    """An upgrade of type str(upgradename) as defined in sqlite db."""
 
     def __init__(self, upgradename, ownship, config):
         super().__init__(config)
 
         self.upgradename = scrub_piecename(str(upgradename))
-
-        logging.info(
-            "Searching for upgrade {} in {}".format(self.upgradename, str(self.conn))
-        )
 
         self.content = self._fetch_content(
             piecetype="upgradecard",
@@ -426,7 +415,7 @@ class Upgrade(Piece):
 
 
 class Squadron(Piece):
-    """A squadron of type str(squadronclass) as defined in sqlitedb connection conn."""
+    """A squadron of type str(squadronclass) as defined in sqlite db."""
 
     def __init__(self, squadronclass, ownfleet, config):
         super().__init__(config)
@@ -461,12 +450,6 @@ class SquadronCard(Piece):
         self.squadronname = scrub_piecename(str(squadronname))
         self.conn = self.config.db_path
 
-        logging.info(
-            "Searching for squadron card {} in {}".format(
-                self.squadronname, str(self.conn)
-            )
-        )
-
         (self.content, self.squadrontype) = self._fetch_content(
             piecetype="squadroncard",
             piecename=self.squadronname,
@@ -486,18 +469,13 @@ class SquadronCard(Piece):
 
 
 class SquadronToken(Piece):
-    """A squadron token of type str(squadrontype) as defined in sqlitedb connection conn."""
+    """A squadron token of type str(squadrontype) as defined in sqlite db."""
 
     def __init__(self, squadrontype, config):
         super().__init__(config)
 
         self.squadrontype = scrub_piecename(str(squadrontype))
         self.conn = self.config.db_path
-        logging.info(
-            "Searching for squadron token {} in {}".format(
-                scrub_piecename(squadrontype), str(self.conn)
-            )
-        )
 
         self.content = self._fetch_content(
             piecetype="squadron",
@@ -510,18 +488,13 @@ class SquadronToken(Piece):
 
 
 class Objective(Piece):
-    """An objective of type str(objectivename) as defined in sqlitedb connection conn."""
+    """An objective of type str(objectivename) as defined in sqlite db."""
 
     def __init__(self, objectivename, config):
         super().__init__(config)
 
         self.objectivename = scrub_piecename(str(objectivename))
         self.conn = self.config.db_path
-        logging.info(
-            "Searching for objective {} in {}".format(
-                self.objectivename, str(self.conn)
-            )
-        )
 
         self.content = self._fetch_content(
             piecetype="objective",
