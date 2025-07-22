@@ -187,8 +187,6 @@ class Fleet:
         if category.lower() in obj_categories:
             self.objectives[category] = Objective(objectivename, self.config)
         else:
-            # except:
-            # raise ValueError
             logging.info("{} is not a valid objective type.".format(str(category)))
             logging.info("Valid types are: {}".format(obj_categories))
 
@@ -243,6 +241,12 @@ class Piece:
         except Exception as err:
             logging.exception(err)
             raise
+
+    def _replace_placeholders(self):
+        if hasattr(self, "content"):
+            self.content = self.content.replace("vlb_GUID", self.guid)
+            self.content = self.content.replace("vlb_x_axis", "0")
+            self.content = self.content.replace("vlb_y_axis", "0")
 
 
 class Ship(Piece):
@@ -329,41 +333,13 @@ class ShipCard(Piece):
             like=False,
         )
 
-        # try:
-        #     with sqlite3.connect(self.conn) as connection:
-        #         logging.debug("0")
-        #         exact_match = connection.execute(
-        #             """select content,catchall
-        #             from pieces
-        #             where piecetype='shipcard'
-        #             and piecename=?;""",
-        #             (self.shipname,),
-        #         ).fetchall()
-        #     if len(exact_match) == 1:
-        #         [(self.content, self.shiptype)] = exact_match
-        #     if not (hasattr(self, "content") and hasattr(self, "shiptype")):
-        #         raise RuntimeError(f"Did not find ship card {self.shipname}")
-        # except RuntimeError as err:
-        #     logging.debug(err, exc_info=err)
-        # except Exception as err:
-        #     logging.debug(err, exc_info=err)
-        #     raise err
-
         self.shiptoken = ShipToken(self.shiptype, self.config)
 
-        logging.debug("9")
-        self.content = self.content.replace("vlb_GUID", self.guid)
-        self.content = self.content.replace("vlb_x_axis", "0")
-        self.content = self.content.replace("vlb_y_axis", "0")
-
-        logging.debug("10")
+        self._replace_placeholders()
 
         self.command = self.content.split("/placemark;Spawn Command ")[-1][0]
         self.command = "commandstack" + self.command
         self.shipcmdstack = ShipCmdStack(self.command, self.config)
-
-    def set_guid(self, guid):
-        self.content = self.content.replace("vlb_GUID", self.guid)
 
     def set_shiptoken(self, shiptype):
         self.shiptoken = ShipToken(shiptype, self.config)
@@ -390,26 +366,14 @@ class ShipToken(Piece):
             "Searching for ship token {} in {}".format(self.shiptype, str(self.conn))
         )
 
-        try:
-            with sqlite3.connect(self.conn) as connection:
-                exact_match = connection.execute(
-                    """select content 
-                    from pieces 
-                    where piecetype='ship' and piecename=?;""",
-                    (self.shiptype,),
-                ).fetchall()
-            if len(exact_match) == 1:
-                if len(exact_match[0]) == 1:
-                    self.content = exact_match[0][0]
-            if not self.content:
-                raise RuntimeError(f"Did not find ship token {self.shiptype}")
-        except Exception as err:
-            logging.debug(err, exc_info=err)
-            raise err
+        self.content = self._fetch_content(
+            piecetype="ship",
+            piecename=self.shiptype,
+            select_fields="content",
+            like=False,
+        )[0]
 
-        self.content = self.content.replace("vlb_GUID", self.guid)
-        self.content = self.content.replace("vlb_x_axis", "0")
-        self.content = self.content.replace("vlb_y_axis", "0")
+        self._replace_placeholders()
 
 
 class ShipCmdStack(Piece):
@@ -423,29 +387,15 @@ class ShipCmdStack(Piece):
         logging.info(
             "Searching for command stack {} in {}".format(self.cmdstack, str(self.conn))
         )
-        try:
-            with sqlite3.connect(self.conn) as connection:
-                exact_match = connection.execute(
-                    """select content 
-                    from pieces 
-                    where piecetype='other' and piecename=?;""",
-                    (self.cmdstack,),
-                ).fetchall()
-            if len(exact_match) == 1:
-                if len(exact_match[0]) == 1:
-                    self.content = exact_match[0][0]
-            if not self.content:
-                raise RuntimeError(f"Did not find command stack {self.cmdstack}")
-        except RuntimeError as err:
-            logging.exception(err)
-            raise err
-        except Exception as err:
-            logging.debug(err, exc_info=err)
-            raise err
 
-        self.content = self.content.replace("vlb_GUID", self.guid)
-        self.content = self.content.replace("vlb_x_axis", "0")
-        self.content = self.content.replace("vlb_y_axis", "0")
+        self.content = self._fetch_content(
+            piecetype="other",
+            piecename=self.cmdstack,
+            select_fields="content",
+            like=False,
+        )[0]
+
+        self._replace_placeholders()
 
     def set_guid(self, guid):
         self.content = self.content.replace("vlb_GUID", self.guid)
@@ -463,31 +413,14 @@ class Upgrade(Piece):
             "Searching for upgrade {} in {}".format(self.upgradename, str(self.conn))
         )
 
-        try:
-            with sqlite3.connect(self.conn) as connection:
-                exact_match = connection.execute(
-                    """select content 
-                    from pieces 
-                    where piecetype='upgradecard' and piecename=?;""",
-                    (self.upgradename,),
-                ).fetchall()
+        self.content = self._fetch_content(
+            piecetype="upgradecard",
+            piecename=self.upgradename,
+            select_fields="content",
+            like=False,
+        )[0]
 
-            self.content = False
-            if len(exact_match) == 1:
-                if len(exact_match[0]) == 1:
-                    self.content = exact_match[0][0]
-            if not self.content:
-                raise RuntimeError(f"Did not find upgrade {self.upgradename}")
-        except RuntimeError as err:
-            logging.exception(err)
-            raise err
-        except Exception as err:
-            logging.exception(err)
-            raise err
-
-        self.content = self.content.replace("vlb_GUID", self.guid)
-        self.content = self.content.replace("vlb_x_axis", "0")
-        self.content = self.content.replace("vlb_y_axis", "0")
+        self._replace_placeholders()
 
         self.ownship = ownship
 
@@ -534,36 +467,16 @@ class SquadronCard(Piece):
             )
         )
 
-        try:
-            with sqlite3.connect(self.conn) as connection:
-                exact_match = connection.execute(
-                    """select content,catchall 
-                    from pieces 
-                    where piecetype='squadroncard' and piecename like ?;""",
-                    (self.squadronname,),
-                ).fetchall()
-            if len(exact_match) == 1:
-                [(self.content, self.squadrontype)] = exact_match
-            else:
-                with sqlite3.connect(self.conn) as connection:
-                    [(self.content, self.squadrontype)] = connection.execute(
-                        """select content,catchall 
-                        from pieces 
-                        where piecetype='squadroncard' and piecename like ?;""",
-                        ("%" + self.squadronname + "%",),
-                    ).fetchall()
-        except ValueError as err:
-            logging.exception(f"Did not find squadron {self.squadronname}")
-            raise err
-        except Exception as err:
-            logging.debug(err, exc_info=err)
-            raise err
+        (self.content, self.squadrontype) = self._fetch_content(
+            piecetype="squadroncard",
+            piecename=self.squadronname,
+            select_fields="content,catchall",
+            like=True,
+        )
 
         self.squadrontoken = SquadronToken(self.squadrontype, self.config)
 
-        self.content = self.content.replace("vlb_GUID", self.guid)
-        self.content = self.content.replace("vlb_x_axis", "0")
-        self.content = self.content.replace("vlb_y_axis", "0")
+        self._replace_placeholders()
 
     def set_guid(self, guid):
         self.content = self.content.replace("vlb_GUID", self.guid)
@@ -586,29 +499,14 @@ class SquadronToken(Piece):
             )
         )
 
-        try:
-            with sqlite3.connect(self.conn) as connection:
-                exact_match = connection.execute(
-                    """select content 
-                    from pieces 
-                    where piecetype='squadron' and piecename=?;""",
-                    (self.squadrontype,),
-                ).fetchall()
-            if len(exact_match) == 1:
-                if len(exact_match[0]) == 1:
-                    self.content = exact_match[0][0]
-            if not self.content:
-                raise RuntimeError(f"Did not find squadron token {self.squadrontype}")
-        except RuntimeError as err:
-            logging.exception(err)
-            raise err
-        except Exception as err:
-            logging.debug(err, exc_info=err)
-            raise err
+        self.content = self._fetch_content(
+            piecetype="squadron",
+            piecename=self.squadrontype,
+            select_fields="content",
+            like=False,
+        )[0]
 
-        self.content = self.content.replace("vlb_GUID", self.guid)
-        self.content = self.content.replace("vlb_x_axis", "0")
-        self.content = self.content.replace("vlb_y_axis", "0")
+        self._replace_placeholders()
 
 
 class Objective(Piece):
@@ -625,29 +523,14 @@ class Objective(Piece):
             )
         )
 
-        try:
-            with sqlite3.connect(self.conn) as connection:
-                exact_match = connection.execute(
-                    """select content 
-                    from pieces 
-                    where piecetype='objective' and piecename=?;""",
-                    (self.objectivename,),
-                ).fetchall()
-            if len(exact_match) == 1:
-                if len(exact_match[0]) == 1:
-                    self.content = exact_match[0][0]
-            if not self.content:
-                raise RuntimeError(f"Did not find objective {self.objectivename}")
-        except RuntimeError as err:
-            logging.exception(err)
-            raise err
-        except Exception as err:
-            logging.debug(err, exc_info=err)
-            raise err
+        self.content = self._fetch_content(
+            piecetype="objective",
+            piecename=self.objectivename,
+            select_fields="content",
+            like=False,
+        )[0]
 
-        self.content = self.content.replace("vlb_GUID", self.guid)
-        self.content = self.content.replace("vlb_x_axis", "0")
-        self.content = self.content.replace("vlb_y_axis", "0")
+        self._replace_placeholders()
 
         c = ""
         for line in self.content.split("\t"):
