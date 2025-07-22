@@ -168,7 +168,7 @@ async def on_ready():
         if guild.id != 669698762402299904:  # Steel Strat Server are special snowflakes
             print("Fixing nick in {}".format(str(guild)))
             await guild.me.edit(nick="Shrimpbot")
-        time.sleep(1)
+        time.sleep(0.25)
         print("\n")
     logging.info("======")
 
