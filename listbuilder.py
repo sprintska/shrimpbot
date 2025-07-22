@@ -29,12 +29,12 @@ import re
 import shutil
 import sqlite3
 
-from listbuilder.definitions import (
+from lib_listbuilder.definitions import (
     nomenclature_translation,
     ambiguous_names,
 )
-from listbuilder.fleet import Fleet
-from listbuilder.utils import unzipall, zipall, scrub_piecename
+from lib_listbuilder.fleet import Fleet
+from lib_listbuilder.utils import unzipall, zipall, scrub_piecename
 
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
