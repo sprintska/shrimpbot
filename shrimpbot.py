@@ -510,9 +510,15 @@ async def on_message(message):
 
                 conn = databasepath
 
-                success, last_item = listbuilder.import_from_list(
-                    liststr, vlbfilepath, workingpath, conn
-                )
+                listbuilder_config = listbuilder.get_default_config()
+                listbuilder_config.pwd = os.path.dirname(__file__)
+                listbuilder_config.vlog_path = vlogfilepath
+                listbuilder_config.vlb_path = vlbfilepath
+                listbuilder_config.working_dir = workingpath
+                listbuilder_config.db_path = databasepath
+                listbuilder_config.fleet = liststr
+
+                success, last_item = listbuilder.import_from_list(listbuilder_config)
 
                 if not success:
                     logging.info("[!] LISTBUILDER ERROR | {}".format(last_item))

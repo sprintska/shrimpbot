@@ -15,19 +15,32 @@ from definitions import (
     ambiguous_names,
 )
 
-PWD = os.path.dirname(__file__)
 
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
-g_import_vlb = os.path.abspath(os.path.join(PWD, "vlb-out.vlog"))
-g_vlb_path = os.path.abspath(os.path.join(PWD, "list.vlb"))
-g_working_path = os.path.abspath(os.path.join(PWD, "working"))
-g_export_to = os.path.abspath(os.path.join(PWD, "vlb-out.vlog"))
-g_import_aff = os.path.abspath(os.path.join(PWD, "test.aff"))
-g_import_flt = os.path.abspath(os.path.join(PWD, "list.flt"))
-g_conn = os.path.abspath(os.path.join(PWD, "vlb_pieces.vlo"))
-g_import_vlog = False
+
+class ShrimpConfig:
+    def __init__(
+        self,
+        vlog="vlb-out.vlog",
+        vlb="list.vlb",
+        working_dir=None,
+        aff="test.aff",
+        flt="list.flt",
+        db="vlb_pieces.vlo",
+        import_vlog=False,
+    ):
+        self.pwd = os.path.dirname(__file__)
+        self.vlog_path = os.path.abspath(vlog)
+        self.vlb_path = os.path.abspath(vlb)
+        self.working_dir = os.path.abspath(
+            working_dir or os.path.join(self.pwd, "working")
+        )
+        self.aff_path = os.path.abspath(aff)
+        self.fleet = os.path.abspath(flt)  # path or text
+        self.db_path = os.path.abspath(db)
+        self.import_vlog = import_vlog
 
 
 def unzipall(zip_file_path, tar_path):
@@ -54,6 +67,8 @@ def zipall(src_dir, dest_zip):
 
 
 def ident_format(fleet_text):
+    """Use a series of heuristics to identify the format of a fleet list."""
+
     formats = {
         "fab": 0.0,
         "warlord": 0.0,
@@ -140,7 +155,13 @@ def ident_format(fleet_text):
     return max(formats.keys(), key=(lambda x: formats[x]))
 
 
-def import_from_list(import_from, output_to, working_path, conn, isvlog=False):
+def import_from_list(config, isvlog=False):
+    """Imports a fleet list from a file or string into a VASSAL Listbuilder (VLB) format."""
+
+    conn = config.db_path
+    working_path = config.working_dir
+    output_to = config.vlb_path
+
     ingest_format = {
         "fab": import_from_fabs,
         "warlord": import_from_warlords,
@@ -151,20 +172,17 @@ def import_from_list(import_from, output_to, working_path, conn, isvlog=False):
     }
 
     if isvlog:
-        import_from_vlog(import_from, output_to, working_path, conn)
+        import_from_vlog(config.fleet, output_to, working_path, conn)
     else:
-        if os.path.exists(import_from):
-            logging.info(import_from)
-            with open(import_from) as fleet_list:
+        if os.path.exists(config.fleet):
+            logging.info(config.fleet)
+            with open(config.fleet) as fleet_list:
                 fleet_text = fleet_list.read()
         else:
-            fleet_text = import_from
+            fleet_text = config.fleet
 
         fmt = ident_format(fleet_text)
-        success, f = ingest_format[fmt](fleet_text, output_to, working_path, conn)
-        print("success: {}".format(success))
-        print("fleet: {}".format(f))
-        logging.info("{} - {}".format(str(success), str(f)))
+        success, f = ingest_format[fmt](fleet_text, config)
 
         if not success:
             return (success, f)
@@ -194,10 +212,12 @@ def import_from_list(import_from, output_to, working_path, conn, isvlog=False):
         return (True, None)
 
 
-def import_from_fabs(import_list, vlb_path, working_path, conn):
+def import_from_fabs(import_list, config):
     """Imports a Fab's Fleet Builder list into a Fleet object"""
 
-    f = Fleet("Food", conn=conn)
+    vlb_path = config.vlb_path
+    working_path = config.working_dir
+    fleet = Fleet("Food", config=config)
     last_line = ""
 
     for line in import_list.split("\n"):
@@ -222,9 +242,9 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                             pass
                         else:
                             working_line = this_line.split(" - ")
-                            s = f.add_ship(working_line[0].strip())
-                            for u in working_line[1::]:
-                                s.add_upgrade(u.strip())
+                            ship = fleet.add_ship(working_line[0].strip())
+                            for upgrade in working_line[1::]:
+                                ship.add_upgrade(upgrade.strip())
 
                     else:
                         issquadron = False
@@ -232,18 +252,20 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                         issquadronfancy = False
                         this_line = scrub_piecename(this_line)
                         if this_line in nomenclature_translation:
-                            t = nomenclature_translation[this_line]
+                            corrected_piecename = nomenclature_translation[this_line]
                             logging.info(
-                                "[-] Translated {} to {} - Fab's.".format(this_line, t)
+                                "[-] Translated {} to {} - Fab's.".format(
+                                    this_line, corrected_piecename
+                                )
                             )
-                            this_line = t
+                            this_line = corrected_piecename
                         logging.info(
                             "Searching for Fab's piece {} in {}".format(
-                                scrub_piecename(this_line), str(conn)
+                                scrub_piecename(this_line), str(config.db_path)
                             )
                         )
                         try:
-                            with sqlite3.connect(conn) as connection:
+                            with sqlite3.connect(config.db_path) as connection:
                                 issquadron = connection.execute(
                                     """SELECT * FROM pieces
                                         WHERE piecetype='squadroncard'
@@ -254,7 +276,7 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                             logging.exception(err)
 
                         try:
-                            with sqlite3.connect(conn) as connection:
+                            with sqlite3.connect(config.db_path) as connection:
                                 isship = connection.execute(
                                     """SELECT * FROM pieces
                                         WHERE piecetype='shipcard'
@@ -267,7 +289,7 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
                         try:
                             if this_line.lower()[-8::] == "squadron":
                                 ltmp = this_line[0:-8]
-                                with sqlite3.connect(conn) as connection:
+                                with sqlite3.connect(config.db_path) as connection:
                                     issquadronfancy = connection.execute(
                                         """SELECT * FROM pieces
                                             WHERE piecetype='squadroncard'
@@ -279,11 +301,11 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
 
                         if bool(issquadron):
                             # sq = f.add_squadron(l.strip())
-                            f.add_squadron(this_line.strip())
+                            fleet.add_squadron(this_line.strip())
                         elif bool(issquadronfancy):
-                            _ = f.add_squadron(ltmp.strip())
+                            _ = fleet.add_squadron(ltmp.strip())
                         elif bool(isship):
-                            s = f.add_ship(this_line.strip())
+                            ship = fleet.add_ship(this_line.strip())
                         else:
                             logging.info(
                                 "{}{} IS FUCKED UP, YO{}".format(
@@ -294,13 +316,15 @@ def import_from_fabs(import_list, vlb_path, working_path, conn):
             logging.exception(err)
             return (False, last_line)
 
-    return (True, f)
+    return (True, fleet)
 
 
-def import_from_warlords(import_list, vlb_path, working_path, conn):
+def import_from_warlords(import_list, config):
     """Imports an Armada Warlords list into a Fleet object"""
 
-    f = Fleet("Food", conn=conn)
+    conn = config.db_path
+
+    fleet = Fleet("Food", config=config)
 
     shipnext = False
     is_flagship = False
@@ -327,7 +351,7 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
             + scrub_piecename(ship_check)
             + "%"
         )
-        with sqlite3.connect(conn) as connection:
+        with sqlite3.connect(config.db_path) as connection:
             ship_query = connection.execute(
                 '''SELECT piecetype FROM pieces where piecename LIKE ?" "''',
                 ("%" + scrub_piecename(ship_check) + "%",),
@@ -358,11 +382,10 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
 
             elif card_name.split()[1] == "Objective:":
                 objective = [card_name.split()[0], card_name.split(":")[1]]
-                f.add_objective(objective[0], objective[1])
+                fleet.add_objective(objective[0], objective[1])
                 shipnext = False
 
             elif squadron_regex.search(card_name):
-                # squadron, cost = card_name.split("(", 1)
                 squadron = "".join(card_name.split("(")[0:-1])
                 cost = card_name.split("(")[-1]
                 squadron = scrub_piecename(
@@ -381,7 +404,7 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
                     )
                     squadron = squadron_new
                 # sq = f.add_squadron(squadron)
-                f.add_squadron(squadron)
+                fleet.add_squadron(squadron)
                 shipnext = False
 
             elif card_name[0] == "=":
@@ -400,7 +423,7 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
                         )
                     )
                     ship = ship_new
-                s = f.add_ship(ship)
+                s = fleet.add_ship(ship)
                 shipnext = False
 
             elif card_name[0] == "-":
@@ -432,17 +455,16 @@ def import_from_warlords(import_list, vlb_path, working_path, conn):
                 )
             return (False, last_line)
 
-    return (True, f)
+    return (True, fleet)
 
 
-def import_from_afd(import_list, vlb_path, working_path, conn):
+def import_from_afd(import_list, config):
     """Imports an Armada Fleets Designer list into a Fleet object"""
 
-    f = Fleet("Food", conn=conn)
+    fleet = Fleet("Food", config=config)
 
     start = False
     obj_category = "assault"
-    # shipnext = False
 
     for line in import_list.strip().split("\n"):
         try:
@@ -475,12 +497,12 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                         )
                         upgrade = upgrade_new
 
-                    _ = s.add_upgrade(upgrade)
+                    _ = ship.add_upgrade(upgrade)
 
                 elif "(" not in card_name:
                     logging.info("Hit the conditional for {}.".format(card_name))
                     card_name = scrub_piecename(str(card_name))
-                    f.add_objective(obj_category, card_name)
+                    fleet.add_objective(obj_category, card_name)
 
                     # TODO: retool the objs to not care about categories... :/
                     if obj_category == "assault":
@@ -514,10 +536,10 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                             card_name = card_name_new
                         logging.info(
                             "Searching for AFD piece {} in {}".format(
-                                scrub_piecename(card_name), str(conn)
+                                scrub_piecename(card_name), str(config.db_path)
                             )
                         )
-                        with sqlite3.connect(conn) as connection:
+                        with sqlite3.connect(config.db_path) as connection:
                             issquadron = connection.execute(
                                 """SELECT * FROM pieces
                                     WHERE piecetype='squadroncard'
@@ -530,10 +552,10 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                     try:
                         logging.info(
                             "Searching for AFD piece {} in {}".format(
-                                card_name, str(conn)
+                                card_name, str(config.db_path)
                             )
                         )
-                        with sqlite3.connect(conn) as connection:
+                        with sqlite3.connect(config.db_path) as connection:
                             isship = connection.execute(
                                 """SELECT * FROM pieces
                                     WHERE piecetype='shipcard'
@@ -544,9 +566,9 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
                         logging.exception(err)
 
                     if bool(issquadron):
-                        _ = f.add_squadron(card_name)
+                        _ = fleet.add_squadron(card_name)
                     elif bool(isship):
-                        s = f.add_ship(card_name)
+                        ship = fleet.add_ship(card_name)
                     else:
                         logging.info(
                             "{}{} IS FUCKED UP, YO{}".format(
@@ -557,15 +579,15 @@ def import_from_afd(import_list, vlb_path, working_path, conn):
             logging.exception(err)
             return (False, last_line)
 
-    return (True, f)
+    return (True, fleet)
 
 
-def import_from_kingston(import_list, vlb_path, working_path, conn):
+def import_from_kingston(import_list, config):
     """Imports a Ryan Kingston list into a Fleet object"""
 
-    fleet = Fleet("Food", conn=conn)
+    fleet = Fleet("Food", config=config)
 
-    logging.info("Fleet created with database {}.".format(str(conn)))
+    logging.info("Fleet created with database {}.".format(str(config.db_path)))
 
     shipnext = True
     faction = None
@@ -616,7 +638,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                             )
                             card_name = card_name_new
 
-                        _ = s.add_upgrade(card_name)
+                        _ = ship.add_upgrade(card_name)
 
                     elif card_name[0] == "=":
                         pass
@@ -629,7 +651,7 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
                             )
                             card_name = "Venator II Imp"
 
-                        s = fleet.add_ship(card_name.split(" (", 1)[0].strip())
+                        ship = fleet.add_ship(card_name.split(" (", 1)[0].strip())
 
                 elif "\u2022" in card_name and card_name[0] != "=":
                     cost = card_name.split(" (")[-1]
@@ -654,10 +676,10 @@ def import_from_kingston(import_list, vlb_path, working_path, conn):
     return (True, fleet)
 
 
-def import_from_aff(import_list, vlb_path, working_path, conn):
+def import_from_aff(import_list, config):
     """Imports a .aff (Armada Fleet Format) file into a Fleet object"""
 
-    f = Fleet("Food", conn=conn)
+    f = Fleet("Food", config=config)
 
     # with open(import_list) as aff_in:
     for line in import_list.split("\n"):
@@ -676,14 +698,14 @@ def import_from_aff(import_list, vlb_path, working_path, conn):
     return f
 
 
-def import_from_vlog(import_from, vlb_path, working_path, conn):
+def import_from_vlog(config):
     """Strips out all the compression and obfuscation from a VASSAL
     log/continution .vlog file at path import_from and creates an
     unobfuscated .vlb text file at path vlb_path."""
 
-    unzipall(import_from, working_path)
+    unzipall(config.vlog_path, config.working_dir)
 
-    with open(os.path.join(working_path, "savedGame"), "r") as vlog:
+    with open(os.path.join(config.working_dir, "savedGame"), "r") as vlog:
         b_vlog = vlog.read()
 
     xor_key_str = b_vlog[5:7]
@@ -691,8 +713,8 @@ def import_from_vlog(import_from, vlb_path, working_path, conn):
         xor_key = int(xor_key_str, 16)
     else:
         logging.info(
-            "VLOG {} is malformed: encountered an invalid XOR key.  Key {} is not a digit.".format(
-                str(import_from), str(xor_key)
+            "VLOG {} is malformed: encountered an invalid XOR key.  Key {} is not a number.".format(
+                str(config.vlog_path), str(xor_key)
             )
         )
         xor_key = int("0", 16)
@@ -708,19 +730,19 @@ def import_from_vlog(import_from, vlb_path, working_path, conn):
 
     clear = clear[1::].replace("\t", "\t\r\n").replace(chr(27), chr(27) + "\r\n\r\n")
 
-    os.makedirs(os.path.dirname(vlb_path), exist_ok=True)
-    with open(vlb_path, "w") as vlb:
+    os.makedirs(os.path.dirname(config.vlb_path), exist_ok=True)
+    with open(config.vlb_path, "w") as vlb:
         vlb.write(xor_key_str + "\r\n")
         vlb.write(clear)
 
 
-def export_to_vlog(export_to, vlb_path, working_path=g_working_path):
+def export_to_vlog(config):
     """Adds all the obfuscation and compression to turn a .vlb
-    VASSAL listbuilder file (at vlb_path), along with boilerplate
-    savedata and moduledata XML files in working_path, into a VASSAL-
+    VASSAL listbuilder file (at config.vlb_path), along with boilerplate
+    savedata and moduledata XML files in config.working_dir, into a VASSAL-
     compatible .vlog replay file."""
 
-    out_path = os.path.join(working_path, "..", "out")
+    out_path = os.path.join(config.pwd, "out")
 
     for afile in os.listdir(out_path):
         file_path = os.path.join(out_path, afile)
@@ -733,14 +755,15 @@ def export_to_vlog(export_to, vlb_path, working_path=g_working_path):
             logging.exception(e)
 
     shutil.copyfile(
-        os.path.join(working_path, "moduledata"), os.path.join(out_path, "moduledata")
+        os.path.join(config.working_dir, "moduledata"),
+        os.path.join(out_path, "moduledata"),
     )
     shutil.copyfile(
-        os.path.join(working_path, "savedata"), os.path.join(out_path, "savedata")
+        os.path.join(config.working_dir, "savedata"), os.path.join(out_path, "savedata")
     )
 
-    os.makedirs(os.path.dirname(vlb_path), exist_ok=True)
-    with open(vlb_path, "r") as vlb:
+    os.makedirs(os.path.dirname(config.vlb_path), exist_ok=True)
+    with open(config.vlb_path, "r") as vlb:
         in_vlb = vlb.read()
 
     in_vlb = in_vlb.replace("\r", "").replace("\n", "")
@@ -751,22 +774,30 @@ def export_to_vlog(export_to, vlb_path, working_path=g_working_path):
         obfint = ord(char) ^ xor_key
         obf_out += hex(obfint)[2::]
 
-    os.makedirs(os.path.dirname(working_path), exist_ok=True)
-    with open(os.path.join(working_path, "savedGame"), "w") as savedgame_out:
+    os.makedirs(os.path.dirname(config.working_dir), exist_ok=True)
+    with open(os.path.join(config.working_dir, "savedGame"), "w") as savedgame_out:
         savedgame_out.write(obf_out)
 
-    zipall(working_path, os.path.abspath(export_to))
+    zipall(config.working_dir, os.path.abspath(config.vlog_path))
 
 
 def scrub_piecename(piecename):
-    scrub_these = " :!-'(),\"+.\t\r\n·[]" + "\u2022"
+    """Scrubs a piece name of most characters that are not alphanumeric; specifically,
+    those that have substantial meaning in SQL queries.  These piecenames are about
+    to be inserted into a SQL query, so we're looking to avoid SQL injection
+    vulnerabilities, as well as just generally wanting clean piecenames."""
 
     piecename = piecename.replace("\\/", "").split("/")[0].split(";")[-1]
 
+    scrub_these = " :!-'(),\"+.\t\r\n·[]" + "\u2022"
     for char in scrub_these:
         piecename = piecename.replace(char, "")
 
     return piecename.lower()
+
+
+def get_default_config():
+    return ShrimpConfig()
 
 
 def calc_guid():
@@ -776,9 +807,9 @@ def calc_guid():
 class Piece:
     """Meant to be a prototype for the other pieces, not really to be used on its own"""
 
-    def __init__(self, piecename, conn=g_conn):
+    def __init__(self, piecename, config):
         self.banana = scrub_piecename(str(piecename))
-        self.conn = conn
+        self.conn = config.db_path
         with sqlite3.connect(self.conn) as connection:
             self.content = connection.execute(
                 """select content from pieces where piecename=?;""", (self.upgradename,)
@@ -804,6 +835,7 @@ class Fleet:
     def __init__(
         self,
         name,
+        config,
         faction="",
         points=0,
         mode="",
@@ -813,7 +845,6 @@ class Fleet:
         ships=[],
         squadrons=[],
         author="",
-        conn=g_conn,
     ):
         self.name = str(name)
         self.faction = str(faction)
@@ -825,7 +856,7 @@ class Fleet:
         self.ships = list(ships)
         self.squadrons = list(squadrons)
         self.author = str(author)
-        self.conn = conn
+        self.conn = config.db_path
 
         # simple piece locations calculations
 
@@ -998,9 +1029,9 @@ class Fleet:
 
 
 class Ship:
-    def __init__(self, shipclass, ownfleet, conn=g_conn):
+    def __init__(self, shipclass, ownfleet, config):
         self.shipclass = scrub_piecename(str(shipclass))  # "name" in .AFF
-        self.conn = conn
+        self.conn = config.db_path
         self.content = ""
         self.coords = [0, 0]
         self.physicalsize = [
@@ -1041,7 +1072,7 @@ class Ship:
             )
             upgradename = sc
 
-        u = Upgrade(upgradename, self, self.conn)
+        u = Upgrade(upgradename, self, config)
 
         if self.ownfleet.u_row % 2:
             self.ownfleet.x += self.ownfleet.u_to_u_x_padding
@@ -1066,9 +1097,9 @@ class Ship:
 class ShipCard:
     """A shipcard of type str(shipname) as defined in sqlitedb connection conn."""
 
-    def __init__(self, shipname, conn=g_conn):
+    def __init__(self, shipname, config):
         self.shipname = scrub_piecename(str(shipname))
-        self.conn = conn
+        self.conn = config.db_path
 
         logging.info(
             "Searching for ship {} in {}".format(self.shipname, str(self.conn))
@@ -1138,9 +1169,9 @@ class ShipCard:
 
 
 class ShipToken:
-    def __init__(self, shiptype, conn=g_conn):
+    def __init__(self, shiptype, config):
         self.shiptype = scrub_piecename(str(shiptype))
-        self.conn = conn
+        self.conn = config.db_path
 
         if self.shiptype in nomenclature_translation:
             translated_shiptype = nomenclature_translation[self.shiptype]
@@ -1194,9 +1225,9 @@ class ShipToken:
 class ShipCmdStack:
     """A command stack as defined in sqlitedb connection conn."""
 
-    def __init__(self, cmdstack, conn=g_conn):
+    def __init__(self, cmdstack, config):
         self.cmdstack = scrub_piecename(str(cmdstack))
-        self.conn = conn
+        self.conn = config.db_path
 
         logging.info(
             "Searching for command stack {} in {}".format(self.cmdstack, str(self.conn))
@@ -1241,9 +1272,9 @@ class ShipCmdStack:
 
 
 class Upgrade:
-    def __init__(self, upgradename, ownship, conn=g_conn):
+    def __init__(self, upgradename, ownship, config):
         self.upgradename = scrub_piecename(str(upgradename))
-        self.conn = conn
+        self.conn = config.db_path
 
         logging.info(
             "Searching for upgrade {} in {}".format(self.upgradename, str(self.conn))
@@ -1290,9 +1321,9 @@ class Upgrade:
 
 
 class Squadron:
-    def __init__(self, squadronclass, ownfleet, conn=g_conn):
+    def __init__(self, squadronclass, ownfleet, config):
         self.squadronclass = scrub_piecename(str(squadronclass))  # "name" in .AFF
-        self.conn = conn
+        self.conn = config.db_path
         self.content = ""
         self.coords = [0, 0]
         self.squadroncard = SquadronCard(self.squadronclass, self.conn)
@@ -1318,9 +1349,9 @@ class Squadron:
 class SquadronCard:
     """A squadroncard of type str(squadronname) as defined in sqlite connection conn."""
 
-    def __init__(self, squadronname, conn=g_conn):
+    def __init__(self, squadronname, config):
         self.squadronname = scrub_piecename(str(squadronname))
-        self.conn = conn
+        self.conn = config.db_path
 
         logging.info(
             "Searching for squadron card {} in {}".format(
@@ -1379,9 +1410,9 @@ class SquadronCard:
 
 
 class SquadronToken:
-    def __init__(self, squadrontype, conn=g_conn):
+    def __init__(self, squadrontype, config):
         self.squadrontype = scrub_piecename(str(squadrontype))
-        self.conn = conn
+        self.conn = config.db_path
         logging.info(
             "Searching for squadron token {} in {}".format(
                 scrub_piecename(squadrontype), str(conn)
@@ -1425,9 +1456,9 @@ class SquadronToken:
 
 
 class Objective:
-    def __init__(self, objectivename, conn=g_conn):
+    def __init__(self, objectivename, config):
         self.objectivename = scrub_piecename(str(objectivename))
-        self.conn = conn
+        self.conn = config.db_path
         logging.info(
             "Searching for objective {} in {}".format(
                 self.objectivename, str(self.conn)
@@ -1482,15 +1513,18 @@ class Objective:
 
 
 if __name__ == "__main__":
+
+    config = ShrimpConfig()
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-db", help="VLO DB to reference for pieces", type=str, default="vlb_pieces.vlo"
+        "-db", help="path to reference database", type=str, default="vlb_pieces.vlo"
     )
     parser.add_argument(
         "-wd",
-        help="working directory to use with VLB",
+        help="working directory",
         type=str,
-        default=os.path.join(PWD, "working"),
+        default=os.path.join(config.pwd, "working"),
     )
     parser.add_argument(
         "-vlog", help=".vlog filename", type=str, default="vlb-out.vlog"
@@ -1498,42 +1532,25 @@ if __name__ == "__main__":
     parser.add_argument("-vlb", help=".vlb filename", type=str, default="list.vlb")
     parser.add_argument("-aff", help=".aff filename", type=str, default="test.aff")
     parser.add_argument(
-        "-flt",
-        help="fleet list location--VAL will attempt to identify and ingest the list in "
-        + "the given format",
-        type=str,
-        default="list.flt",
+        "-flt", help="fleet list location", type=str, default="list.flt"
     )
-    parser.add_argument(
-        "--imp", help="use VL to import a .vlog to a .vlb", action="store_true"
-    )
-    parser.add_argument(
-        "--exp", help="use VL to export a .vlb to a .vlog", action="store_true"
-    )
-    parser.add_argument(
-        "--impvlog", help="use this if importing a .vlog to .vlb.", action="store_true"
-    )
+    parser.add_argument("--imp", help="import a .vlog to a .vlb", action="store_true")
+    parser.add_argument("--exp", help="export a .vlb to a .vlog", action="store_true")
+    parser.add_argument("--impvlog", help="import a .vlog to .vlb", action="store_true")
     args = parser.parse_args()
 
-    g_import_vlb = os.path.abspath(args.vlog)
-    g_vlb_path = os.path.abspath(args.vlb)
-    g_working_path = os.path.abspath(args.wd)
-    g_export_to = os.path.abspath(args.vlog)
-    g_import_aff = os.path.abspath(args.aff)
-    g_import_flt = os.path.abspath(args.flt)
-    g_conn = os.path.abspath(args.db)
-    g_import_vlog = args.impvlog
+    config = ShrimpConfig()
+
+    config.vlog_path = os.path.abspath(args.vlog)
+    config.vlb_path = os.path.abspath(args.vlb)
+    config.working_dir = os.path.abspath(args.wd)
+    config.aff_path = os.path.abspath(args.aff)
+    config.fleet = os.path.abspath(args.flt)
+    config.db_path = os.path.abspath(args.db)
+    config.import_vlog = args.impvlog
 
     if args.imp:
-        print(
-            import_from_list(
-                import_from=g_import_flt,
-                output_to=g_vlb_path,
-                working_path=g_working_path,
-                conn=g_conn,
-                isvlog=g_import_vlog,
-            )
-        )
+        print(import_from_list(config))
 
     if args.exp:
-        print(export_to_vlog(export_to=g_export_to, vlb_path=g_vlb_path))
+        print(export_to_vlog(config))
