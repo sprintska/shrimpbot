@@ -490,14 +490,19 @@ def import_from_kingston(import_list, config):
                         pass
 
                     else:
-                        # Can't disambiguate Venator-II on cost because both variants are identical *sigh*
-                        if card_name == "Venator II (100)" and faction == "Imperial":
-                            logging.info(
-                                "[Debug] Found Imperial Venator.  Setting card name."
-                            )
-                            card_name = "Venator II Imp"
-
-                        ship = fleet.add_ship(card_name.split(" (", 1)[0].strip())
+                        # Can't disambiguate either Venator-II OR VicI on cost, because both variants are identical *sigh*
+                        if faction == "Imperial":
+                            if card_name == "Venator II (100)":
+                                logging.info(
+                                    "[Debug] Found Imperial Venator.  Setting card name."
+                                )
+                                card_name = "Venator II Imp"
+                            elif card_name == "Victory I (73)":
+                                logging.info(
+                                    "[Debug] Found Imperial Victory.  Setting card name."
+                                )
+                                card_name = "Victory I Imp"
+                            ship = fleet.add_ship(card_name.split(" (", 1)[0].strip())
 
                 elif "\u2022" in card_name and card_name[0] != "=":
                     cost = card_name.split(" (")[-1]
