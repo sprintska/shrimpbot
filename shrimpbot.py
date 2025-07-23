@@ -76,8 +76,6 @@ def searchFor(search_term, search_set, match_threshold=100):
     matches = sorted(
         [r for r in ratios], key=lambda ratio: ratio[1] + ratio[2], reverse=True
     )
-    #    if ((int(matches[0][1] + matches[0][2])) > match_threshold) or (int(matches[0][0]) == 100):
-    # logging.info(str(matches[0][1]),str(matches[0][2]))
     if ((int(matches[0][1] + matches[0][2])) > match_threshold) or (
         int(matches[0][1]) == 100
     ):
@@ -148,33 +146,21 @@ async def toggle(ctx):
 async def on_ready():
     BOT_OWNER = bot.get_user(BOT_OWNER_ID)
 
-    logging.info("Logged in as")
-    logging.info(bot.user.name)
-    logging.info(bot.user.id)
-    logging.info("------")
-    logging.info("Owner is")
-    logging.info(BOT_OWNER.name)
-    logging.info(BOT_OWNER.id)
-    logging.info("------")
-    logging.info("Servers using Shrimpbot")
+    logging.info(f"Logged in as{bot.user.name} ({bot.user.id})")
+    logging.info(f"Owner is {BOT_OWNER.name} ({BOT_OWNER.id})")
     for guild in bot.guilds:
-        print("Checking guild {}".format(str(guild)))
-        logging.info(" {}".format(str(guild)))
-        logging.info(" - ID: {}".format(str(guild.id)))
+        logging.info("Server: {} ({})".format(str(guild), str(guild.id)))
         if guild.id == 697833083201650689:
-            print("leaving that one guild")
+            logging.info(f"Leaving {str(guild)}...")
             await guild.leave()
-            logging.info(" [!] LEFT {}".format(str(guild)))
-        if guild.id != 669698762402299904:  # Steel Strat Server are special snowflakes
-            print("Fixing nick in {}".format(str(guild)))
+            logging.info("[!] LEFT {}".format(str(guild)))
+        if guild.id != 669698762402299904:  # BIG Server are special snowflakes
+            logging.info("Fixing my name in {}".format(str(guild)))
             await guild.me.edit(nick="Shrimpbot")
-        time.sleep(1)
-        print("\n")
-    logging.info("======")
+        time.sleep(0.25)
 
+    logging.info("Shrimpbot is online.")
     await bot.change_presence(status=discord.Status.online, activity=note)
-
-    # ~ await bot.edit_profile(username="ShrimpBot")
 
 
 @bot.command()
@@ -475,8 +461,8 @@ async def on_message(message):
 
     if findIn(["!NO"], message.content):
         pass
-    #   listBuilder
 
+    #   listBuilder
     if findIn(["!listhelp"], message.content):
         await message.author.send(
             "To use a generated Vassal fleet:"
@@ -510,9 +496,15 @@ async def on_message(message):
 
                 conn = databasepath
 
-                success, last_item = listbuilder.import_from_list(
-                    liststr, vlbfilepath, workingpath, conn
-                )
+                listbuilder_config = listbuilder.get_default_config()
+                listbuilder_config.pwd = os.path.dirname(__file__)
+                listbuilder_config.vlog_path = vlogfilepath
+                listbuilder_config.vlb_path = vlbfilepath
+                listbuilder_config.working_dir = workingpath
+                listbuilder_config.db_path = databasepath
+                listbuilder_config.fleet = liststr
+
+                success, last_item = listbuilder.import_from_list(listbuilder_config)
 
                 if not success:
                     logging.info("[!] LISTBUILDER ERROR | {}".format(last_item))

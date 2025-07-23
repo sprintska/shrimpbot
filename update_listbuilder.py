@@ -208,7 +208,7 @@ class VassalModule:
             try:
                 self.add_element(PrototypeDefinition(element_x))
             except RuntimeError as err:
-                [print(arg) for arg in err.args]
+                print(*err.args)
 
     def __parse_pieces(self):
         """Retrieves all the pieces and populates them to the Module"""
@@ -217,7 +217,7 @@ class VassalModule:
             try:
                 self.add_element(PieceDefinition(element_x))
             except RuntimeError as err:
-                [print(arg) for arg in err.args]
+                print(*err.args)
 
         for piece in self.pieces:
 
@@ -447,15 +447,14 @@ def create_db(db_path):
     """Create the db at the path if it doesn't exist"""
 
     if not os.path.exists(db_path):
-        open(db_path, "w")
+        with open(db_path, "w"):
+            pass
 
-        conn = sqlite3.connect(db_path)
-
-        conn.execute(
-            "CREATE TABLE pieces (piecetype text, piecename text, content text, catchall text)"
-        )
-        conn.commit()
-        conn.close()
+        with sqlite3.connect(db_path) as conn:
+            conn.execute(
+                "CREATE TABLE pieces (piecetype text, piecename text, content text, catchall text)"
+            )
+            conn.commit()
 
 
 def exists_piece(conn, piecetype, piecename):
@@ -482,7 +481,6 @@ def update_piece(conn, piecetype, piecename, content):
             """INSERT INTO pieces VALUES (?,?,?,?)""",
             (piecetype, piecename, content, catchall),
         )
-        conn.commit()
 
     else:
         print("[^] {} - {} exists, updating it...".format(piecetype, piecename))
@@ -494,14 +492,13 @@ def update_piece(conn, piecetype, piecename, content):
                         AND piecetype=?""",
             (content, catchall, piecename, piecetype),
         )
-        conn.commit()
+
+    conn.commit()
 
 
 def scrub_piecename(piecename):
-    # print("\nPiecename in: {}".format(piecename))
     piecename = (
         piecename.replace("\\/", "")
-        # .split("/")[0]
         .split(";")[-1]
         .replace("/", "")
         .replace(" ", "")
@@ -513,7 +510,6 @@ def scrub_piecename(piecename):
         .replace(")", "")
         .lower()
     )
-    # print("Piecename out: {}".format(piecename))
     return piecename
 
 
@@ -550,7 +546,7 @@ def associated_token(piece_name, piece_type, vlb_content):
 
 
 def most_recent_vmod_in_path(vmod_path):
-    """Finds the latest .vmod in the given path.
+    """Finds the .vmod in the given path with the highest version number.
 
     If it's a dir, it's just the first in an inverted sort of *.vmod;
     if a file, it's just that file."""
@@ -603,7 +599,8 @@ def check_for_new_version(
     new_vmod_path = pathlib.Path(local_vmod_dir / latest_vmod_filename)
     r = requests.get(latest_vmod_url)
     logging.info(f"[+] Writing to {new_vmod_path}...")
-    open(new_vmod_path, "wb").write(r.content)
+    with open(new_vmod_path, "wb") as f:
+        f.write(r.content)
 
     return new_vmod_path
 
