@@ -20,7 +20,7 @@ import xml.etree.ElementTree as ET
 """
 
 
-_handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
+_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 
@@ -51,7 +51,9 @@ class VassalModule:
             "prototype;Nonrecurring upgrade card prototype": "upgradecard",
         }
 
+        print("parsing prototypes")
         _ = self.__parse_prototypes()
+        print("parsing pieces")
         _ = self.__parse_pieces()
 
     def __preprocess_build_xml(self):
@@ -133,6 +135,7 @@ class VassalModule:
         ex = False
 
         for error_match in error_matches:
+
             print(f"\n\t [*] Amending embedded reference in | {element.name}")
             full_error_match = error_match.group(0)
             full_error_match = full_error_match.replace("\\;", ";").replace("\\/", "/")
@@ -151,21 +154,24 @@ class VassalModule:
                         cutoff=0.7,
                     )
                 ]
-                matching_xml_element = [
+
+                matching_xml_elements = [
                     ele
                     for ele in self.build_xml.iter()
                     if ele.text == fuzzy_matched_xml[0]
-                ][0]
-            except Exception as err:
-                raise err
+                ]
 
-            target_absolute_reference = (
-                f"{self.__get_parent_path(matching_xml_element)};"
-            )
-            element.vassal_data_raw = element.vassal_data_raw.replace(
-                error_match.group(0), target_absolute_reference, 1
-            )
-            ex = True
+                if len(matching_xml_elements) >= 1:
+                    target_absolute_reference = (
+                        f"{self.__get_parent_path(matching_xml_elements[0])};"
+                    )
+                    element.vassal_data_raw = element.vassal_data_raw.replace(
+                        error_match.group(0), target_absolute_reference, 1
+                    )
+                ex = True
+
+            except IndexError as err:
+                print("Whoops, maybe no misformed reference in this piece after all?")
 
         if ex:
 
@@ -202,7 +208,7 @@ class VassalModule:
             try:
                 self.add_element(PrototypeDefinition(element_x))
             except RuntimeError as err:
-                [print(arg) for arg in err.args]
+                print(*err.args)
 
     def __parse_pieces(self):
         """Retrieves all the pieces and populates them to the Module"""
@@ -211,7 +217,7 @@ class VassalModule:
             try:
                 self.add_element(PieceDefinition(element_x))
             except RuntimeError as err:
-                [print(arg) for arg in err.args]
+                print(*err.args)
 
         for piece in self.pieces:
 
@@ -228,6 +234,8 @@ class VassalModule:
 
     def add_element(self, module_element):
         """Add element to the right list."""
+
+        print(f"\n\t [*] Adding element | {module_element.name}")
 
         module_element = self.__resolve_embedded_references(module_element)
 
@@ -439,15 +447,14 @@ def create_db(db_path):
     """Create the db at the path if it doesn't exist"""
 
     if not os.path.exists(db_path):
-        open(db_path, "w")
+        with open(db_path, "w"):
+            pass
 
-        conn = sqlite3.connect(db_path)
-
-        conn.execute(
-            "CREATE TABLE pieces (piecetype text, piecename text, content text, catchall text)"
-        )
-        conn.commit()
-        conn.close()
+        with sqlite3.connect(db_path) as conn:
+            conn.execute(
+                "CREATE TABLE pieces (piecetype text, piecename text, content text, catchall text)"
+            )
+            conn.commit()
 
 
 def exists_piece(conn, piecetype, piecename):
@@ -474,7 +481,6 @@ def update_piece(conn, piecetype, piecename, content):
             """INSERT INTO pieces VALUES (?,?,?,?)""",
             (piecetype, piecename, content, catchall),
         )
-        conn.commit()
 
     else:
         print("[^] {} - {} exists, updating it...".format(piecetype, piecename))
@@ -486,14 +492,13 @@ def update_piece(conn, piecetype, piecename, content):
                         AND piecetype=?""",
             (content, catchall, piecename, piecetype),
         )
-        conn.commit()
+
+    conn.commit()
 
 
 def scrub_piecename(piecename):
-    # print("\nPiecename in: {}".format(piecename))
     piecename = (
-        piecename.replace("\/", "")
-        # .split("/")[0]
+        piecename.replace("\\/", "")
         .split(";")[-1]
         .replace("/", "")
         .replace(" ", "")
@@ -505,7 +510,6 @@ def scrub_piecename(piecename):
         .replace(")", "")
         .lower()
     )
-    # print("Piecename out: {}".format(piecename))
     return piecename
 
 
@@ -542,7 +546,7 @@ def associated_token(piece_name, piece_type, vlb_content):
 
 
 def most_recent_vmod_in_path(vmod_path):
-    """Finds the latest .vmod in the given path.
+    """Finds the .vmod in the given path with the highest version number.
 
     If it's a dir, it's just the first in an inverted sort of *.vmod;
     if a file, it's just that file."""
@@ -595,7 +599,8 @@ def check_for_new_version(
     new_vmod_path = pathlib.Path(local_vmod_dir / latest_vmod_filename)
     r = requests.get(latest_vmod_url)
     logging.info(f"[+] Writing to {new_vmod_path}...")
-    open(new_vmod_path, "wb").write(r.content)
+    with open(new_vmod_path, "wb") as f:
+        f.write(r.content)
 
     return new_vmod_path
 

@@ -6,6 +6,9 @@ out/moduledata
 out/savedata
 working/savedGame
 img/tmp/*.png
+*.vlb
+*.vlog
+savedGame
 vlb/*.vlb
 vlb/*.vlb.gz
 out/*.vlb
@@ -18,7 +21,9 @@ vlb_pieces.vlo
 img/Thumbs.db
 vmods/*
 venv/*
+.venv/*
 test/test_vlogs/*
 test/test_vmod/*
 test/testlists/*
 test/archived_tests/*
+working/savedGame

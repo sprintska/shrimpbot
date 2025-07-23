@@ -20,13 +20,14 @@ from discord import emoji
 from discord.ext import commands
 from fuzzywuzzy import fuzz
 
-_handler = logging.handlers.WatchedFileHandler("/var/log/shrimp.log")
+_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
-TOKEN_PATH = "/home/ardaedhel/bin/shrimpbot/privatekey.dsc"
-CARD_IMG_PATH = "/home/ardaedhel/bin/shrimpbot/img/"
-CARD_LOOKUP = "/home/ardaedhel/bin/shrimpbot/cards.txt"
-ACRO_LOOKUP = "/home/ardaedhel/bin/shrimpbot/acronyms.txt"
+PWD = os.path.dirname(__file__)
+TOKEN_PATH = PWD + "/privatekey.dsc"
+CARD_IMG_PATH = PWD + "/img/"
+CARD_LOOKUP = PWD + "/cards.txt"
+ACRO_LOOKUP = PWD + "/acronyms.txt"
 BOT_OWNER_ID = 236683961831653376
 
 
@@ -49,7 +50,7 @@ with open(ACRO_LOOKUP) as acros:
         acronym, definition = line.split(";", 1)
         acronym_dict[acronym.strip()] = definition.strip()
 
-bot = commands.Bot(command_prefix="&")
+bot = commands.Bot(command_prefix="&", intents=discord.Intents.all())
 note = discord.Game(name="'!acro' for definitions")
 
 
@@ -75,8 +76,6 @@ def searchFor(search_term, search_set, match_threshold=100):
     matches = sorted(
         [r for r in ratios], key=lambda ratio: ratio[1] + ratio[2], reverse=True
     )
-    #    if ((int(matches[0][1] + matches[0][2])) > match_threshold) or (int(matches[0][0]) == 100):
-    # logging.info(str(matches[0][1]),str(matches[0][2]))
     if ((int(matches[0][1] + matches[0][2])) > match_threshold) or (
         int(matches[0][1]) == 100
     ):
@@ -104,75 +103,68 @@ def searchFor(search_term, search_set, match_threshold=100):
 
 
 @bot.command()
-async def list():
+async def list(ctx):
     """Lists every word the bot can explain."""
     i = 0
     msg = ""
     for word in acronym_dict:
         if i > 30:
-            await bot.say(msg)
+            await ctx.send(msg)
             i = 0
             msg = ""
         msg += "\n" + word.upper() + ": " + acronym_dict.get(word.upper(), "ERROR!")
         i += 1
-    await bot.say(msg)
-    await bot.say("------------------")
-    await bot.say(str(len(acronym_dict)) + " words")
+    await ctx.send(msg)
+    await ctx.send("------------------")
+    await ctx.send(str(len(acronym_dict)) + " words")
 
 
 @bot.command()
-async def status():
+async def status(ctx):
     """Checks the status of the bot."""
-    await bot.say("Shrimpbot info:")
-    await bot.say("Bot name: " + bot.user.name)
-    await bot.say("Bot ID: " + str(bot.user.id))
+    await ctx.send("Shrimpbot info:")
+    await ctx.send("Bot name: " + bot.user.name)
+    await ctx.send("Bot ID: " + str(bot.user.id))
     if enabled:
-        await bot.say("The bot is enabled.")
+        await ctx.send("The bot is enabled.")
     else:
-        await bot.say("The bot is disabled.")
+        await ctx.send("The bot is disabled.")
 
 
 @bot.command()
-async def toggle():
+async def toggle(ctx):
     """Toggles if the bot is allowed to explain the stuff."""
     global enabled
     enabled = not enabled
     if enabled:
-        await bot.say("The bot is now enabled.")
+        await ctx.send("The bot is now enabled.")
     else:
-        await bot.say("The bot is now disabled.")
+        await ctx.send("The bot is now disabled.")
 
 
 @bot.event
 async def on_ready():
     BOT_OWNER = bot.get_user(BOT_OWNER_ID)
 
-    logging.info("Logged in as")
-    logging.info(bot.user.name)
-    logging.info(bot.user.id)
-    logging.info("------")
-    logging.info("Owner is")
-    logging.info(BOT_OWNER.name)
-    logging.info(BOT_OWNER.id)
-    logging.info("------")
-    logging.info("Servers using Shrimpbot")
+    logging.info(f"Logged in as{bot.user.name} ({bot.user.id})")
+    logging.info(f"Owner is {BOT_OWNER.name} ({BOT_OWNER.id})")
     for guild in bot.guilds:
-        logging.info(" {}".format(str(guild)))
-        logging.info(" - ID: {}".format(str(guild.id)))
+        logging.info("Server: {} ({})".format(str(guild), str(guild.id)))
         if guild.id == 697833083201650689:
+            logging.info(f"Leaving {str(guild)}...")
             await guild.leave()
-            logging.info(" [!] LEFT {}".format(str(guild)))
-        if guild.id != 669698762402299904:  # Steel Strat Server are special snowflakes
+            logging.info("[!] LEFT {}".format(str(guild)))
+        if guild.id != 669698762402299904:  # BIG Server are special snowflakes
+            logging.info("Fixing my name in {}".format(str(guild)))
             await guild.me.edit(nick="Shrimpbot")
-    logging.info("======")
+        time.sleep(0.25)
 
+    logging.info("Shrimpbot is online.")
     await bot.change_presence(status=discord.Status.online, activity=note)
-
-    # ~ await bot.edit_profile(username="ShrimpBot")
 
 
 @bot.command()
-async def cheat():
+async def cheat(ctx):
     """Flag to set all of Ard's blacks to hit/crit."""
     global cheating
     cheating = not cheating
@@ -469,8 +461,8 @@ async def on_message(message):
 
     if findIn(["!NO"], message.content):
         pass
-    #   listBuilder
 
+    #   listBuilder
     if findIn(["!listhelp"], message.content):
         await message.author.send(
             "To use a generated Vassal fleet:"
@@ -480,9 +472,7 @@ async def on_message(message):
             + "\n\t\t*note: accept the warning in the popup"
             + "\n\t4. Click the 'Step forward through logfile' (shown) in the upper left corner of the Star Wars Armada Controls dialog box until your whole list is visible."
         )
-        await message.author.send(
-            file=discord.File("/home/ardaedhel/bin/shrimpbot/img/arrowed.png")
-        )
+        await message.author.send(file=discord.File(PWD + "/img/arrowed.png"))
 
     if len(message.content) >= 7:
         if findIn(["!VASSAL"], message.content):
@@ -496,7 +486,7 @@ async def on_message(message):
                 guid_hash.update(str(time.time()).encode())
                 guid = guid_hash.hexdigest()[0:16]
 
-                listbuilderpath = os.path.abspath("/home/ardaedhel/bin/shrimpbot/")
+                listbuilderpath = os.path.dirname(__file__)
                 workingpath = os.path.join(listbuilderpath, "working/")
                 outpath = os.path.join(listbuilderpath, "out/")
                 vlbdirpath = os.path.join(listbuilderpath, "vlb/")
@@ -504,27 +494,15 @@ async def on_message(message):
                 vlogfilepath = os.path.join(outpath, guid + ".vlog")
                 databasepath = os.path.join(listbuilderpath, "vlb_pieces.vlo")
 
-                conn = databasepath
-                # conn = sqlite3.connect(databasepath)
-                # if (
-                #     "pieces"
-                #     not in conn.execute(
-                #         "select name from sqlite_master where type='table'"
-                #     ).fetchall()[0]
-                # ):
-                #     logging.critical(
-                #         "Database at {}, {}, is corrupted or missing.".format(
-                #             databasepath, conn
-                #         )
-                #     )
-                # else:
-                #     logging.info(
-                #         "Database at {}, {}, found...".format(databasepath, conn)
-                #     )
+                listbuilder_config = listbuilder.get_default_config()
+                listbuilder_config.pwd = os.path.dirname(__file__)
+                listbuilder_config.vlog_path = vlogfilepath
+                listbuilder_config.vlb_path = vlbfilepath
+                listbuilder_config.working_dir = workingpath
+                listbuilder_config.db_path = databasepath
+                listbuilder_config.fleet = liststr
 
-                success, last_item = listbuilder.import_from_list(
-                    liststr, vlbfilepath, workingpath, conn
-                )
+                success, last_item = listbuilder.import_from_list(listbuilder_config)
 
                 if not success:
                     logging.info("[!] LISTBUILDER ERROR | {}".format(last_item))
@@ -541,12 +519,12 @@ async def on_message(message):
                         "Sorry, there was a list parsing error. I have reported it to Ardaedhel to fix it.",
                     )
                     await message.channel.send(
-                        "Details - The error was in or near this line: ",
+                        "Details - My best guess is, the error was in or near this line: ",
                     )
                     await message.channel.send(last_item)
 
                 else:
-                    listbuilder.export_to_vlog(vlogfilepath, vlbfilepath, workingpath)
+                    listbuilder.export_to_vlog(listbuilder_config)
                     await message.channel.send(file=discord.File(vlogfilepath))
                     await message.author.send(
                         "For usage instructions, pm me '!listhelp'."
@@ -555,6 +533,7 @@ async def on_message(message):
 
             except Exception as inst:
                 logging.info(inst)
+                logging.info(*inst.args)
                 await bot.get_user(BOT_OWNER_ID).send(
                     "[!] LISTBUILDER ERROR | {}".format(inst)
                 )
