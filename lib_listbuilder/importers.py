@@ -449,6 +449,7 @@ def import_from_kingston(import_list, config):
                     "Name",
                     "Commander",
                     "Author",
+                    "Version",
                 ]:
                     pass
 
