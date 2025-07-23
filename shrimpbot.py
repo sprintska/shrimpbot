@@ -154,7 +154,10 @@ async def on_ready():
             logging.info(f"Leaving {str(guild)}...")
             await guild.leave()
             logging.info("[!] LEFT {}".format(str(guild)))
-        if guild.id != 669698762402299904:  # BIG Server are special snowflakes
+        if (
+            guild.id != 669698762402299904  # BIG Server are special snowflakes
+            and logging.info(guild.me.nick) is not "Shrimpbot"
+        ):
             logging.info("Fixing my name in {}".format(str(guild)))
             await guild.me.edit(nick="Shrimpbot")
         time.sleep(0.25)
