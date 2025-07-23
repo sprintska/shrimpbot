@@ -285,6 +285,25 @@ def import_from_afd(import_list, config):
                     upgrade = scrub_piecename(upgrade)
                     cost = cost.split(")")[0]
 
+                    # We check ambiguous name both before and after the nomenclature
+                    # translation because the ambiguity may be in either the
+                    # fleetbuilder or the canon name.
+
+                    logging.info(
+                        "Checking {} ({}) for ambiguity.".format(upgrade, cost)
+                    )
+                    if (upgrade, cost) in ambiguous_names:
+                        translated = ambiguous_names[(upgrade, cost)][0]
+                        logging.info(
+                            "Ambiguous name {} ({}) translated to {}.".format(
+                                upgrade, cost, translated
+                            )
+                        )
+                        upgrade = translated
+
+                    logging.info(
+                        "Checking {} ({}) for nomenclature.".format(upgrade, cost)
+                    )
                     if upgrade in nomenclature_translation:
                         translated = nomenclature_translation[upgrade]
                         logging.info(
@@ -292,14 +311,17 @@ def import_from_afd(import_list, config):
                         )
                         upgrade = translated
 
+                    logging.info(
+                        "Checking {} ({}) for ambiguity.".format(upgrade, cost)
+                    )
                     if (upgrade, cost) in ambiguous_names:
-                        upgrade_new = ambiguous_names[(upgrade, cost)][0]
+                        translated = ambiguous_names[(upgrade, cost)][0]
                         logging.info(
                             "Ambiguous name {} ({}) translated to {}.".format(
-                                upgrade, cost, upgrade_new
+                                upgrade, cost, translated
                             )
                         )
-                        upgrade = upgrade_new
+                        upgrade = translated
 
                     _ = ship.add_upgrade(upgrade)
 
@@ -323,12 +345,33 @@ def import_from_afd(import_list, config):
                     card_name = scrub_piecename(card_name)
 
                     try:
+                        # We check ambiguous name both before and after the nomenclature
+                        # translation because the ambiguity may be in either the
+                        # fleetbuilder or the canon name.
+
+                        logging.info(
+                            "Checking {} ({}) for ambiguity.".format(card_name, cost)
+                        )
+                        if (card_name, cost) in ambiguous_names:
+                            card_name_new = ambiguous_names[(card_name, cost)][0]
+                            logging.info(
+                                "Ambiguous name {} ({}) translated to {}.".format(
+                                    card_name, cost, card_name_new
+                                )
+                            )
+                            card_name = card_name_new
+                        logging.info(
+                            "Checking {} ({}) for nomenclature.".format(card_name, cost)
+                        )
                         if card_name in nomenclature_translation:
                             t = nomenclature_translation[card_name]
                             logging.info(
                                 "[-] Translated {} to {} - AFD.".format(card_name, t)
                             )
                             card_name = t
+                        logging.info(
+                            "Checking {} ({}) for ambiguity.".format(card_name, cost)
+                        )
                         if (card_name, cost) in ambiguous_names:
                             card_name_new = ambiguous_names[(card_name, cost)][0]
                             logging.info(
