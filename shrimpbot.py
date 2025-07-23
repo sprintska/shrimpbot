@@ -494,8 +494,6 @@ async def on_message(message):
                 vlogfilepath = os.path.join(outpath, guid + ".vlog")
                 databasepath = os.path.join(listbuilderpath, "vlb_pieces.vlo")
 
-                conn = databasepath
-
                 listbuilder_config = listbuilder.get_default_config()
                 listbuilder_config.pwd = os.path.dirname(__file__)
                 listbuilder_config.vlog_path = vlogfilepath
@@ -526,7 +524,7 @@ async def on_message(message):
                     await message.channel.send(last_item)
 
                 else:
-                    listbuilder.export_to_vlog(vlogfilepath, vlbfilepath, workingpath)
+                    listbuilder.export_to_vlog(listbuilder_config)
                     await message.channel.send(file=discord.File(vlogfilepath))
                     await message.author.send(
                         "For usage instructions, pm me '!listhelp'."
@@ -535,6 +533,7 @@ async def on_message(message):
 
             except Exception as inst:
                 logging.info(inst)
+                logging.info(*inst.args)
                 await bot.get_user(BOT_OWNER_ID).send(
                     "[!] LISTBUILDER ERROR | {}".format(inst)
                 )
