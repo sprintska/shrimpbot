@@ -536,6 +536,7 @@ async def on_message(message):
 
             except Exception as inst:
                 logging.info(inst)
+                logging.info(*inst.args)
                 await bot.get_user(BOT_OWNER_ID).send(
                     "[!] LISTBUILDER ERROR | {}".format(inst)
                 )
