@@ -502,7 +502,7 @@ def import_from_kingston(import_list, config):
                                     "[Debug] Found Imperial Victory.  Setting card name."
                                 )
                                 card_name = "Victory I Imp"
-                            ship = fleet.add_ship(card_name.split(" (", 1)[0].strip())
+                        ship = fleet.add_ship(card_name.split(" (", 1)[0].strip())
 
                 elif "\u2022" in card_name and card_name[0] != "=":
                     cost = card_name.split(" (")[-1]
