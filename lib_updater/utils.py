@@ -1,8 +1,6 @@
 import logging
-import logging.handlers
 
-_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
-logging.basicConfig(handlers=[_handler], level=logging.INFO)
+logger = logging.getLogger("updater")
 
 import os
 import pathlib
@@ -136,14 +134,15 @@ def update_piece(conn, piecetype, piecename, content):
     catchall = associated_token(piecename, piecetype, content)
 
     if not exists_piece(conn, piecetype, piecename):
-        print("[+] {} - {} does not exist, creating it...".format(piecetype, piecename))
+        logger.debug(f"[*] CREATING - {piecetype:<14} - {piecename:<40}")
         conn.execute(
             """INSERT INTO pieces VALUES (?,?,?,?)""",
             (piecetype, piecename, content, catchall),
         )
+        logger.info(f" [+] CREATED  - {piecetype:<14} - {piecename:<40}")
 
     else:
-        print("[^] {} - {} exists, updating it...".format(piecetype, piecename))
+        logger.debug(f"[*] UPDATING - {piecetype:<14} - {piecename:<40}")
         conn.execute(
             """UPDATE pieces
                         SET content=? ,
@@ -152,6 +151,7 @@ def update_piece(conn, piecetype, piecename, content):
                         AND piecetype=?""",
             (content, catchall, piecename, piecetype),
         )
+        logger.info(f" [^] UPDATED  - {piecetype:<14} - {piecename:<40}")
 
     conn.commit()
 

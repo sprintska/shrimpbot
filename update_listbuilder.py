@@ -2,7 +2,7 @@
 import logging
 import logging.handlers
 
-_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
+_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/updater.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 

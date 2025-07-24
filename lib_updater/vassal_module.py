@@ -1,6 +1,6 @@
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("parser")
 
 import datetime
 import difflib
@@ -37,9 +37,9 @@ class VassalModule:
             "prototype;Nonrecurring upgrade card prototype": "upgradecard",
         }
 
-        print("parsing prototypes")
+        logger.info("parsing prototypes")
         _ = self.__parse_prototypes()
-        print("parsing pieces")
+        logger.info("parsing pieces")
         _ = self.__parse_pieces()
 
     def __preprocess_build_xml(self):
@@ -73,7 +73,7 @@ class VassalModule:
         """Unzip the vmod and parse out the module's metadata."""
 
         self.metadata = {}
-        print(self.vmod_path)
+        logger.info(f"parsing Vassal Module at {self.vmod_path}")
         zipped_vmod = zipfile.ZipFile(self.vmod_path)
 
         with zipped_vmod.open("moduledata") as module_metadata_raw:
@@ -113,17 +113,17 @@ class VassalModule:
         the piece."""
 
         if "dice" in element.name.lower():
-            print(f"\n\t [!] Not adding | {element.name}")
+            logger.info(f"\t [!] NOT ADDING       | {element.name}")
             return False
 
         error_regex = re.compile(r"(?<!^)(\+.*?)(\{.*?\}.*?|[^\{\}])(?<!\\);")
         error_matches = error_regex.finditer(element.vassal_data_raw)
-        ex = False
+        made_changes = False
 
         for error_match in error_matches:
 
-            print(f"\n\t [*] Amending embedded reference in | {element.name}")
-            print(f"\n\t [.] Mangled reference: \n\t\t{error_match.group(0)}")
+            logger.info(f"\t [*] Amending embedded reference in | {element.name}")
+            logger.debug(f"\t [.] Mangled reference: \n\t\t{error_match.group(0)}")
             full_error_match = error_match.group(0)
             full_error_match = full_error_match.replace("\\;", ";").replace("\\/", "/")
             full_error_match = re.sub(r"\\+\t", "\t", full_error_match)
@@ -132,19 +132,26 @@ class VassalModule:
                 [(x + "\\" * xloc) for xloc, x in enumerate(full_error_match)]
             )
 
-            # try:
-            fuzzy_matched_xml = [
-                x
-                for x in difflib.get_close_matches(
-                    full_error_match,
-                    [ele.text for ele in self.build_xml.iter() if ele.text],
-                    cutoff=0.7,
-                )
-            ]
+            fuzzy_matched_xml = difflib.get_close_matches(
+                full_error_match,
+                [ele.text for ele in self.build_xml.iter() if ele.text],
+                cutoff=0.65,
+            )
 
-            matching_xml_elements = [
-                ele for ele in self.build_xml.iter() if ele.text == fuzzy_matched_xml[0]
-            ]
+            try:
+                matching_xml_elements = [
+                    ele
+                    for ele in self.build_xml.iter()
+                    if ele.text == fuzzy_matched_xml[0]
+                ]
+            except IndexError as err:
+                # fmt: off
+                logger.info("[!] Don't ignore this error: lists won't load properly if these aren't dealt with.")
+                logger.info(" .  This regex finds embedded references--these MUST be rereferenced or both the containing")
+                logger.info(" .  and improperly referenced pieces will not load properly.")
+                logger.info(f" .  I have fixed this before by tuning 'cutoff' down in fuzzy_matched_xml.")
+                raise err
+                # fmt: on
 
             if len(matching_xml_elements) >= 1:
                 target_absolute_reference = (
@@ -153,12 +160,9 @@ class VassalModule:
                 element.vassal_data_raw = element.vassal_data_raw.replace(
                     error_match.group(0), target_absolute_reference, 1
                 )
-            ex = True
+            made_changes = True
 
-            # except IndexError as err:
-            #     print("Whoops, maybe no misformed reference in this piece after all?")
-
-        if ex:
+        if made_changes:
 
             element.clear_traits()
             element.parse()
@@ -193,7 +197,7 @@ class VassalModule:
             try:
                 self.add_element(PrototypeDefinition(element_x))
             except RuntimeError as err:
-                print(*err.args)
+                logger.error(*err.args)
 
     def __parse_pieces(self):
         """Retrieves all the pieces and populates them to the Module"""
@@ -202,7 +206,7 @@ class VassalModule:
             try:
                 self.add_element(PieceDefinition(element_x))
             except RuntimeError as err:
-                print(*err.args)
+                logger.error(*err.args)
 
         for piece in self.pieces:
 
@@ -220,34 +224,32 @@ class VassalModule:
     def add_element(self, module_element):
         """Add element to the right list."""
 
-        print(f"\n\t [*] Adding element | {module_element.name}")
-
         module_element = self.__resolve_embedded_references(module_element)
 
         if not module_element:
             return False
 
-        if "/" in module_element.name:
-            print(module_element.name)
-        if isinstance(module_element, PrototypeDefinition):
+        if "------------" in module_element.name:
+            logger.info(f"\t [!] NOT ADDING       | {module_element.name}")
+            return False
+        elif isinstance(module_element, PrototypeDefinition):
+            logger.info(f"\t [*] Adding prototype | {module_element.name}")
             self.prototypes[module_element.name] = module_element
         elif (
             isinstance(module_element, PieceDefinition)
             and module_element.name in self.pieces
-            and "------------" not in module_element.name
         ):
             piece_name = (
-                str(module_element.name)
-                + "__"
-                + str(int(random.random() * 10000))
-                + "__"
+                f"{str(module_element.name)}__{str(int(random.random() * 10000))}__"
             )
             self.pieces[piece_name] = module_element
-            print("[!] Duplicate: {}".format(str(module_element.name)))
+            logger.info(f"\t [!] DUPLICATE        | {str(module_element.name)}")
         elif isinstance(module_element, PieceDefinition):
             self.pieces[module_element.name] = module_element
         else:
-            print(str(type(module_element)))
+            logger.info(
+                f"\t [-] {str(type(module_element))} is not a piece or prototype--skipping."
+            )
 
     def dereference(self, referring_element, top_level=False):
         """Lookup the references to prototypes and replaces the
