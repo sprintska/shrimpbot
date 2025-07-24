@@ -25,7 +25,7 @@ import logging
 import logging.handlers
 
 _handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
-logging.basicConfig(handlers=[_handler], level=logging.DEBUG)
+logging.basicConfig(handlers=[_handler], level=logging.INFO)
 logging.info("Logging initialized for listbuilder module.")
 
 import argparse
