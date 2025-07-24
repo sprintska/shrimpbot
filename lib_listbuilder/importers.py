@@ -561,7 +561,7 @@ def import_from_vlog(config):
         b_vlog = vlog.read()
 
     xor_key_str = b_vlog[5:7]
-    if xor_key.isdigit():
+    if xor_key_str.isdigit():
         xor_key = int(xor_key_str, 16)
     else:
         logging.info(
@@ -586,3 +586,5 @@ def import_from_vlog(config):
     with open(config.vlb_path, "w") as vlb:
         vlb.write(xor_key_str + "\r\n")
         vlb.write(clear)
+
+    return (True, config.vlb_path)
