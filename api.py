@@ -8,15 +8,14 @@ import listbuilder
 import logging
 import logging.handlers
 import os
-import sqlite3
 import time
 
-_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
+_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/api.log")
 logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 logging.info("API start...")
 
-ROOT_PATH = "./"
+ROOT_PATH = os.path.dirname(__file__)
 
 
 guid_hash = hashlib.new("md5")
@@ -33,6 +32,13 @@ databasepath = os.path.join(ROOT_PATH, "vlb_pieces.vlo")
 conn = databasepath
 
 app = flask.Flask(__name__)
+
+listbuilder_config = listbuilder.get_default_config()
+listbuilder_config.pwd = ROOT_PATH
+listbuilder_config.vlog_path = vlogfilepath
+listbuilder_config.vlb_path = vlbfilepath
+listbuilder_config.working_dir = workingpath
+listbuilder_config.db_path = databasepath
 
 
 @app.route("/api/v1/listbuilder/", methods=["POST"])
@@ -51,10 +57,8 @@ def home():
     if "gimme" in request.args:
         fleet_list_filestorage = request.files["upload_file"]
         liststr = fleet_list_filestorage.read().decode()
-
-        success, last_item = listbuilder.import_from_list(
-            liststr, vlbfilepath, workingpath, conn
-        )
+        listbuilder_config.fleet = liststr
+        success, last_item = listbuilder.import_from_list(listbuilder_config)
 
         if success:
             listbuilder.export_to_vlog(vlogfilepath, vlbfilepath, workingpath)

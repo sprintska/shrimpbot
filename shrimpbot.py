@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import asyncio
 import cardpop
 import discord
 import hashlib
@@ -9,12 +8,9 @@ import logging
 import logging.handlers
 import os
 import random
-import re
 import requests
 import shutil
-import sqlite3
 import time
-import update_listbuilder
 
 from discord import emoji
 from discord.ext import commands
