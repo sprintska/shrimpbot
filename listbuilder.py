@@ -21,9 +21,14 @@ Example usage (as a module):
 
 """
 
-import argparse
 import logging
 import logging.handlers
+
+_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
+logging.basicConfig(handlers=[_handler], level=logging.DEBUG)
+logging.info("Logging initialized for listbuilder module.")
+
+import argparse
 import os
 import shutil
 
@@ -36,9 +41,6 @@ from lib_listbuilder.importers import (
     import_from_vlog,
 )
 from lib_listbuilder.utils import zipall
-
-_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
-logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 
 class ShrimpConfig:
@@ -155,7 +157,7 @@ def identify_format(fleet_text):
     return max(formats.keys(), key=(lambda x: formats[x]))
 
 
-def import_from_list(config, isvlog=False):
+def import_from_list(config):
     """Imports a fleet list from a file or string into a VASSAL Listbuilder (VLB) format."""
 
     conn = config.db_path
@@ -171,8 +173,9 @@ def import_from_list(config, isvlog=False):
         "vlog": import_from_vlog,
     }
 
-    if isvlog:
-        import_from_vlog(config.fleet, output_to, working_path, conn)
+    if config.import_vlog:
+        logging.debug(f"Importing from VLOG {config.fleet}.")
+        return import_from_vlog(config)
     else:
         if os.path.exists(config.fleet):
             logging.info(config.fleet)
@@ -182,10 +185,10 @@ def import_from_list(config, isvlog=False):
             fleet_text = config.fleet
 
         fmt = identify_format(fleet_text)
-        success, f = ingest_format[fmt](fleet_text, config)
+        success, fleet = ingest_format[fmt](fleet_text, config)
 
         if not success:
-            return (success, f)
+            return (success, fleet)
 
         os.makedirs(os.path.dirname(output_to), exist_ok=True)
         with open(output_to, "w") as vlb:
@@ -198,18 +201,37 @@ def import_from_list(config, isvlog=False):
                 + "LOG\tCHAT<Listbuilder> - "
                 + "https://discord.gg/jY4K4d6{}\r\n\r\n".format(chr(27))
             )
-            for s in f.ships:
-                vlb.write(s.shipcard.content + chr(27))
-                vlb.write(s.shiptoken.content + chr(27))
-                vlb.write(s.shipcmdstack.content + chr(27))
-                [vlb.write(u.content + chr(27)) for u in s.upgrades]
-            for sq in f.squadrons:
+            for ship in fleet.ships:
+                logging.debug(
+                    'Writing shipcard "{}" to VLB: {}'.format(
+                        ship.shipclass, ship.shipcard.content[:50]
+                    )
+                )
+                vlb.write(ship.shipcard.content + chr(27))
+
+                logging.debug(
+                    'Writing shiptoken "{}" to VLB: {}'.format(
+                        ship.shipclass, ship.shiptoken.content[:50]
+                    )
+                )
+                vlb.write(ship.shiptoken.content + chr(27))
+
+                logging.debug(
+                    "Writing shipcmdstack to VLB: {}".format(
+                        ship.shipcmdstack.content[:50]
+                    )
+                )
+                vlb.write(ship.shipcmdstack.content + chr(27))
+
+                logging.debug("Writing upgrades to VLB.")
+                [vlb.write(u.content + chr(27)) for u in ship.upgrades]
+            for sq in fleet.squadrons:
                 vlb.write(sq.squadroncard.content + chr(27))
                 vlb.write(sq.squadrontoken.content + chr(27))
-            for o in f.objectives:
-                vlb.write(f.objectives[o].content + chr(27))
+            for objective in fleet.objectives:
+                vlb.write(fleet.objectives[objective].content + chr(27))
 
-        return (True, None)
+        return (True, output_to)
 
 
 def export_to_vlog(config):
