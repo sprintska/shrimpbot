@@ -1,5 +1,9 @@
 import logging
 import logging.handlers
+
+_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
+logging.basicConfig(handlers=[_handler], level=logging.DEBUG)
+
 import re
 import sqlite3
 
@@ -8,9 +12,6 @@ from .definitions import (
     nomenclature_translation,
     ambiguous_names,
 )
-
-_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
-logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 
 class Fleet:
@@ -102,33 +103,33 @@ class Fleet:
     def add_ship(self, shipclass):
         shipclass = scrub_piecename(shipclass)
         if shipclass in nomenclature_translation:
-            sc = nomenclature_translation[shipclass]
+            shipclass_canon = nomenclature_translation[shipclass]
             logging.info(
                 "[-] Translated {} to {} - in listbuilder.Fleet.add_ship().".format(
-                    shipclass, sc
+                    shipclass, shipclass_canon
                 )
             )
-            shipclass = sc
+            shipclass = shipclass_canon
 
-        s = Ship(shipclass, self, self.config)
+        ship = Ship(shipclass, self, self.config)
         self.x += self.upgrade_to_ship_padding
-        s.set_coords([str(self.x), str(self.ship_y)])
-        s.shipcard.set_coords([str(self.x), str(self.ship_y)])
-        s.shipcmdstack.set_coords(
+        ship.set_coords([str(self.x), str(self.ship_y)])
+        ship.shipcard.set_coords([str(self.x), str(self.ship_y)])
+        ship.shipcmdstack.set_coords(
             [
                 str(self.x + self.cmdstack_to_shipcard_x_offset),
                 str(self.ship_y + self.cmdstack_to_shipcard_y_offset),
             ]
         )
         self.x += self.shipcard_to_shiptoken_x_padding
-        s.shiptoken.set_coords(
+        ship.shiptoken.set_coords(
             [str(self.x), str(self.ship_y + self.shipcard_to_shiptoken_y_padding)]
         )
         self.x += self.ship_to_uprgade_padding
         self.u_row = 1
 
-        self.ships.append(s)
-        return s
+        self.ships.append(ship)
+        return ship
 
     def remove_ship(self, ship):
         self.ships.remove(ship)
@@ -323,18 +324,18 @@ class Ship(Piece):
 class ShipCard(Piece):
     """A shipcard of type str(shipname) as defined in sqlite db."""
 
-    def __init__(self, shipname, config):
+    def __init__(self, shipclass, config):
         super().__init__(config)
-        self.shipname = scrub_piecename(str(shipname))
+        self.shipclass = scrub_piecename(str(shipclass))
 
-        (self.content, self.shiptype) = self._fetch_content(
+        (self.content, self.shiptoken_name) = self._fetch_content(
             piecetype="shipcard",
-            piecename=self.shipname,
+            piecename=self.shipclass,
             select_fields="content,catchall",
             like=False,
         )
 
-        self.shiptoken = ShipToken(self.shiptype, self.config)
+        self.shiptoken = ShipToken(self.shiptoken_name, self.config)
 
         self._replace_placeholders()
 
@@ -349,26 +350,37 @@ class ShipCard(Piece):
 class ShipToken(Piece):
     """A ship token of type str(shiptype) as defined in sqlite db."""
 
-    def __init__(self, shiptype, config):
+    def __init__(self, shiptoken_name, config):
         super().__init__(config)
 
-        self.shiptype = scrub_piecename(str(shiptype))
+        logging.debug(f"Creating shiptoken for {shiptoken_name}.")
+        self.shiptoken_name = scrub_piecename(str(shiptoken_name))
 
-        if self.shiptype in nomenclature_translation:
-            translated_shiptype = nomenclature_translation[self.shiptype]
+        if self.shiptoken_name in nomenclature_translation:
+            canon_shiptoken_name = nomenclature_translation[self.shiptoken_name]
             logging.info(
                 "[-] Translated {} to {} - in listbuilder.ShipToken.".format(
-                    self.shiptype, translated_shiptype
+                    self.shiptoken_name, canon_shiptoken_name
                 )
             )
-            self.shiptype = translated_shiptype
+            self.shiptoken_name = canon_shiptoken_name
 
+        logging.debug(
+            'Fetching content for ship token "{}" from database.'.format(
+                self.shiptoken_name
+            )
+        )
         self.content = self._fetch_content(
             piecetype="ship",
-            piecename=self.shiptype,
+            piecename=self.shiptoken_name,
             select_fields="content",
             like=False,
         )[0]
+        logging.debug(
+            "Content nominally fetched successfully. Looks like:\n{}".format(
+                self.content[:50]
+            )
+        )
 
         self._replace_placeholders()
 
