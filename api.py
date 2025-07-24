@@ -61,7 +61,7 @@ def home():
         success, last_item = listbuilder.import_from_list(listbuilder_config)
 
         if success:
-            listbuilder.export_to_vlog(vlogfilepath, vlbfilepath, workingpath)
+            listbuilder.export_to_vlog(listbuilder_config)
             out = send_file(vlogfilepath)
         else:
             out = "BROKEN - {}".format(str(last_item))
