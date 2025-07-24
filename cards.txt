@@ -589,7 +589,7 @@ w5_cpt_major-derlin.png;MAJOR DERLIN REBEL OFFICER
 w5_cpt_minister-tua.png;MINISTER TUA IMPERIAL OFFICER
 w2_cpt_navigation-officer.png;NAVIGATION OFFICER
 w10_cpt_passel-argente.png;PASSEL ARGENTE SEPARATIST CIS OFFICER
-w8_cpt_wedge-antilles.png;RAYMUS ANTILLES REBEL OFFICER
+w1_cpt_raymus-antilles.png;RAYMUS ANTILLES REBEL OFFICER
 w8_cpt_reeva-demesne.png;REEVA DEMESNE IMPERIAL OFFICER
 w9_cpt_rune-haako.png;RUNE HAAKO SEPARATIST CIS OFFICER
 w_rim_cpt_sabine-wren.png;SABINE WREN REBEL OFFICER
