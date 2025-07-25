@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 
+import logging
+import logging.handlers
+
+_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/api.log")
+logging.basicConfig(handlers=[_handler], level=logging.INFO)
+
 import argparse
 import base64
 import flask
 from flask import request, jsonify, send_file
 import hashlib
 import listbuilder
-import logging
-import logging.handlers
 import os
 import time
-
-_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/api.log")
-logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 logging.info("API start...")
 
