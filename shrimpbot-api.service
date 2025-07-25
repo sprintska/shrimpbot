@@ -1,0 +1,12 @@
+[Unit]
+Description=Shrimpbot REST API
+After=network.target
+
+[Service]
+User=ardaedhel
+Group=www-data
+WorkingDirectory=/opt/shrimpbot
+ExecStart=/opt/shrimpbot/.venv/shrimpbot/bin/gunicorn --workers 3 --bind 127.0.0.1:1138 wsgi:app
+
+[Install]
+WantedBy=multi-user.target

@@ -80,6 +80,6 @@ if __name__ == "__main__":
     parser.add_argument("-d", help="debug moad", action="store_true")
     args = parser.parse_args()
 
-    app.config["DEBUG"] = True
+    app.config["DEBUG"] = False
 
     app.run(host="0.0.0.0")
