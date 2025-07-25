@@ -47,7 +47,7 @@ def home():
 
     if "help" in request.args:
         out = str("This is the help text for the API.\r\n")
-    if "list" in request.args:
+    else:
         # Expecting a form field called 'fleet_b64' with a base64-encoded Vassal fleet list.
         if "fleet_b64" not in request.form:
             out = "Missing 'fleet_b64' field in form data."
