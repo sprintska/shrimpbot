@@ -40,22 +40,26 @@ app = flask.Flask(__name__)
 @app.route("/api/vassal/list", methods=["POST"])
 def home():
 
-    out = "Sorry, looks like there was an error.\r\n"
+    utc_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    logging.info(
+        f"[{utc_now}] API call: {request.method} {request.path} from {request.remote_addr}"
+    )
+
+    out = "Failed\n"
 
     logging.info(request.args)
     logging.info(request.form)
 
     if "help" in request.args:
-        out = str("This is the help text for the API.\r\n")
+        out = str("Under Construction.\n")
     else:
         # Expecting a form field called 'fleet_b64' with a base64-encoded Vassal fleet list.
         if "fleet_b64" not in request.form:
-            out = "Missing 'fleet_b64' field in form data."
+            logging.error("Missing 'fleet_b64' field in form data.")
             return out
         try:
             liststr = base64.b64decode(request.form["fleet_b64"]).decode()
         except Exception as e:
-            out = f"Error decoding 'fleet_b64'."
             logging.error(f"Error decoding 'fleet_b64': {str(e)}")
             return out
 
@@ -65,10 +69,6 @@ def home():
         if success:
             listbuilder.export_to_vlog(listbuilder_config)
             out = send_file(listbuilder_config.vlog_path, as_attachment=True)
-        else:
-            out = "List generation failed, believe the error is this line: '{}'".format(
-                str(last_item)
-            )
 
     print(out)
     return out
@@ -80,6 +80,9 @@ if __name__ == "__main__":
     parser.add_argument("-d", help="debug moad", action="store_true")
     args = parser.parse_args()
 
-    app.config["DEBUG"] = False
+    if args.d:
+        app.config["DEBUG"] = True
+    else:
+        app.config["DEBUG"] = False
 
     app.run(host="0.0.0.0")
