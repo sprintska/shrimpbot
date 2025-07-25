@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import base64
 import flask
 from flask import request, jsonify, send_file
 import hashlib
@@ -22,52 +23,54 @@ guid_hash = hashlib.new("md5")
 guid_hash.update(str(time.time()).encode())
 guid = guid_hash.hexdigest()[0:16]
 
-workingpath = os.path.join(ROOT_PATH, "working/")
+listbuilder_config = listbuilder.get_default_config()
+listbuilder_config.pwd = ROOT_PATH
+listbuilder_config.working_dir = os.path.join(ROOT_PATH, "working/")
 outpath = os.path.join(ROOT_PATH, "out/")
-vlbdirpath = os.path.join(ROOT_PATH, "vlb/")
-vlbfilepath = os.path.join(vlbdirpath, guid + ".vlb")
-vlogfilepath = os.path.join(outpath, guid + ".vlog")
-databasepath = os.path.join(ROOT_PATH, "vlb_pieces.vlo")
+listbuilder_config.vlb_path = os.path.join(
+    listbuilder_config.pwd, "vlb/", f"{guid}.vlb"
+)
+listbuilder_config.vlog_path = os.path.join(outpath, guid + ".vlog")
+listbuilder_config.db_path = os.path.join(ROOT_PATH, "vlb_pieces.vlo")
 
-conn = databasepath
 
 app = flask.Flask(__name__)
 
-listbuilder_config = listbuilder.get_default_config()
-listbuilder_config.pwd = ROOT_PATH
-listbuilder_config.vlog_path = vlogfilepath
-listbuilder_config.vlb_path = vlbfilepath
-listbuilder_config.working_dir = workingpath
-listbuilder_config.db_path = databasepath
 
-
-@app.route("/api/v1/listbuilder/", methods=["POST"])
+@app.route("/api/vassal/list", methods=["POST"])
 def home():
 
     out = "Sorry, looks like there was an error.\r\n"
 
     logging.info(request.args)
-    logging.info(request.files)
+    logging.info(request.form)
 
-    [(arg) for arg in request.args]
-    if "list" in request.args:
-        out = "{}{}\r\n".format(out, str(request.args["list"]))
     if "help" in request.args:
-        out = str(request.__dir__())
-    if "gimme" in request.args:
-        fleet_list_filestorage = request.files["upload_file"]
-        liststr = fleet_list_filestorage.read().decode()
+        out = str("This is the help text for the API.\r\n")
+    if "list" in request.args:
+        # Expecting a form field called 'fleet_b64' with a base64-encoded Vassal fleet list.
+        if "fleet_b64" not in request.form:
+            out = "Missing 'fleet_b64' field in form data."
+            return out
+        try:
+            liststr = base64.b64decode(request.form["fleet_b64"]).decode()
+        except Exception as e:
+            out = f"Error decoding 'fleet_b64'."
+            logging.error(f"Error decoding 'fleet_b64': {str(e)}")
+            return out
+
         listbuilder_config.fleet = liststr
         success, last_item = listbuilder.import_from_list(listbuilder_config)
 
         if success:
             listbuilder.export_to_vlog(listbuilder_config)
-            out = send_file(vlogfilepath)
+            out = send_file(listbuilder_config.vlog_path, as_attachment=True)
         else:
-            out = "BROKEN - {}".format(str(last_item))
+            out = "List generation failed, believe the error is this line: '{}'".format(
+                str(last_item)
+            )
 
     print(out)
-
     return out
 
 
