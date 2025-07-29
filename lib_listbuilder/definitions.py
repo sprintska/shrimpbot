@@ -48,6 +48,7 @@ vassal_nomenclature_errors = {
     "modifiedpeltaclassassaultship": "peltaclassassaultship",
     "modifiedpeltaclasscommandship": "peltaclasscommandship",
     "obiwankenobi": "obiwankenobicom",
+    "oddballarc170starfightersquadron": "oddballarc170",
     "providenceclasscarrier": "providencecarrier",
     "providenceclasscarrierreb": "providencecarrierreb",
     "providenceclassdreadnought": "providencedreadnought",
@@ -153,6 +154,7 @@ listbuilder_nomenclature_errors = {
     "x17turbolasers": "xi7turbolasers",
     # SQUADRON EXTENDED NOMENCLATURE TRANSLATION
     "axe": "axev19torrent",
+    "axev19torrentsquadron": "axev19torrent",
     "baktoidprototypes": "baktoidprototypeshyenabomber",
     "biggsdarklighter": "biggsdarklighterxwing",
     "blacksquadron": "blacksquadrontiefighter",
