@@ -82,6 +82,7 @@ listbuilder_nomenclature_errors = {
     "acclamatoriiclass": "acclamatoriiclassassaultship",
     "admiralozzelcom": "admiralozzel",
     "ahsokatanooff": "ahsokatano",
+    "ahsokatanodelta7aetherspritesquadron": "ahsokatanodelta7",
     "anakinskywalkerbtlb": "anakinskywalkerbtlbywing",
     "anakinskywalkerdelta": "anakinskywalkerdelta7",
     "anakinskywalkeryrep": "anakinskywalkerbtlbywing",
