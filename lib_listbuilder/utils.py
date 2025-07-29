@@ -34,7 +34,7 @@ def scrub_piecename(piecename):
 
     piecename = piecename.replace("\\/", "").split("/")[0].split(";")[-1]
 
-    scrub_these = " :!-'(),\"+.\t\r\n·[]" + "\u2022"
+    scrub_these = " :!-'(),\"+.\t\r\n·[]{}" + "\u2022"
     for char in scrub_these:
         piecename = piecename.replace(char, "")
 

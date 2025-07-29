@@ -1,5 +1,4 @@
 import logging
-import logging.handlers
 import os
 import re
 import sqlite3
@@ -11,9 +10,7 @@ from .definitions import (
 from .fleet import Fleet
 from .utils import scrub_piecename, unzipall
 
-
-_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
-logging.basicConfig(handlers=[_handler], level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def import_from_fabs(import_list, config):
@@ -25,7 +22,7 @@ def import_from_fabs(import_list, config):
     last_line = ""
 
     for line in import_list.split("\n"):
-        logging.info(line)
+        logger.info(line)
         last_line = line
 
         try:
@@ -57,13 +54,13 @@ def import_from_fabs(import_list, config):
                         this_line = scrub_piecename(this_line)
                         if this_line in nomenclature_translation:
                             corrected_piecename = nomenclature_translation[this_line]
-                            logging.info(
+                            logger.debug(
                                 "[-] Translated {} to {} - Fab's.".format(
                                     this_line, corrected_piecename
                                 )
                             )
                             this_line = corrected_piecename
-                        logging.info(
+                        logger.debug(
                             "Searching for Fab's piece {} in {}".format(
                                 scrub_piecename(this_line), str(config.db_path)
                             )
@@ -77,7 +74,7 @@ def import_from_fabs(import_list, config):
                                     ("%" + scrub_piecename(this_line) + "%",),
                                 ).fetchall()
                         except ValueError as err:
-                            logging.exception(err)
+                            logger.exception(err)
 
                         try:
                             with sqlite3.connect(config.db_path) as connection:
@@ -88,7 +85,7 @@ def import_from_fabs(import_list, config):
                                     ("%" + scrub_piecename(this_line),),
                                 ).fetchall()
                         except ValueError as err:
-                            logging.exception(err)
+                            logger.exception(err)
 
                         try:
                             if this_line.lower()[-8::] == "squadron":
@@ -101,7 +98,7 @@ def import_from_fabs(import_list, config):
                                         ("%" + scrub_piecename(ltmp) + "%",),
                                     ).fetchall()
                         except ValueError as err:
-                            logging.exception(err)
+                            logger.exception(err)
 
                         if bool(issquadron):
                             # sq = f.add_squadron(l.strip())
@@ -111,13 +108,13 @@ def import_from_fabs(import_list, config):
                         elif bool(isship):
                             ship = fleet.add_ship(this_line.strip())
                         else:
-                            logging.info(
+                            logger.error(
                                 "{}{} IS FUCKED UP, YO{}".format(
                                     "=" * 40, this_line, "=" * 40
                                 )
                             )
         except Exception as err:
-            logging.exception(err)
+            logger.exception(err)
             return (False, last_line)
 
     return (True, fleet)
@@ -133,12 +130,10 @@ def import_from_warlords(import_list, config):
     shipnext = False
     is_flagship = False
 
-    logging.info("Warlords")
-
     # Set the flag if it looks like Flagship format to enable the custom error
     flagship_regex = re.compile(r"\)\n= [\d]{1,3} points\n")
     if flagship_regex.search(import_list):
-        logging.info("[!] FLAGSHIP LIST -- UNSUPPORTED!")
+        logger.debug("[!] FLAGSHIP LIST -- UNSUPPORTED!")
         is_flagship = True
 
     # Make sure the cretinous user isn't just schwacking off all the garbage at
@@ -148,9 +143,9 @@ def import_from_warlords(import_list, config):
 
     ship_check = import_list.split("\n")[0].strip()
     if ship_regex.search(ship_check):
-        logging.info("Ship check regex hit on: " + str(ship_regex.search(ship_check)))
+        logger.debug("Ship check regex hit on: " + str(ship_regex.search(ship_check)))
         ship_check = ship_check.split()[0]
-        logging.info(
+        logger.debug(
             "SELECT piecetype FROM pieces where piecename LIKE %"
             + scrub_piecename(ship_check)
             + "%"
@@ -168,10 +163,10 @@ def import_from_warlords(import_list, config):
         card_name = line.strip()
         last_line = card_name
 
-        logging.info(card_name)
+        logger.debug(card_name)
 
         try:
-            logging.info(card_name.split())
+            logger.debug(card_name.split())
 
             if len(card_name.split()) <= 1:
                 shipnext = True
@@ -201,7 +196,7 @@ def import_from_warlords(import_list, config):
                         squadron = squadron[:-1]
                 if (squadron, cost) in ambiguous_names:
                     squadron_new = ambiguous_names[(squadron, cost)][0]
-                    logging.info(
+                    logger.debug(
                         "Ambiguous name {} ({}) translated to {}.".format(
                             squadron, cost, squadron_new
                         )
@@ -221,7 +216,7 @@ def import_from_warlords(import_list, config):
                 cost = scrub_piecename(cost.split()[0])
                 if (ship, cost) in ambiguous_names:
                     ship_new = ambiguous_names[(ship, cost)][0]
-                    logging.info(
+                    logger.debug(
                         "Ambiguous name {} ({}) translated to {}.".format(
                             ship, cost, ship_new
                         )
@@ -236,7 +231,7 @@ def import_from_warlords(import_list, config):
                 cost = scrub_piecename(cost.split()[0])
                 if (upgrade, cost) in ambiguous_names:
                     upgrade_new = ambiguous_names[(upgrade, cost)][0]
-                    logging.info(
+                    logger.debug(
                         "Ambiguous name {} ({}) translated to {}.".format(
                             upgrade, cost, upgrade_new
                         )
@@ -245,7 +240,7 @@ def import_from_warlords(import_list, config):
                 _ = s.add_upgrade(upgrade)
                 shipnext = False
         except Exception as err:
-            logging.exception(err)
+            logger.exception(err)
             if is_flagship:
                 last_line = (
                     last_line
@@ -271,10 +266,11 @@ def import_from_afd(import_list, config):
     obj_category = "assault"
 
     for line in import_list.strip().split("\n"):
+        logger.info(line)
         try:
             last_line = line.strip()
             card_name = line.strip().split(" x ", 1)[-1]
-            logging.info(card_name)
+            logger.debug(card_name)
 
             if card_name.startswith("==="):
                 start = True
@@ -289,34 +285,34 @@ def import_from_afd(import_list, config):
                     # translation because the ambiguity may be in either the
                     # fleetbuilder or the canon name.
 
-                    logging.info(
+                    logger.debug(
                         "Checking {} ({}) for ambiguity.".format(upgrade, cost)
                     )
                     if (upgrade, cost) in ambiguous_names:
                         translated = ambiguous_names[(upgrade, cost)][0]
-                        logging.info(
+                        logger.debug(
                             "Ambiguous name {} ({}) translated to {}.".format(
                                 upgrade, cost, translated
                             )
                         )
                         upgrade = translated
 
-                    logging.info(
+                    logger.debug(
                         "Checking {} ({}) for nomenclature.".format(upgrade, cost)
                     )
                     if upgrade in nomenclature_translation:
                         translated = nomenclature_translation[upgrade]
-                        logging.info(
+                        logger.debug(
                             "[-] Translated {} to {} - AFD.".format(upgrade, translated)
                         )
                         upgrade = translated
 
-                    logging.info(
+                    logger.debug(
                         "Checking {} ({}) for ambiguity.".format(upgrade, cost)
                     )
                     if (upgrade, cost) in ambiguous_names:
                         translated = ambiguous_names[(upgrade, cost)][0]
-                        logging.info(
+                        logger.debug(
                             "Ambiguous name {} ({}) translated to {}.".format(
                                 upgrade, cost, translated
                             )
@@ -349,38 +345,38 @@ def import_from_afd(import_list, config):
                         # translation because the ambiguity may be in either the
                         # fleetbuilder or the canon name.
 
-                        logging.info(
+                        logger.debug(
                             "Checking {} ({}) for ambiguity.".format(card_name, cost)
                         )
                         if (card_name, cost) in ambiguous_names:
                             card_name_new = ambiguous_names[(card_name, cost)][0]
-                            logging.info(
+                            logger.debug(
                                 "Ambiguous name {} ({}) translated to {}.".format(
                                     card_name, cost, card_name_new
                                 )
                             )
                             card_name = card_name_new
-                        logging.info(
+                        logger.debug(
                             "Checking {} ({}) for nomenclature.".format(card_name, cost)
                         )
                         if card_name in nomenclature_translation:
                             t = nomenclature_translation[card_name]
-                            logging.info(
+                            logger.debug(
                                 "[-] Translated {} to {} - AFD.".format(card_name, t)
                             )
                             card_name = t
-                        logging.info(
+                        logger.debug(
                             "Checking {} ({}) for ambiguity.".format(card_name, cost)
                         )
                         if (card_name, cost) in ambiguous_names:
                             card_name_new = ambiguous_names[(card_name, cost)][0]
-                            logging.info(
+                            logger.debug(
                                 "Ambiguous name {} ({}) translated to {}.".format(
                                     card_name, cost, card_name_new
                                 )
                             )
                             card_name = card_name_new
-                        logging.info(
+                        logger.debug(
                             "Searching for AFD piece {} in {}".format(
                                 scrub_piecename(card_name), str(config.db_path)
                             )
@@ -393,10 +389,10 @@ def import_from_afd(import_list, config):
                                 ("%" + scrub_piecename(card_name) + "%",),
                             ).fetchall()
                     except ValueError as err:
-                        logging.exception(err)
+                        logger.exception(err)
 
                     try:
-                        logging.info(
+                        logger.debug(
                             "Searching for AFD piece {} in {}".format(
                                 card_name, str(config.db_path)
                             )
@@ -409,20 +405,20 @@ def import_from_afd(import_list, config):
                                 ("%" + card_name,),
                             ).fetchall()
                     except ValueError as err:
-                        logging.exception(err)
+                        logger.exception(err)
 
                     if bool(issquadron):
                         _ = fleet.add_squadron(card_name)
                     elif bool(isship):
                         ship = fleet.add_ship(card_name)
                     else:
-                        logging.info(
+                        logger.debug(
                             "{}{} IS FUCKED UP, YO{}".format(
                                 "=" * 40, card_name, "=" * 40
                             )
                         )
         except Exception as err:
-            logging.exception(err)
+            logger.exception(err)
             return (False, last_line)
 
     return (True, fleet)
@@ -433,15 +429,18 @@ def import_from_kingston(import_list, config):
 
     fleet = Fleet("Food", config=config)
 
-    logging.info("Fleet created with database {}.".format(str(config.db_path)))
+    logger.debug("Fleet created with database {}.".format(str(config.db_path)))
 
     shipnext = True
     faction = None
 
     for line in import_list.split("\n"):
+
+        logger.info(line)
+
         try:
             card_name = line.replace("â€¢", "\u2022").strip()
-            logging.info(card_name)
+            logger.debug(card_name)
             last_line = card_name
 
             if card_name:
@@ -450,17 +449,18 @@ def import_from_kingston(import_list, config):
                     "Commander",
                     "Author",
                     "Version",
+                    "Gamemode",
                 ]:
                     pass
 
                 # Track faction to disambiguate Venator-II variants later
                 elif card_name.split(":")[0].strip() == "Faction":
                     faction = card_name.split(":")[-1].strip()
-                    logging.info("Faction identified: {}".format(faction))
+                    logger.debug("Faction identified: {}".format(faction))
 
                 elif card_name.split(":")[0] in ["Assault", "Defense", "Navigation"]:
                     if card_name.strip()[-1] != ":":
-                        logging.info("{}".format(card_name))
+                        logger.debug("{}".format(card_name))
                         _ = fleet.add_objective(
                             card_name.split(":")[0].lower().strip(),
                             card_name.split(":")[1].lower().strip(),
@@ -468,7 +468,7 @@ def import_from_kingston(import_list, config):
 
                 elif shipnext:
                     if card_name.lower().strip() == "squadrons:":
-                        logging.info("Squadrons next")
+                        logger.debug("Squadrons next")
                         shipnext = False
 
                     elif "\u2022" in card_name:
@@ -478,7 +478,7 @@ def import_from_kingston(import_list, config):
 
                         if (card_name, cost) in ambiguous_names:
                             card_name_new = ambiguous_names[(card_name, cost)][0]
-                            logging.info(
+                            logger.debug(
                                 "Ambiguous name {} ({}) translated to {}.".format(
                                     card_name, cost, card_name_new
                                 )
@@ -494,12 +494,12 @@ def import_from_kingston(import_list, config):
                         # Can't disambiguate either Venator-II OR VicI on cost, because both variants are identical *sigh*
                         if faction == "Imperial":
                             if card_name == "Venator II (100)":
-                                logging.info(
+                                logger.debug(
                                     "[Debug] Found Imperial Venator.  Setting card name."
                                 )
                                 card_name = "Venator II Imp"
                             elif card_name == "Victory I (73)":
-                                logging.info(
+                                logger.debug(
                                     "[Debug] Found Imperial Victory.  Setting card name."
                                 )
                                 card_name = "Victory I Imp"
@@ -513,7 +513,7 @@ def import_from_kingston(import_list, config):
 
                     if (card_name, cost) in ambiguous_names:
                         card_name_new = ambiguous_names[(card_name, cost)][0]
-                        logging.info(
+                        logger.debug(
                             "Ambiguous name {} ({}) translated to {}.".format(
                                 card_name, cost, card_name_new
                             )
@@ -522,7 +522,7 @@ def import_from_kingston(import_list, config):
 
                     _ = fleet.add_squadron(card_name)
         except Exception as err:
-            logging.exception(err)
+            logger.exception(err)
             return (False, last_line)
 
     return (True, fleet)
@@ -535,7 +535,7 @@ def import_from_aff(import_list, config):
 
     # with open(import_list) as aff_in:
     for line in import_list.split("\n"):
-        logging.info(line)
+        logger.debug(line)
         # for line in aff_in.readlines():
 
         if line.lower().startswith("ship:"):
@@ -564,7 +564,7 @@ def import_from_vlog(config):
     if xor_key_str.isdigit():
         xor_key = int(xor_key_str, 16)
     else:
-        logging.info(
+        logger.error(
             "VLOG {} is malformed: encountered an invalid XOR key.  Key {} is not a number.".format(
                 str(config.vlog_path), str(xor_key)
             )

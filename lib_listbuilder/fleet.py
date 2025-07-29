@@ -1,9 +1,4 @@
 import logging
-import logging.handlers
-
-_handler = logging.handlers.WatchedFileHandler("/var/log/shrimpbot/shrimp.log")
-logging.basicConfig(handlers=[_handler], level=logging.INFO)
-
 import re
 import sqlite3
 
@@ -12,6 +7,8 @@ from .definitions import (
     nomenclature_translation,
     ambiguous_names,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class Fleet:
@@ -84,7 +81,7 @@ class Fleet:
         if points.isdigit():
             self.points = int(points)
             return
-        logging.info("Failed to set points: '{}' cannot be converted to an integer.")
+        logger.info("Failed to set points: '{}' cannot be converted to an integer.")
         self.points = int(0)
         return
 
@@ -104,7 +101,7 @@ class Fleet:
         shipclass = scrub_piecename(shipclass)
         if shipclass in nomenclature_translation:
             shipclass_canon = nomenclature_translation[shipclass]
-            logging.info(
+            logger.info(
                 "[-] Translated {} to {} - in listbuilder.Fleet.add_ship().".format(
                     shipclass, shipclass_canon
                 )
@@ -138,7 +135,7 @@ class Fleet:
         squadronclass = scrub_piecename(squadronclass)
         if squadronclass in nomenclature_translation:
             sc = nomenclature_translation[squadronclass]
-            logging.info(
+            logger.info(
                 "[-] Translated {} to {} - in listbuilder.Fleet.add_squadron().".format(
                     squadronclass, sc
                 )
@@ -174,7 +171,7 @@ class Fleet:
 
         if objectivename in nomenclature_translation:
             ob = nomenclature_translation[objectivename]
-            logging.info(
+            logger.info(
                 "[-] Translated {} to {} - in listbuilder.Fleet.add_objective()".format(
                     objectivename, ob
                 )
@@ -188,8 +185,8 @@ class Fleet:
         if category.lower() in obj_categories:
             self.objectives[category] = Objective(objectivename, self.config)
         else:
-            logging.info("{} is not a valid objective type.".format(str(category)))
-            logging.info("Valid types are: {}".format(obj_categories))
+            logger.info("{} is not a valid objective type.".format(str(category)))
+            logger.info("Valid types are: {}".format(obj_categories))
 
         self.objectives[category].set_coords([str(self.obj_x), str(self.obj_y)])
         self.obj_x = self.obj_x + self.objective_to_objective_x_offset
@@ -231,8 +228,16 @@ class Piece:
         Returns a tuple of fields or raises RuntimeError if not found.
         """
 
-        logging.info(
-            'Searching for {} "{}" in {}'.format(piecetype, piecename, str(self.conn))
+        exactness = "exact" if not like else "inexact"
+
+        logger.info(
+            '[{}] Searching for {} {} matches to "{}" in {}'.format(
+                str(self.__class__).split(".")[-1].split("'")[0],
+                exactness,
+                piecetype,
+                piecename,
+                str(self.conn),
+            )
         )
 
         piecename = scrub_piecename(piecename)
@@ -241,11 +246,11 @@ class Piece:
         try:
             with sqlite3.connect(self.conn) as connection:
                 result = connection.execute(query, param).fetchall()
-            if len(result) == 1:
+            if len(result) >= 1:
                 return result[0]
-            logging.debug(f"Did not find {piecetype} {piecename}")
+            logger.debug(f"Did not find {piecetype} {piecename}")
         except Exception as err:
-            logging.exception(err)
+            logger.exception(err)
             raise
 
     def _replace_placeholders(self):
@@ -292,7 +297,7 @@ class Ship(Piece):
         upgradename = scrub_piecename(upgradename)
         if upgradename in nomenclature_translation:
             sc = nomenclature_translation[upgradename]
-            logging.info(
+            logger.info(
                 "[-] Translated {} to {} - in listbuilder.Ship.add_upgrade().".format(
                     upgradename, sc
                 )
@@ -353,19 +358,19 @@ class ShipToken(Piece):
     def __init__(self, shiptoken_name, config):
         super().__init__(config)
 
-        logging.debug(f"Creating shiptoken for {shiptoken_name}.")
+        logger.debug(f"Creating shiptoken for {shiptoken_name}.")
         self.shiptoken_name = scrub_piecename(str(shiptoken_name))
 
         if self.shiptoken_name in nomenclature_translation:
             canon_shiptoken_name = nomenclature_translation[self.shiptoken_name]
-            logging.info(
+            logger.info(
                 "[-] Translated {} to {} - in listbuilder.ShipToken.".format(
                     self.shiptoken_name, canon_shiptoken_name
                 )
             )
             self.shiptoken_name = canon_shiptoken_name
 
-        logging.debug(
+        logger.debug(
             'Fetching content for ship token "{}" from database.'.format(
                 self.shiptoken_name
             )
@@ -376,7 +381,7 @@ class ShipToken(Piece):
             select_fields="content",
             like=False,
         )[0]
-        logging.debug(
+        logger.debug(
             "Content nominally fetched successfully. Looks like:\n{}".format(
                 self.content[:50]
             )
@@ -433,6 +438,9 @@ class Squadron(Piece):
         super().__init__(config)
 
         self.squadronclass = scrub_piecename(str(squadronclass))  # "name" in .AFF
+        logger.debug(
+            f"Creating Squadron for {self.squadronclass} with config {self.config}."
+        )
         self.conn = self.config.db_path
         self.content = ""
         self.squadroncard = SquadronCard(self.squadronclass, self.config)

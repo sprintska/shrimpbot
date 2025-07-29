@@ -178,7 +178,7 @@ def import_from_list(config):
         return import_from_vlog(config)
     else:
         if os.path.exists(config.fleet):
-            logging.info(config.fleet)
+            logging.debug(config.fleet)
             with open(config.fleet) as fleet_list:
                 fleet_text = fleet_list.read()
         else:
