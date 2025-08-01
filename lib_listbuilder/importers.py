@@ -498,11 +498,12 @@ def import_from_kingston(import_list, config):
                                     "[Debug] Found Imperial Venator.  Setting card name."
                                 )
                                 card_name = "Venator II Imp"
-                            elif card_name == "Victory I (73)":
+                        if faction == "Republic":
+                            if card_name == "Victory I (73)":
                                 logger.debug(
-                                    "[Debug] Found Imperial Victory.  Setting card name."
+                                    "[Debug] Found Republic Victory.  Setting card name."
                                 )
-                                card_name = "Victory I Imp"
+                                card_name = "Victory I GAR"
                         ship = fleet.add_ship(card_name.split(" (", 1)[0].strip())
 
                 elif "\u2022" in card_name and card_name[0] != "=":
