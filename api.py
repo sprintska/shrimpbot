@@ -15,6 +15,9 @@ import listbuilder
 import os
 import time
 
+from collections import defaultdict, deque
+from threading import Lock
+
 logging.info("API start...")
 
 ROOT_PATH = os.path.dirname(__file__)
@@ -34,6 +37,8 @@ listbuilder_config.vlb_path = os.path.join(
 listbuilder_config.vlog_path = os.path.join(outpath, guid + ".vlog")
 listbuilder_config.db_path = os.path.join(ROOT_PATH, "vlb_pieces.vlo")
 
+# TODO: rate limiter
+
 
 app = flask.Flask(__name__)
 
@@ -42,34 +47,29 @@ app = flask.Flask(__name__)
 def home():
 
     utc_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    logging.info(
-        f"[{utc_now}] API call: {request.method} {request.path} from {request.remote_addr}"
-    )
+    logging.info(f"[{utc_now}] API call: {request.method} {request.path} from {src_ip}")
 
-    out = "Failed\n"
+    out = "Failed\n", 500
 
     logging.info(request.args)
     logging.info(request.form)
 
-    if "help" in request.args:
-        out = str("Under Construction.\n")
-    else:
-        # Expecting a form field called 'fleet_b64' with a base64-encoded Vassal fleet list.
-        if "fleet_b64" not in request.form:
-            logging.error("Missing 'fleet_b64' field in form data.")
-            return out
-        try:
-            liststr = base64.b64decode(request.form["fleet_b64"]).decode()
-        except Exception as e:
-            logging.error(f"Error decoding 'fleet_b64': {str(e)}")
-            return out
+    # Expecting a form field called 'fleet_b64' with a base64-encoded Vassal fleet list.
+    if "fleet_b64" not in request.form:
+        logging.error("Missing 'fleet_b64' field in form data.")
+        return out
+    try:
+        liststr = base64.b64decode(request.form["fleet_b64"]).decode()
+    except Exception as e:
+        logging.error(f"Error decoding 'fleet_b64': {str(e)}")
+        return out
 
-        listbuilder_config.fleet = liststr
-        success, last_item = listbuilder.import_from_list(listbuilder_config)
+    listbuilder_config.fleet = liststr
+    success, last_item = listbuilder.import_from_list(listbuilder_config)
 
-        if success:
-            listbuilder.export_to_vlog(listbuilder_config)
-            out = send_file(listbuilder_config.vlog_path, as_attachment=True)
+    if success:
+        listbuilder.export_to_vlog(listbuilder_config)
+        out = send_file(listbuilder_config.vlog_path, as_attachment=True)
 
     print(out)
     return out

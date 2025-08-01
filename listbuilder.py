@@ -301,6 +301,7 @@ def main():
     parser.add_argument("--imp", help="import a .vlog to a .vlb", action="store_true")
     parser.add_argument("--exp", help="export a .vlb to a .vlog", action="store_true")
     parser.add_argument("--impvlog", help="import a .vlog to .vlb", action="store_true")
+    parser.add_argument("--debug", help="verbose debug logging", action="store_true")
     args = parser.parse_args()
 
     config = ShrimpConfig(
@@ -313,6 +314,10 @@ def main():
         import_vlog=args.impvlog,
     )
     # fmt: on
+
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+        logging.debug("Debug mode enabled.")
 
     if args.imp:
         print(import_from_list(config))
