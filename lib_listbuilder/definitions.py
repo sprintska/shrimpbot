@@ -14,6 +14,7 @@ it on my side soooo...
 
 # "canon": "non-canon",
 vassal_nomenclature_errors = {
+    "adartalon": "adartallon",
     "admiralmottiarc": "admiralmotti",
     "admiralscreedarc": "admiralscreed",
     "ahsokatanodelta7aetherspritesquadron": "ahsokatanodelta7",
