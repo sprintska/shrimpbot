@@ -47,7 +47,9 @@ app = flask.Flask(__name__)
 def home():
 
     utc_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    logging.info(f"[{utc_now}] API call: {request.method} {request.path} from {src_ip}")
+    logging.info(
+        f"[{utc_now}] API call: {request.method} {request.path} from {request.remote_addr}"
+    )
 
     out = "Failed\n", 500
 
