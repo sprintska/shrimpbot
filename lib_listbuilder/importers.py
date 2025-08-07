@@ -197,7 +197,7 @@ def import_from_warlords(import_list, config):
                 cost = scrub_piecename(cost.split()[0])
                 if card_name.split()[0].isdigit:
                     if int(card_name.split()[0]) > 1:
-                        squadron = squadron[:-1]
+                        squadron = squadron.rstrip("s")
                 if (squadron, cost) in ambiguous_names:
                     squadron_new = ambiguous_names[(squadron, cost)][0]
                     logger.debug(
