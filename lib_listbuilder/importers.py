@@ -123,8 +123,6 @@ def import_from_fabs(import_list, config):
 def import_from_warlords(import_list, config):
     """Imports an Armada Warlords list into a Fleet object"""
 
-    conn = config.db_path
-
     fleet = Fleet("Food", config=config)
 
     shipnext = False
@@ -162,6 +160,12 @@ def import_from_warlords(import_list, config):
     for line in import_list.split("\n"):
         card_name = line.strip()
         last_line = card_name
+
+        if card_name.lower() in (
+            "view fleet here",
+            "fleet created with armada warlords",
+        ):
+            continue
 
         logger.debug(card_name)
 
