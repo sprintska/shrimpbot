@@ -10,6 +10,8 @@ import pathlib
 import re
 import requests
 import sqlite3
+import xml.etree.ElementTree as ET
+import zipfile
 
 
 def associated_token(piece_name, piece_type, vlb_content):
@@ -98,6 +100,32 @@ def check_for_new_version(
 
     logger.info(f"[+] Written and verified: {new_vmod_path}")
     return new_vmod_path
+
+
+def update_moduledata_template(vmod_path, template_path):
+    """Updates <version>, <VassalVersion>, and <dateSaved> in the moduledata
+    template from the vmod's own moduledata, preserving our custom fields."""
+
+    with zipfile.ZipFile(vmod_path) as z:
+        if "moduledata" not in z.namelist():
+            logger.warning(f"No moduledata found in {vmod_path}")
+            return
+        vmod_md = ET.fromstring(z.read("moduledata").decode("utf-8"))
+
+    template_tree = ET.parse(template_path)
+    template_root = template_tree.getroot()
+
+    for field in ("version", "VassalVersion", "dateSaved"):
+        src = vmod_md.find(field)
+        dst = template_root.find(field)
+        if src is not None and dst is not None:
+            dst.text = src.text
+
+    template_tree.write(template_path, encoding="unicode", xml_declaration=True)
+    logger.info(
+        f"[+] Updated moduledata template: version={template_root.find('version').text}"
+        f", VassalVersion={template_root.find('VassalVersion').text}"
+    )
 
 
 def create_db(db_path):

@@ -19,6 +19,7 @@ from libs.updater.utils import (
     create_db,
     most_recent_vmod_in_path,
     check_for_new_version,
+    update_moduledata_template,
 )
 from libs.updater.vassal_module import VassalModule
 
@@ -45,6 +46,10 @@ def main():
                 "To manually update, use:\n\n"
                 "\tupdate_listbuilder.py -m ./path/to/new_version.vmod"
             )
+        update_moduledata_template(
+            vmod_path,
+            os.path.join(_root, "var", "working", "moduledata"),
+        )
 
     armada_module = VassalModule(vmod_path)
 
