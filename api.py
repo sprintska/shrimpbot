@@ -37,7 +37,31 @@ listbuilder_config.vlb_path = os.path.join(
 listbuilder_config.vlog_path = os.path.join(outpath, guid + ".vlog")
 listbuilder_config.db_path = os.path.join(ROOT_PATH, "data", "vlb_pieces.vlo")
 
-# TODO: rate limiter
+RATE_LIMIT_WINDOW = 60  # seconds
+RATE_LIMIT_MAX = 5      # requests per window per IP
+
+_request_log = defaultdict(deque)
+_rate_lock = Lock()
+
+
+def _client_ip():
+    forwarded_for = request.headers.get("X-Forwarded-For")
+    if forwarded_for:
+        return forwarded_for.split(",")[0].strip()
+    return request.remote_addr
+
+
+def _is_rate_limited(ip):
+    now = time.time()
+    cutoff = now - RATE_LIMIT_WINDOW
+    with _rate_lock:
+        timestamps = _request_log[ip]
+        while timestamps and timestamps[0] < cutoff:
+            timestamps.popleft()
+        if len(timestamps) >= RATE_LIMIT_MAX:
+            return True
+        timestamps.append(now)
+        return False
 
 
 app = flask.Flask(__name__)
@@ -46,10 +70,15 @@ app = flask.Flask(__name__)
 @app.route("/api/vassal/list", methods=["POST"])
 def home():
 
+    ip = _client_ip()
     utc_now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     logging.info(
-        f"[{utc_now}] API call: {request.method} {request.path} from {request.remote_addr}"
+        f"[{utc_now}] API call: {request.method} {request.path} from {ip}"
     )
+
+    if _is_rate_limited(ip):
+        logging.warning(f"[{utc_now}] Rate limit exceeded for {ip}")
+        return "Rate limit exceeded. Please wait before trying again.\n", 429
 
     out = "Failed\n", 500
 
