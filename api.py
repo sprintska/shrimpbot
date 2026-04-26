@@ -13,6 +13,7 @@ from flask import request, jsonify, send_file
 import hashlib
 from libs.listbuilder import listbuilder
 import os
+import tempfile
 import time
 
 from collections import defaultdict, deque
@@ -31,9 +32,6 @@ listbuilder_config = listbuilder.get_default_config()
 listbuilder_config.pwd = ROOT_PATH
 listbuilder_config.working_dir = os.path.join(ROOT_PATH, "working/")
 outpath = os.path.join(ROOT_PATH, "out/")
-listbuilder_config.vlb_path = os.path.join(
-    listbuilder_config.pwd, "vlb/", f"{guid}.vlb"
-)
 listbuilder_config.vlog_path = os.path.join(outpath, guid + ".vlog")
 listbuilder_config.db_path = os.path.join(ROOT_PATH, "data", "vlb_pieces.vlo")
 
@@ -95,12 +93,21 @@ def home():
         logging.error(f"Error decoding 'fleet_b64': {str(e)}")
         return out
 
+    vlb_fd, vlb_path = tempfile.mkstemp(suffix=".vlb")
+    os.close(vlb_fd)
+    listbuilder_config.vlb_path = vlb_path
     listbuilder_config.fleet = liststr
-    success, last_item = listbuilder.import_from_list(listbuilder_config)
 
-    if success:
-        listbuilder.export_to_vlog(listbuilder_config)
-        out = send_file(listbuilder_config.vlog_path, as_attachment=True)
+    try:
+        success, last_item = listbuilder.import_from_list(listbuilder_config)
+        if success:
+            listbuilder.export_to_vlog(listbuilder_config)
+            out = send_file(listbuilder_config.vlog_path, as_attachment=True)
+    finally:
+        try:
+            os.unlink(vlb_path)
+        except OSError:
+            pass
 
     print(out)
     return out

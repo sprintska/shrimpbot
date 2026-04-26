@@ -10,6 +10,7 @@ import os
 import random
 import requests
 import shutil
+import tempfile
 import time
 
 from discord import emoji
@@ -485,10 +486,11 @@ async def on_message(message):
                 listbuilderpath = os.path.dirname(__file__)
                 workingpath = os.path.join(listbuilderpath, "working/")
                 outpath = os.path.join(listbuilderpath, "out/")
-                vlbdirpath = os.path.join(listbuilderpath, "vlb/")
-                vlbfilepath = os.path.join(vlbdirpath, guid + ".vlb")
                 vlogfilepath = os.path.join(outpath, guid + ".vlog")
                 databasepath = os.path.join(listbuilderpath, "data", "vlb_pieces.vlo")
+
+                vlb_fd, vlbfilepath = tempfile.mkstemp(suffix=".vlb")
+                os.close(vlb_fd)
 
                 listbuilder_config = listbuilder.get_default_config()
                 listbuilder_config.pwd = os.path.dirname(__file__)
@@ -498,33 +500,39 @@ async def on_message(message):
                 listbuilder_config.db_path = databasepath
                 listbuilder_config.fleet = liststr
 
-                success, last_item = listbuilder.import_from_list(listbuilder_config)
+                try:
+                    success, last_item = listbuilder.import_from_list(listbuilder_config)
 
-                if not success:
-                    logging.info("[!] LISTBUILDER ERROR | {}".format(last_item))
-                    await bot.get_user(BOT_OWNER_ID).send(
-                        "[!] LISTBUILDER ERROR | {}".format(last_item)
-                    )
-                    await bot.get_user(BOT_OWNER_ID).send(
-                        "POC: {}".format(message.author.name)
-                    )
-                    await bot.get_user(BOT_OWNER_ID).send(
-                        "List: \n{}".format(message.content)
-                    )
-                    await message.channel.send(
-                        "Sorry, there was a list parsing error. I have reported it to Ardaedhel to fix it.",
-                    )
-                    await message.channel.send(
-                        "Details - My best guess is, the error was in or near this line: ",
-                    )
-                    await message.channel.send(last_item)
+                    if not success:
+                        logging.info("[!] LISTBUILDER ERROR | {}".format(last_item))
+                        await bot.get_user(BOT_OWNER_ID).send(
+                            "[!] LISTBUILDER ERROR | {}".format(last_item)
+                        )
+                        await bot.get_user(BOT_OWNER_ID).send(
+                            "POC: {}".format(message.author.name)
+                        )
+                        await bot.get_user(BOT_OWNER_ID).send(
+                            "List: \n{}".format(message.content)
+                        )
+                        await message.channel.send(
+                            "Sorry, there was a list parsing error. I have reported it to Ardaedhel to fix it.",
+                        )
+                        await message.channel.send(
+                            "Details - My best guess is, the error was in or near this line: ",
+                        )
+                        await message.channel.send(last_item)
 
-                else:
-                    listbuilder.export_to_vlog(listbuilder_config)
-                    await message.channel.send(file=discord.File(vlogfilepath))
-                    await message.author.send(
-                        "For usage instructions, pm me '!listhelp'."
-                    )
+                    else:
+                        listbuilder.export_to_vlog(listbuilder_config)
+                        await message.channel.send(file=discord.File(vlogfilepath))
+                        await message.author.send(
+                            "For usage instructions, pm me '!listhelp'."
+                        )
+                finally:
+                    try:
+                        os.unlink(vlbfilepath)
+                    except OSError:
+                        pass
                 del guid_hash
 
             except Exception as inst:

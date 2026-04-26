@@ -9,8 +9,6 @@ img/tmp/*.png
 *.vlb
 *.vlog
 savedGame
-vlb/*.vlb
-vlb/*.vlb.gz
 out/*.vlb
 out/*.vlog
 __pycache__/*
@@ -20,6 +18,8 @@ vlb_pieces.vlo.bak
 vlb_pieces.vlo
 img/Thumbs.db
 vmods/*
+data/vmods/*
+*.vmod
 venv/*
 .venv/*
 test/test_vlogs/*

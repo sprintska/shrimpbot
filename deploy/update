@@ -9,7 +9,8 @@ git -C /opt/shrimpbot/ pull;
 /opt/shrimpbot/.venv/shrimpbot/bin/pip install -qq -r /opt/shrimpbot/requirements.txt
 sudo log_backup.sh;
 [ -f /opt/shrimpbot/vlb_pieces.vlo ] && mv /opt/shrimpbot/vlb_pieces.vlo /opt/shrimpbot/data/vlb_pieces.vlo;
-/opt/shrimpbot/scripts/update_listbuilder.py -m /opt/shrimpbot/vmods/;
+[ -d /opt/shrimpbot/vmods ] && mv /opt/shrimpbot/vmods /opt/shrimpbot/data/vmods;
+/opt/shrimpbot/scripts/update_listbuilder.py -m /opt/shrimpbot/data/vmods/;
 #git -C /var/www/advancedtranspondernet/ stash;
 #git -C /var/www/advancedtranspondernet/ stash drop;
 #git -C /var/www/advancedtranspondernet/ pull;

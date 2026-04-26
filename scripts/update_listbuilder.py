@@ -29,7 +29,7 @@ def main():
     parser = argparse.ArgumentParser()
     _root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     parser.add_argument("-db", help="Path to VLO DB to update", type=str, default=os.path.join(_root, "data", "vlb_pieces.vlo"))
-    parser.add_argument("-m", help="path to module (.VMOD) to source new piece definitions from", type=str, default="./vmods/")
+    parser.add_argument("-m", help="path to module (.VMOD) to source new piece definitions from", type=str, default=os.path.join(_root, "data", "vmods"))
     parser.add_argument("--auto", help="Check automatically for a new version.  References the top version posted on https://vassalengine.org/wiki/Module:Star_Wars:_Armada.", action="store_true")
     args = parser.parse_args()
 

@@ -1,2 +1,2 @@
 # Daily check for a new VASSAL module version and database rebuild if found
-0 23 * * * ardaedhel /opt/shrimpbot/scripts/update_listbuilder.py --auto -m /opt/shrimpbot/vmods/ >> /var/log/shrimpbot/updater.log 2>&1
+0 23 * * * ardaedhel /opt/shrimpbot/scripts/update_listbuilder.py --auto -m /opt/shrimpbot/data/vmods/ >> /var/log/shrimpbot/updater.log 2>&1
