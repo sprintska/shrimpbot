@@ -44,8 +44,9 @@ def import_from_fabs(import_list, config):
                         else:
                             working_line = this_line.split(" - ")
                             ship = fleet.add_ship(working_line[0].strip())
-                            for upgrade in working_line[1::]:
-                                ship.add_upgrade(upgrade.strip())
+                            if ship is not None:
+                                for upgrade in working_line[1::]:
+                                    ship.add_upgrade(upgrade.strip())
 
                     else:
                         issquadron = False
@@ -115,7 +116,7 @@ def import_from_fabs(import_list, config):
                             )
         except Exception as err:
             logger.exception(err)
-            return (False, last_line)
+            continue
 
     return (True, fleet)
 
@@ -126,13 +127,15 @@ def import_from_warlords(import_list, config):
     fleet = Fleet("Food", config=config)
 
     shipnext = False
-    is_flagship = False
+    s = None
 
-    # Set the flag if it looks like Flagship format to enable the custom error
     flagship_regex = re.compile(r"\)\n= [\d]{1,3} points\n")
     if flagship_regex.search(import_list):
         logger.debug("[!] FLAGSHIP LIST -- UNSUPPORTED!")
-        is_flagship = True
+        fleet.missing.append(
+            "WARNING: This appears to be a Flagship list. Shrimpbot supports Flagship "
+            "only insofar as it conforms to Warlords' format — manually spawn squadrons if needed."
+        )
 
     # Make sure the cretinous user isn't just schwacking off all the garbage at
     # the top of a Warlords export.
@@ -241,22 +244,12 @@ def import_from_warlords(import_list, config):
                         )
                     )
                     upgrade = upgrade_new
-                _ = s.add_upgrade(upgrade)
+                if s is not None:
+                    _ = s.add_upgrade(upgrade)
                 shipnext = False
         except Exception as err:
             logger.exception(err)
-            if is_flagship:
-                last_line = (
-                    last_line
-                    + "\n"
-                    + "=" * 40
-                    + "\nThis appears to be a Flagship list.  Shrimpbot currently "
-                    + "supports Flagship only only insofar as it conforms to Warlords' "
-                    + "format. *Usually* you can make it work by removing and manually "
-                    + "spawning squadrons. \nSee "
-                    + "https://github.com/sprintska/shrimpbot/issues/59"
-                )
-            return (False, last_line)
+            continue
 
     return (True, fleet)
 
@@ -268,6 +261,7 @@ def import_from_afd(import_list, config):
 
     start = False
     obj_category = "assault"
+    ship = None
 
     for line in import_list.strip().split("\n"):
         logger.info(line)
@@ -323,7 +317,8 @@ def import_from_afd(import_list, config):
                         )
                         upgrade = translated
 
-                    _ = ship.add_upgrade(upgrade)
+                    if ship is not None:
+                        _ = ship.add_upgrade(upgrade)
 
                 elif "(" not in card_name:
                     card_name = scrub_piecename(str(card_name))
@@ -423,7 +418,7 @@ def import_from_afd(import_list, config):
                         )
         except Exception as err:
             logger.exception(err)
-            return (False, last_line)
+            continue
 
     return (True, fleet)
 
@@ -437,6 +432,7 @@ def import_from_kingston(import_list, config):
 
     shipnext = True
     faction = None
+    ship = None
 
     for line in import_list.split("\n"):
 
@@ -489,7 +485,8 @@ def import_from_kingston(import_list, config):
                             )
                             card_name = card_name_new
 
-                        _ = ship.add_upgrade(card_name)
+                        if ship is not None:
+                            _ = ship.add_upgrade(card_name)
 
                     elif card_name[0] == "=":
                         pass
@@ -528,7 +525,7 @@ def import_from_kingston(import_list, config):
                     _ = fleet.add_squadron(card_name)
         except Exception as err:
             logger.exception(err)
-            return (False, last_line)
+            continue
 
     return (True, fleet)
 

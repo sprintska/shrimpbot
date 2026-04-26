@@ -38,6 +38,7 @@ class Fleet:
         self.author = str(author)
         self.config = config
         self.conn = self.config.db_path
+        self.missing = []
 
         # simple piece locations calculations
 
@@ -108,7 +109,12 @@ class Fleet:
             )
             shipclass = shipclass_canon
 
-        ship = Ship(shipclass, self, self.config)
+        try:
+            ship = Ship(shipclass, self, self.config)
+        except LookupError as err:
+            logger.warning(f"Skipping ship '{shipclass}': {err}")
+            self.missing.append(f"ship '{shipclass}'")
+            return None
         self.x += self.upgrade_to_ship_padding
         ship.set_coords([str(self.x), str(self.ship_y)])
         ship.shipcard.set_coords([str(self.x), str(self.ship_y)])
@@ -144,10 +150,14 @@ class Fleet:
 
         try:
             sq = Squadron(squadronclass, self, self.config)
-        except ValueError as err:
-            """If the squadron is not found in the database, try scrubbing the word "squadron" and retrying."""
+        except (ValueError, LookupError):
             squadronclass = scrub_piecename(squadronclass.replace("squadron", ""))
-            sq = Squadron(squadronclass, self, self.config)
+            try:
+                sq = Squadron(squadronclass, self, self.config)
+            except (ValueError, LookupError) as err:
+                logger.warning(f"Skipping squadron '{squadronclass}': {err}")
+                self.missing.append(f"squadron '{squadronclass}'")
+                return None
         if self.squad_row % 2:
             self.x += self.squad_to_squad_x_padding
             sq.set_coords([str(self.x), str(self.squad_upper_y)])
@@ -182,11 +192,17 @@ class Fleet:
             return False
 
         obj_categories = ["assault", "defense", "navigation", "campaign", "other"]
-        if category.lower() in obj_categories:
-            self.objectives[category] = Objective(objectivename, self.config)
-        else:
+        if category.lower() not in obj_categories:
             logger.info("{} is not a valid objective type.".format(str(category)))
             logger.info("Valid types are: {}".format(obj_categories))
+            return None
+
+        try:
+            self.objectives[category] = Objective(objectivename, self.config)
+        except LookupError as err:
+            logger.warning(f"Skipping objective '{objectivename}': {err}")
+            self.missing.append(f"objective '{objectivename}'")
+            return None
 
         self.objectives[category].set_coords([str(self.obj_x), str(self.obj_y)])
         self.obj_x = self.obj_x + self.objective_to_objective_x_offset
@@ -246,12 +262,12 @@ class Piece:
         try:
             with sqlite3.connect(self.conn) as connection:
                 result = connection.execute(query, param).fetchall()
-            if len(result) >= 1:
-                return result[0]
-            logger.debug(f"Did not find {piecetype} {piecename}")
         except Exception as err:
             logger.exception(err)
             raise
+        if len(result) >= 1:
+            return result[0]
+        raise LookupError(f"{piecetype} '{piecename}' not found in database")
 
     def _replace_placeholders(self):
         if hasattr(self, "content"):
@@ -304,7 +320,12 @@ class Ship(Piece):
             )
             upgradename = sc
 
-        u = Upgrade(upgradename, self, self.config)
+        try:
+            u = Upgrade(upgradename, self, self.config)
+        except LookupError as err:
+            logger.warning(f"Skipping upgrade '{upgradename}': {err}")
+            self.ownfleet.missing.append(f"upgrade '{upgradename}' on {self.shipclass}")
+            return None
 
         if self.ownfleet.u_row % 2:
             self.ownfleet.x += self.ownfleet.upgrade_to_upgrade_x_padding

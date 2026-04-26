@@ -201,6 +201,16 @@ def import_from_list(config):
                 + "LOG\tCHAT<Listbuilder> - "
                 + "https://discord.gg/jY4K4d6{}\r\n\r\n".format(chr(27))
             )
+            if fleet.missing:
+                missing_note = (
+                    "WARNING: The following pieces could not be found and were skipped: "
+                    + ", ".join(fleet.missing)
+                )
+                vlb.write(
+                    "LOG\tCHAT<Listbuilder> - {}{}\r\n\r\n".format(
+                        missing_note, chr(27)
+                    )
+                )
             for ship in fleet.ships:
                 logging.debug(
                     'Writing shipcard "{}" to VLB: {}'.format(
