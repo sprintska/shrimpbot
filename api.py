@@ -30,8 +30,8 @@ guid = guid_hash.hexdigest()[0:16]
 
 listbuilder_config = listbuilder.get_default_config()
 listbuilder_config.pwd = ROOT_PATH
-listbuilder_config.working_dir = os.path.join(ROOT_PATH, "working/")
-outpath = os.path.join(ROOT_PATH, "out/")
+listbuilder_config.working_dir = os.path.join(ROOT_PATH, "var", "working")
+outpath = os.path.join(ROOT_PATH, "var", "out")
 listbuilder_config.vlog_path = os.path.join(outpath, guid + ".vlog")
 listbuilder_config.db_path = os.path.join(ROOT_PATH, "data", "vlb_pieces.vlo")
 

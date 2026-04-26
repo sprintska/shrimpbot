@@ -22,7 +22,7 @@ logging.basicConfig(handlers=[_handler], level=logging.INFO)
 
 PWD = os.path.dirname(__file__)
 TOKEN_PATH = PWD + "/privatekey.dsc"
-CARD_IMG_PATH = PWD + "/img/"
+CARD_IMG_PATH = PWD + "/data/img/"
 CARD_LOOKUP = PWD + "/data/cards.txt"
 ACRO_LOOKUP = PWD + "/data/acronyms.txt"
 BOT_OWNER_ID = 236683961831653376
@@ -484,8 +484,8 @@ async def on_message(message):
                 guid = guid_hash.hexdigest()[0:16]
 
                 listbuilderpath = os.path.dirname(__file__)
-                workingpath = os.path.join(listbuilderpath, "working/")
-                outpath = os.path.join(listbuilderpath, "out/")
+                workingpath = os.path.join(listbuilderpath, "var", "working")
+                outpath = os.path.join(listbuilderpath, "var", "out")
                 vlogfilepath = os.path.join(outpath, guid + ".vlog")
                 databasepath = os.path.join(listbuilderpath, "data", "vlb_pieces.vlo")
 

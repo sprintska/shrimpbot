@@ -60,7 +60,7 @@ class ShrimpConfig:
         self.vlog_path = os.path.abspath(vlog)
         self.vlb_path = os.path.abspath(vlb)
         self.working_dir = os.path.abspath(
-            working_dir or os.path.join(self.pwd, "working")
+            working_dir or os.path.join(self.pwd, "var", "working")
         )
         self.aff_path = os.path.abspath(aff)
         self.fleet = os.path.abspath(flt)  # path or text
@@ -252,7 +252,8 @@ def export_to_vlog(config):
     savedata and moduledata XML files in config.working_dir, into a VASSAL-
     compatible .vlog replay file."""
 
-    out_path = os.path.join(config.pwd, "out")
+    out_path = os.path.join(config.pwd, "var", "out")
+    os.makedirs(out_path, exist_ok=True)
 
     for afile in os.listdir(out_path):
         file_path = os.path.join(out_path, afile)

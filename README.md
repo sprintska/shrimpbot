@@ -76,16 +76,14 @@ shrimpbot/
 ├── api.py                # Flask REST API entry point
 ├── wsgi.py               # gunicorn entry point
 ├── cardpop.py            # Wiki image fallback for card lookup
-├── data/                 # Static data files (acronyms, card index, piece database)
-├── img/                  # Card images
-├── lib_listbuilder/      # Fleet list parsing and VASSAL file generation
-├── lib_updater/          # VASSAL module parsing and database update
+├── data/                 # Static data (acronyms, card index, piece database, card images, vmods)
+├── libs/                 # Internal libraries (listbuilder, updater, cardpop)
 ├── scripts/              # Maintenance scripts
 ├── deploy/               # Deployment config (systemd units, update script, setup)
 ├── test/                 # Tests
-├── vmods/                # VASSAL module files (gitignored)
-├── working/              # Scratch space for file generation (gitignored)
-└── out/                  # Generated output files (gitignored)
+└── var/                  # Runtime state (gitignored except templates)
+    ├── working/          # Scratch space and VASSAL boilerplate templates
+    └── out/              # Generated .vlog output files
 ```
 
 ## Logging and Retention Disclosure
