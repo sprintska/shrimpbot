@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-import cardpop
+from libs import cardpop
 import discord
 import hashlib
-from lib_listbuilder import listbuilder
+from libs.listbuilder import listbuilder
 import logging
 import logging.handlers
 import os

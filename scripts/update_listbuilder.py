@@ -13,14 +13,14 @@ logging.basicConfig(handlers=[_handler], level=logging.INFO)
 import argparse
 import sqlite3
 
-from lib_updater.utils import (
+from libs.updater.utils import (
     scrub_piecename,
     update_piece,
     create_db,
     most_recent_vmod_in_path,
     check_for_new_version,
 )
-from lib_updater.vassal_module import VassalModule
+from libs.updater.vassal_module import VassalModule
 
 
 def main():

@@ -56,7 +56,7 @@ class ShrimpConfig:
         db=None,
         import_vlog=False,
     ):
-        self.pwd = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.pwd = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         self.vlog_path = os.path.abspath(vlog)
         self.vlb_path = os.path.abspath(vlb)
         self.working_dir = os.path.abspath(
