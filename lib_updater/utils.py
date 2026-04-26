@@ -2,6 +2,9 @@ import logging
 
 logger = logging.getLogger("updater")
 
+import hashlib
+from html import unescape
+import json
 import os
 import pathlib
 import re
@@ -43,9 +46,8 @@ def associated_token(piece_name, piece_type, vlb_content):
 
 def check_for_new_version(
     latest_local_vmod_path,
-    vassal_url="https://vassalengine.org/library/projects/Star_Wars:_Armada",
+    vassal_url="https://vassalengine.org/library/projects/Star_Wars_Armada",
 ):
-
     if not latest_local_vmod_path.exists():
         raise FileNotFoundError(
             "Module file does not exist: " + str(latest_local_vmod_path)
@@ -54,30 +56,47 @@ def check_for_new_version(
     local_vmod_dir = latest_local_vmod_path.parent
 
     r = requests.get(vassal_url)
+    r.raise_for_status()
 
-    vmod_regex = re.compile(r'obj.vassalengine.org/images/\S+?.vmod"')
-    available_vmod_urls = vmod_regex.finditer(str(r.content))
-    latest_vmod_url = (
-        "https://" + [hit.group(0).strip('"') for hit in available_vmod_urls][0]
-    )
+    meta_match = re.search(r'id="project-data" content="(.*?)"', r.text)
+    if not meta_match:
+        raise RuntimeError("Could not find project-data on VASSAL library page")
 
-    latest_vmod_filename = latest_vmod_url.split("/")[-1]
+    data = json.loads(unescape(meta_match.group(1)))
+
+    # First release in the Module package is always the latest
+    releases = data["packages"][0]["releases"]
+    latest_files = releases[0]["files"]
+    latest_file = next(f for f in latest_files if f["filename"].endswith(".vmod"))
+
+    latest_vmod_filename = latest_file["filename"]
+    latest_vmod_url = latest_file["url"]
+    expected_sha256 = latest_file.get("sha256")
 
     if latest_vmod_filename == latest_local_vmod_path.name:
-        logging.info(
-            f"[*] Checked for new module version.  Locally installed VMOD matches latest version at {latest_vmod_filename}."
-        )
+        logger.info(f"[*] Already up to date: {latest_vmod_filename}")
         return False
 
-    logging.info(
-        f"[+] New VMOD version found: {latest_vmod_filename}.\n\tDownloading from {latest_vmod_url}..."
-    )
-    new_vmod_path = pathlib.Path(local_vmod_dir / latest_vmod_filename)
-    r = requests.get(latest_vmod_url)
-    logging.info(f"[+] Writing to {new_vmod_path}...")
-    with open(new_vmod_path, "wb") as f:
-        f.write(r.content)
+    logger.info(f"[+] New VMOD version found: {latest_vmod_filename}")
+    logger.info(f"[+] Downloading from {latest_vmod_url}...")
 
+    new_vmod_path = pathlib.Path(local_vmod_dir / latest_vmod_filename)
+    sha256 = hashlib.sha256()
+    with requests.get(latest_vmod_url, stream=True) as r:
+        r.raise_for_status()
+        with open(new_vmod_path, "wb") as f:
+            for chunk in r.iter_content(chunk_size=65536):
+                f.write(chunk)
+                sha256.update(chunk)
+
+    if expected_sha256 and sha256.hexdigest() != expected_sha256:
+        new_vmod_path.unlink()
+        raise RuntimeError(
+            f"SHA256 mismatch for {latest_vmod_filename}: "
+            f"expected {expected_sha256}, got {sha256.hexdigest()}"
+        )
+
+    logger.info(f"[+] Written and verified: {new_vmod_path}")
     return new_vmod_path
 
 
