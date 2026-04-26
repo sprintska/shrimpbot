@@ -1,0 +1,19 @@
+#!/bin/sh
+
+sudo apt-get -y update;
+sudo apt-get -y upgrade;
+sudo apt-get -y autoremove;
+git -C /opt/shrimpbot/ stash;
+git -C /opt/shrimpbot/ stash drop;
+git -C /opt/shrimpbot/ pull;
+/opt/shrimpbot/.venv/shrimpbot/bin/pip install -qq -r /opt/shrimpbot/requirements.txt
+sudo log_backup.sh;
+[ -f /opt/shrimpbot/vlb_pieces.vlo ] && mv /opt/shrimpbot/vlb_pieces.vlo /opt/shrimpbot/data/vlb_pieces.vlo;
+/opt/shrimpbot/scripts/update_listbuilder.py -m /opt/shrimpbot/vmods/;
+#git -C /var/www/advancedtranspondernet/ stash;
+#git -C /var/www/advancedtranspondernet/ stash drop;
+#git -C /var/www/advancedtranspondernet/ pull;
+sudo systemctl daemon-reload;
+sudo systemctl restart shrimpbot.service;
+sudo systemctl restart shrimpbot-api.service;
+tail -f /var/log/shrimpbot/shrimp.log | egrep --line-buffered -i '(info|debug):root' | grep -v Human\ Eval\ Hangout | grep -v The\ Board\ Room
