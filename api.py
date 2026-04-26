@@ -11,7 +11,7 @@ import base64
 import flask
 from flask import request, jsonify, send_file
 import hashlib
-import listbuilder
+from lib_listbuilder import listbuilder
 import os
 import time
 
@@ -35,7 +35,7 @@ listbuilder_config.vlb_path = os.path.join(
     listbuilder_config.pwd, "vlb/", f"{guid}.vlb"
 )
 listbuilder_config.vlog_path = os.path.join(outpath, guid + ".vlog")
-listbuilder_config.db_path = os.path.join(ROOT_PATH, "vlb_pieces.vlo")
+listbuilder_config.db_path = os.path.join(ROOT_PATH, "data", "vlb_pieces.vlo")
 
 # TODO: rate limiter
 

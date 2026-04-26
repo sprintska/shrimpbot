@@ -32,7 +32,7 @@ import argparse
 import os
 import shutil
 
-from lib_listbuilder.importers import (
+from .importers import (
     import_from_fabs,
     import_from_warlords,
     import_from_afd,
@@ -40,7 +40,7 @@ from lib_listbuilder.importers import (
     import_from_aff,
     import_from_vlog,
 )
-from lib_listbuilder.utils import zipall
+from .utils import zipall
 
 
 class ShrimpConfig:
@@ -53,10 +53,10 @@ class ShrimpConfig:
         working_dir=None,
         aff="test.aff",
         flt="list.flt",
-        db="vlb_pieces.vlo",
+        db=None,
         import_vlog=False,
     ):
-        self.pwd = os.path.dirname(__file__)
+        self.pwd = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.vlog_path = os.path.abspath(vlog)
         self.vlb_path = os.path.abspath(vlb)
         self.working_dir = os.path.abspath(
@@ -64,7 +64,9 @@ class ShrimpConfig:
         )
         self.aff_path = os.path.abspath(aff)
         self.fleet = os.path.abspath(flt)  # path or text
-        self.db_path = os.path.abspath(db)
+        self.db_path = os.path.abspath(
+            db or os.path.join(self.pwd, "data", "vlb_pieces.vlo")
+        )
         self.import_vlog = import_vlog
 
 
@@ -302,7 +304,7 @@ def main():
     # fmt: off
     # Parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("-db", help="path to reference database", type=str, default="vlb_pieces.vlo")
+    parser.add_argument("-db", help="path to reference database", type=str, default=os.path.join(config.pwd, "data", "vlb_pieces.vlo"))
     parser.add_argument("-wd",help="working directory",type=str,default=os.path.join(config.pwd, "working"),)
     parser.add_argument("-vlog", help=".vlog filename", type=str, default="vlb-out.vlog")
     parser.add_argument("-vlb", help=".vlb filename", type=str, default="list.vlb")

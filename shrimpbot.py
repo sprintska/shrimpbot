@@ -3,7 +3,7 @@
 import cardpop
 import discord
 import hashlib
-import listbuilder
+from lib_listbuilder import listbuilder
 import logging
 import logging.handlers
 import os
@@ -22,8 +22,8 @@ logging.basicConfig(handlers=[_handler], level=logging.INFO)
 PWD = os.path.dirname(__file__)
 TOKEN_PATH = PWD + "/privatekey.dsc"
 CARD_IMG_PATH = PWD + "/img/"
-CARD_LOOKUP = PWD + "/cards.txt"
-ACRO_LOOKUP = PWD + "/acronyms.txt"
+CARD_LOOKUP = PWD + "/data/cards.txt"
+ACRO_LOOKUP = PWD + "/data/acronyms.txt"
 BOT_OWNER_ID = 236683961831653376
 
 
@@ -488,7 +488,7 @@ async def on_message(message):
                 vlbdirpath = os.path.join(listbuilderpath, "vlb/")
                 vlbfilepath = os.path.join(vlbdirpath, guid + ".vlb")
                 vlogfilepath = os.path.join(outpath, guid + ".vlog")
-                databasepath = os.path.join(listbuilderpath, "vlb_pieces.vlo")
+                databasepath = os.path.join(listbuilderpath, "data", "vlb_pieces.vlo")
 
                 listbuilder_config = listbuilder.get_default_config()
                 listbuilder_config.pwd = os.path.dirname(__file__)
