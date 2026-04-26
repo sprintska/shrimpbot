@@ -479,6 +479,13 @@ async def on_message(message):
                 liststr = message.content.strip()[7::].strip()
                 if not liststr:
                     raise Exception("List not found. Did you forget the list?")
+                channel_desc = "DM" if message.channel.type is discord.ChannelType.private else f"{message.guild} | {message.channel.name}"
+                logging.info("[{}] !VASSAL from {} via {}\n{}".format(
+                    time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                    message.author.name,
+                    channel_desc,
+                    liststr,
+                ))
                 guid_hash = hashlib.new("md5")
                 guid_hash.update(str(time.time()).encode())
                 guid = guid_hash.hexdigest()[0:16]
