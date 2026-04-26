@@ -1,0 +1,49 @@
+Name: Untitled Fleet
+Faction: Rebel
+Commander: General Cracken (26)
+
+Assault: Most Wanted
+Defense: Rift Ambush
+Navigation: Solar Corona
+
+CR90 Corvette A (44)
+• General Cracken (26)
+• Turbolaser Reroute Circuits (7)
+= 77 Points
+
+CR90 Corvette A (44)
+• Turbolaser Reroute Circuits (7)
+• Jaina's Light (5)
+= 56 Points
+
+CR90 Corvette A (44)
+• Hondo Ohnaka (2)
+• Turbolaser Reroute Circuits (7)
+= 53 Points
+
+CR90 Corvette A (44)
+• Ezra Bridger (3)
+• Turbolaser Reroute Circuits (7)
+= 54 Points
+
+CR90 Corvette A (44)
+• Turbolaser Reroute Circuits (7)
+= 51 Points
+
+GR-75 Medium Transports (18)
+• Slicer Tools (7)
+• Quantum Storm (1)
+= 26 Points
+
+GR-75 Medium Transports (18)
+• Comms Net (2)
+• Bright Hope (2)
+= 22 Points
+
+Squadrons:
+• Ketsu Onyo - Shadow Caster (22)
+• Tycho Celchu - A-wing Squadron (16)
+• 2 x A-wing Squadron (22)
+= 60 Points
+
+Total Points: 399

@@ -1,0 +1,13 @@
+# Normalize all text files to LF
+* text=auto eol=lf
+
+# Explicitly binary — never touch line endings
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.vmod binary
+*.vlb binary
+*.vlo binary
+*.vlog binary
+*.pyc binary
